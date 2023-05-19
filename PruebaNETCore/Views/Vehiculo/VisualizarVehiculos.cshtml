@@ -1,0 +1,81 @@
+﻿@using ProyectoSolveCore.Models.ViewModels
+@model List<vmVehiculo>
+@{
+    ViewBag.Title = "Visualizar Vehiculos";
+}
+<partial name="_NavMenu"/>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Visualizar vehiculos</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Visualizar vehiculo</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    <a asp-action="AgregarVehiculo" role="button" class="btn btn-primary mb-2">Agregar nuevo vehículo</a>
+                    @if (Model != null)
+                    {
+                        <table id="tablaVehiculos" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" style="width:20%">Patente</th>
+                                    <th scope="col" style="width:25%">Marca</th>
+                                    <th scope="col" style="width:25%">Modelo</th>
+                                    <th scope="col" style="width:5%">Habilitado</th>
+                                    <th scope="col">Km. recorridos</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var vehiculo in Model)
+                                {
+                                    <tr>
+                                        <td>@vehiculo.Patente</td>
+                                        <td>@vehiculo.Marca</td>
+                                        <td>@vehiculo.Modelo</td>
+                                        <td class="text-center">
+                                            @if (vehiculo.Habilitado.Equals("SI"))
+                                            {
+                                                <i class="fa-sharp fa-circle-check fa-lg text-success"></i>
+                                            }else{
+                                                <i class="fa-sharp fa-circle-xmark fa-lg text-danger"></i>
+                                            }
+                                        </td>
+                                        <td>@vehiculo.Km_Recorrido?.ToString("N", new System.Globalization.NumberFormatInfo{
+                                                NumberDecimalSeparator = ",",
+                                                NumberGroupSeparator = "."
+                                        })</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-warning" data-id="@vehiculo.Id">
+                                                <i class="fa-sharp fa-pen fa-lg"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-id="@vehiculo.Id">
+                                                <i class="fa-sharp fa-trash-can fa-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
+</div>
+@section CSS {
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    @*<script src="~/lib/datatables/moment.min.js"></script>
+    <script src="~/lib/datatables/datetime-moment.js"></script>*@
+    <script src="~/js/visualizarvehiculos.js"></script>
+}
+

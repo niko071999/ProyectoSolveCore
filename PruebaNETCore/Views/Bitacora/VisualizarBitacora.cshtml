@@ -1,0 +1,82 @@
+﻿@model List<Bitacora>
+@{
+    ViewBag.Title = "Visualizar bitacora";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Visualizar bitacora</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Visualizar bitacora</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    @if (Model != null)
+                    {
+                        <table id="tablaBitacora" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Folio</th>@*0*@
+                                    <th scope="col">Fecha</th>@*1*@
+                                    <th scope="col">Vehiculo</th>@*2*@
+                                    <th scope="col">Conductor</th>@*3*@
+                                    <th scope="col">Solicitud</th>@*4*@
+                                    <th>Destino</th>@*5*@
+                                    <th>Cometido</th>@*6*@
+                                    <th scope="col">Km. Salida</th>@*7*@
+                                    <th scope="col">Km. Llegada</th>@*8*@
+                                    <th scope="col">Observación</th>@*9*@
+                                    <th scope="col"></th>@*10*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model)
+                                {
+                                    <tr>
+                                        <td>@b.Folio</td>
+                                        <td>@b.Fecha</td>
+                                        <td>@b.IdVehiculoNavigation.Patente @b.IdVehiculoNavigation.Marca @b.IdVehiculoNavigation.Modelo</td>
+                                        <td>@b.IdConductorNavigation.IdUsuarioNavigation.Nombre @b.IdConductorNavigation.IdUsuarioNavigation.Apellido</td>
+                                        <td class="text-center">
+                                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Ver ficha solicitud" data-id="@b.IdSolicitud"
+                                            class="btn btn-warning">
+                                                <i class="fa-sharp fa-clock fa-lg"></i>
+                                            </button>
+                                        </td>
+                                        <td>@b.IdSolicitudNavigation.Destino</td>
+                                        <td>@b.IdSolicitudNavigation.Motivo</td>
+                                        <td>@b.IdKilometrajeNavigation.KilometrajeInicial</td>
+                                        <td>@b.IdKilometrajeNavigation.KilometrajeFinal</td>
+                                        <td>@b.Observacion</td>
+                                        <td class="text-center">
+                                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Mostrar mas informacion" data-id="@b.Id"
+                                            class="btn btn-info">
+                                                <i class="fa-sharp fa-circle-info fa-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+</div>
+@section CSS {
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+}
+    @section Scripts {
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/moment.min.js"></script>
+    <script src="~/lib/datatables/datetime-moment.js"></script>
+    <script src="~/js/visualizarbitacora.js"></script>
+}

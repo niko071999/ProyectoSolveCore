@@ -1,0 +1,84 @@
+﻿@using ProyectoSolveCore.Models.ViewModels
+@model Solicitude
+
+@{
+    string NombreSolicitante = ViewBag.NombreSolicitante;
+    string Vehiculo = Model.IdVehiculoNavigation.Patente +" - "+ Model.IdVehiculoNavigation.Marca +" "+ Model.IdVehiculoNavigation.Modelo;
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmación de solicitud</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="form_AprobarSolicitud">
+            <div class="modal-body row g-2 fw-bold">
+                <input data-val="true" data-val-required="El campo ID es obligatorio." name="IdSolicitud" type="hidden" value="@Model.Id">
+                <div class="col col-md-6">
+                    <label for="inputFechaSalida" class="form-label">Fecha de salida</label>
+                    <input type="text" class="form-control" id="inputFechaSalida"
+                           value="@Model.FechaSalida" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
+                    <input type="text" class="form-control" id="inputFechaLlegada"
+                           value="@Model.FechaLlegada" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputNombreSolicitante" class="form-label">Nombre del solicitante</label>
+                    <input type="text" class="form-control" id="inputNombreSolicitante"
+                           value="@NombreSolicitante" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                    <input type="text" class="form-control" id="inputVehiculo"
+                           value="@Vehiculo" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="IdConductor" class="form-label">@(!Model.IdConductor.HasValue ? Html.Raw("Asignar Conductor") : Html.Raw("Conductor Asigado"))</label>
+                    @if (Model.IdConductor.HasValue)
+                    {
+                        <select class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor" asp-selected="@Model.IdConductor" disabled>
+                        </select>
+                    }else{
+                        <select class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor">
+                        </select>
+                    }
+                </div>
+                <div class="col col-lg-12">
+                    <img id="imagen-prev" class="img-thumbnail" src="assets/img/sin-foto.png" alt="Sin imagen seleccionada" width="150" height="150">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btn_confirmar" type="button" class="btn btn-success">Confirmar solicitud</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    var form = document.getElementById('form_AprobarSolicitud'),
+        btn_confirmar = document.getElementById('btn_confirmar');
+
+    btn_confirmar.addEventListener('click', () => {
+        var ids = {
+            IdSolicitud: form.IdSolicitud.value,
+            IdConductor: form.IdConductor.value
+        };
+        $.ajax({
+            url: '/Solicitud/AprobarSolicitud',
+            type: 'POST',
+            data: JSON.stringify(ids),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (response) {
+                $.notify(response.mensaje, { type: response.type });
+                location = location.href;
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+</script>

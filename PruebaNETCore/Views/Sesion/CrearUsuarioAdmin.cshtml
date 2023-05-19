@@ -1,0 +1,85 @@
+﻿@model Usuario
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es-cl">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Crear Usuario Administrador - Solve</title>
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-secondary">
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Crear usuario administrador</h3></div>
+                                <div class="card-body fw-bold">
+                                    <form asp-action="CrearUsuarioAdmin" method="post" class="row">
+                                        <div class="col col-lg-12 alert alert-warning" role="alert">
+                                            <span class="text-justi">No hay usuarios registrados en el sistema, empiece por agregar un usuario administrador</span>
+                                        </div>
+                                        <div class="col col-lg-12">
+                                            <div class="row g-2">
+                                                <input data-val="true" data-val-required="El campo ID es obligatorio." name="Id" type="hidden">
+                                                <input data-val="true" data-val-required="El campo ID es obligatorio." name="Eliminado" type="hidden">
+                                                <input data-val="true" data-val-required="El campo ID es obligatorio." name="DireccionImg" value="@Model.DireccionImg" type="hidden">
+                                                <input id="idDepartamento" data-val="true" data-val-required="El campo ID es obligatorio."
+                                                       name="IdDepartamento" type="hidden" required>
+                                                <div class="col-md-6">
+                                                    <label for="inputRut" class="form-label">RUT</label>
+                                                    <input type="text" class="form-control" name="Rut" id="inputRut"
+                                                           placeholder="Con guión y sin puntos" value="@Model.Rut" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="inputClave" class="form-label">Clave de acceso</label>
+                                                    <input type="password" name="Clave" class="form-control" id="inputClave"
+                                                           placeholder="Minimo 6 caracteres" value="@Model.Clave" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="inputNombre" class="form-label">Nombre</label>
+                                                    <input type="text" name="Nombre" class="form-control" id="inputNombre"
+                                                           value="@Model.Nombre" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="inputApellido" class="form-label">Apellido</label>
+                                                    <input type="text" name="Apellido" class="form-control" id="inputApellido"
+                                                           value="@Model.Apellido" required>
+                                                </div>
+                                                <div class="col col-md-6">
+                                                    <label for="inputDepartamento" class="form-label">Departamento</label>
+                                                    <select id="inputDepartamento" class="form-select">
+                                                    </select>
+                                                </div>
+                                                @*<div class="col col-md-6">
+                                                <label for="formFile" class="form-label">Subir imagen</label>
+                                                <input class="form-control" type="file" id="formFile">
+                                                </div>*@
+                                                <div class="col-12 mt-4">
+                                                    <button type="submit" class="btn btn-primary">Agregar usuario</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="~/js/agregarusuario.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿@using Microsoft.AspNetCore.Identity
+@{
+    string nombre = "Sin nombre o usuario no autenticado";
+    string direccionImg = User.FindFirst("Imagen").Value;
+    @if (User.Identity.IsAuthenticated)
+    {
+        nombre = User.Identity.Name;
+    }
+}
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="card sb-sidenav-dark">
+            <div class="justify-content-center row d-flex align-items-center g-1">
+                <div class="col col-md-12 col-lg-6 align-self-center">
+                    <img src="@Html.Raw(direccionImg)" class="rounded p-2 img-fluid"
+                         alt="foto perfil">
+                </div>
+                <div class="col col-md-12 col-lg-6 align-self-center">
+                    <p class="text-break fw-bold">@nombre</p>
+                </div>
+            </div>
+        </div>
+        <div class="sb-sidenav-menu mt-4" id="style-4">
+            <div class="nav">
+                <a class="nav-link" asp-controller="Home" asp-action="Agenda">
+                    <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                    Agenda general
+                </a>
+                @if (User.IsInRole("Administrador") || User.IsInRole("Conductor"))
+                {
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Bitacora"
+                   aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                        Bitacora
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Bitacora" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Bitacora" asp-action="VisualizarBitacora">Visualizar bitacora</a>
+                            <a class="nav-link" asp-controller="Solicitud" asp-action="HubServicesSolicitudes">Agregar entrada a la bitacora</a>
+                        </nav>
+                    </div>
+                }
+                @if (User.IsInRole("Solicitador") || User.IsInRole("Jefe"))
+                {
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Solicitud" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-clock"></i></div>
+                        Solicitudes
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Solicitud" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Jefe"))
+                            {
+                                <a class="nav-link" asp-controller="Solicitud" asp-action="VisualizarSolicitudes">Visualizar todas las solicitudes</a>
+                            }
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Solicitador"))
+                            {
+                                <a class="nav-link" asp-controller="Solicitud" asp-action="SolicitarVehiculo">Solicitar vehículo</a>
+                            }
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Jefe")){
+                                <a class="nav-link" asp-controller="Solicitud" asp-action="SolicitudesPendientes">Solicitudes pendientes</a>
+                            }
+                            <a class="nav-link" asp-controller="Solicitud" asp-action="MisSolicitudes">Mis solicitudes</a>
+                        </nav>
+                    </div>
+                }
+                @if (User.IsInRole("Administrador") || User.IsInRole("Jefe")){
+                    <a class="nav-link" collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Reporte" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                        Informes
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Reporte" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Informe" asp-action="CantidadSolicitudesMensuales">Solicitudes aprobadas y rechazadas</a>
+                            <a class="nav-link" asp-controller="Informe" asp-action="UsoVehiculoTrabajador">Uso de vehículos por empleado</a>
+                            <a class="nav-link" asp-controller="Informe" asp-action="MantencionVehiculos">Mantenimiento de vehiculos</a>
+                            <a class="nav-link" asp-controller="Informe" asp-action="KilometrosVehiculos">Kilómetros recorridos por vehículo</a>
+                            <a class="nav-link" asp-controller="Informe" asp-action="BitacorasViaje">Bitácoras de viaje</a>
+
+                        </nav>
+                    </div>
+                }
+                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor vehiculos") || User.IsInRole("Jefe"))
+                {
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Vehiculo" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-car-side"></i></div>
+                        Vehiculos
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Vehiculo" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Vehiculo" asp-action="VisualizarVehiculos">Visualizar vehiculos</a>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor vehiculos"))
+                            {
+                                <a class="nav-link" asp-controller="Vehiculo" asp-action="AgregarVehiculo">Agregar nuevo vehículo</a>
+                            }
+                        </nav>
+                    </div>
+                }
+                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor usuarios") || User.IsInRole("Jefe"))
+                {
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Usuario" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                        Usuarios
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Usuario" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Usuario" asp-action="VisualizarUsuarios">Visualizar usuarios</a>
+                            <a class="nav-link" asp-controller="Usuario" asp-action="AgregarUsuario">Agregar nuevo usuario</a>
+                            <a class="nav-link" asp-controller="Usuario" asp-action="AsignarPermisos">Asignar permisos</a>
+                        </nav>
+                    </div>
+                }
+                <!--
+                <div class="sb-sidenav-menu-heading">Departamentos</div>
+                <a class="nav-link" href="visualizar-departamentos.html">
+                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                    Visualizar departamentos
+                </a>-->
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="nav">
+                <a class="nav-link text-danger fw-bold" asp-controller="Sesion" asp-action="Logout">
+                    <i class="fa fa-right-from-bracket"></i>
+                    Cerrar sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>

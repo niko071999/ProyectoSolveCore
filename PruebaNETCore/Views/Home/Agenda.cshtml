@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Agenda general";
+}
+<partial name="_NavMenu"/>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Agenda General</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active">Agenda general</li>
+            </ol>
+            <div class="card p-2">
+                <div id="contendor_calendar" class="card-body d-flex justify-content-center">
+                    <div id="spinner" class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<!-- Modal core base-->
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="true">
+</div>
+@section CSS{
+    <link href="~/lib/calendar/evo-calendar.min.css" rel="stylesheet" />
+    <link href="~/lib/calendar/evo-calendar.royal-navy.min.css" rel="stylesheet" />
+}
+@section Scripts{
+    <script src="~/lib/calendar/evo-calendar.min.js"></script>
+    <script src="~/js/agenda.js"></script>
+}

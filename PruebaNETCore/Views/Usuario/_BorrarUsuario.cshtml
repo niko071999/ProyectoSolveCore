@@ -1,0 +1,56 @@
+﻿@model Usuario
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-danger">
+            <h5 class="modal-title text-white" id="exampleModalLabel">Borrar usuario</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="form_BorrarUsuario">
+            <div class="modal-body row g-2 fw-bold">
+                <h4 class="mb-2">Estas a punto de eliminar el siguiente vehiculo</h4>
+                <input data-val="true" data-val-required="El campo ID es obligatorio." name="id_usuario"
+                       type="hidden" value="@Model.Id">
+                <div class="col col-md-4">
+                    <label for="inputRut" class="form-label">Rut</label>
+                    <input type="text" class="form-control" id="inputRut"
+                           value="@Model.Rut" disabled>
+                </div>
+                <div class="col col-md-4">
+                    <label for="inputNombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="inputNombre"
+                           value="@Model.Nombre" disabled>
+                </div>
+                <div class="col col-md-4">
+                    <label for="inputApellido" class="form-label">Apellido</label>
+                    <input type="text" class="form-control" id="inputApellido"
+                           value="@Model.Apellido" disabled>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btn_delete" type="button" class="btn btn-danger">Eliminar usuario</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    var form = document.getElementById('form_BorrarUsuario'),
+        btn_delete = document.getElementById('btn_delete');
+    btn_delete.addEventListener('click', () => {
+        $.ajax({
+            url: '/Usuario/BorrarUsuario',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id: form.id_usuario.value
+            },
+            success: function (response) {
+                $.notify(response.mensaje, { type: response.type });
+                location = location.href;
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,103 @@
+﻿@using ProyectoSolveCore.Models.ViewModels
+@model List<vmSolicitud>
+@{
+    ViewBag.Title = "Mis Solicitudes";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Mis solicitudes</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Home" asp-action="Agenda">Agenda general</a>
+                </li>
+                <li class="breadcrumb-item active">Mis solicitudes</li>
+            </ol>
+            <div class="card p-2">
+                <div class="card-body">
+                    <a asp-action="SolicitarVehiculo" role="button" class="btn btn-primary mb-2">Solicitar un vehículo</a>
+                    @if (Model != null)
+                    {
+                        <table id="tablaSolicitud" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Solicitado</th>
+                                    <th scope="col">Salida</th>
+                                    <th scope="col">Llegada</th>
+                                    <th scope="col">Vehiculo</th>
+                                    <th scope="col">Conductor</th>
+                                    <th scope="col">Aprobaciones</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var solicitud in Model)
+                                {
+                                    <tr>
+                                        <td>@solicitud.FechaSolicitado</td>
+                                        <td>@solicitud.FechaSalida</td>
+                                        <td>@solicitud.FechaLlegada</td>
+                                        <td>@solicitud.vehiculo</td>
+                                        <td>
+                                            @if (string.IsNullOrEmpty(solicitud.nombreConductor) || string.IsNullOrWhiteSpace(solicitud.nombreConductor))
+                                            {
+                                                <text>Sin conductor por asignar</text>
+                                            }else{
+                                                <text>@solicitud.nombreConductor</text>
+                                            }
+                                        </td>
+                                        <td>@solicitud.CantidadAprobacion / 2</td>
+                                        <td>
+                                            @switch (solicitud.Estado)
+                                            {
+                                                case 0:
+                                                    <span class="badge bg-secondary fs-6"><i class="fa-solid fa-clock fa-xs me-1"></i>Pendiente</span>
+                                                    break;
+                                                case 1:
+                                                    <span class="badge bg-success fs-6"><i class="fa-solid fa-circle-check fa-xs me-1"></i>Aprobada</span>
+                                                    break;
+                                                case 2:
+                                                    <span class="badge bg-danger fs-6"><i class="fa-solid fa-circle-xmark fa-xs me-1"></i>Rechazada</span>
+                                                    break;
+                                                case 3:
+                                                    <span class="badge bg-primary fs-6"><i class="fa-sharp fa-circle-info fa-xs me-1"></i>Finalizada</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            @if (solicitud.Estado == 1)
+                                            {
+                                                <a asp-controller="Bitacora" asp-action="AgregarEntradaBitacora" asp-route-id="@solicitud.id"
+                                                    role="button" class="btn btn-primary"><i class="fas fa-book-open fa-lg"></i></a>
+                                            }
+                                            <button type="button" class="btn btn-info" data-id="@solicitud.id"><i class="fa-sharp fa-circle-info fa-lg"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<!-- Modal core base-->
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="true">
+</div>
+@section CSS {
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+    @*<link href="~/Content/css/Datatables/select.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/css/Datatables/buttons.dataTables.min.css" rel="stylesheet" />*@
+}
+@section Scripts {
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/moment.min.js"></script>
+    <script src="~/lib/datatables/datetime-moment.js"></script>
+    @*<script src="~/Content/js/Datatable/dataTables.select.min.js"></script>*@
+    @*<script src="~/Content/js/Datatable/dataTables.buttons.min.js"></script>*@
+    <script src="~/js/missolicitudes.js"></script>
+}

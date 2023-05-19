@@ -1,0 +1,110 @@
+﻿@model ProyectoSolveCore.Models.ViewModels.vmMasInformacionSolicitud
+@{
+    var s = Model.solicitud;
+    string estado = string.Empty;
+    switch (s.Estado)
+    {
+        case 0:
+            estado = "Pendiente";
+            break;
+        case 1:
+            estado = "Aprobada";
+            break;
+        case 2:
+            estado = "Rechazada";
+            break;
+        case 3:
+            estado = "Finalizada";
+            break;
+    }
+}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content fw-bold">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ficha de la solicitud</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="form_RechazarSolicitud">
+            <div class="modal-body row g-2">
+                <div class="col col-lg-4 col-md-12">
+                    <label for="inputFechaSolicitado" class="form-label">Fecha solicitada</label>
+                    <input type="text" class="form-control" id="inputFechaSolicitado"
+                           value="@s.FechaSolicitado" disabled>
+                </div>
+                <div class="col col-lg-4 col-sm-12">
+                    <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
+                    <input type="text" class="form-control" id="inputFechaLlegada"
+                           value="@s.FechaSalida" disabled>
+                </div>
+                <div class="col col-lg-4 col-sm-12">
+                    <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
+                    <input type="text" class="form-control" id="inputFechaLlegada"
+                           value="@s.FechaLlegada" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputSolicitante" class="form-label">Nombre del solicitante</label>
+                    <input type="text" class="form-control" id="inputSolicitante"
+                           value="@s.IdSolicitanteNavigation.Nombre @s.IdSolicitanteNavigation.Apellido" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputEstado" class="form-label">Estado</label>
+                    <input type="text" class="form-control" id="inputEstado" value="@estado" disabled>
+                </div>
+                @if (s.IdConductor.HasValue)
+                {
+                    <div class="col col-md-6">
+                        <label for="inputConductor" class="form-label">Conductor</label>
+                        <input type="text" class="form-control" id="inputConductor"
+                           value="@s.IdConductorNavigation.IdUsuarioNavigation.Nombre @s.IdConductorNavigation.IdUsuarioNavigation.Apellido" disabled>
+                    </div>
+                }
+                else
+                {
+                    <div class="col col-md-6">
+                        <label for="inputConductor" class="form-label">Conductor</label>
+                        <input type="text" class="form-control text-danger" id="inputConductor"
+                           value="Sin conductor asignado" disabled>
+                    </div>
+                }
+                <div class="col col-md-6">
+                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                    <input type="text" class="form-control" id="inputVehiculo"
+                           value="@s.IdVehiculoNavigation.Patente - @s.IdVehiculoNavigation.Marca @s.IdVehiculoNavigation.Modelo" disabled>
+                </div>
+                <div class="col col-md-10">
+                    <label for="inputPasajeros" class="form-label">Pasajeros</label>
+                    <input type="text" class="form-control" id="inputPasajeros"
+                           value="@s.Pasajeros" disabled>
+                </div>
+                <div class="col col-md-2">
+                    <label for="inputNumeroPasajeros" class="form-label">N° Pasajeros</label>
+                    <input type="text" class="form-control" id="inputNumeroPasajeros"
+                           value="@s.NumeroPasajeros" disabled>
+                </div>
+                <div class="col col-md-4">
+                    <label for="inputDestino" class="form-label">Destino</label>
+                    <input type="text" class="form-control" id="inputDestino"
+                           value="@s.Destino" disabled>
+                </div>
+                <div class="col col-md-8">
+                    <label for="inputMotivo" class="form-label">Motivo</label>
+                    <input type="text" class="form-control" id="inputMotivo"
+                           value="@s.Motivo" disabled>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                @if (Model.aprobacion)
+                {
+                    <button type="button" class="btn btn-success" data-id="@s.Id" onclick="ConfirmacionAprobacion(event)">
+                        <i class="fa-sharp fa-thumbs-up fa-sm"></i>
+                        Aprobar solicitud
+                    </button>
+                    <button type="button" class="btn btn-danger" data-id="@s.Id" onclick="ConfirmacionRechazar(event)">
+                        <i class="fa-sharp fa-thumbs-down fa-sm"></i>
+                        Rechazar solicitud
+                    </button>
+                }
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,88 @@
+﻿@using ProyectoSolveCore.Models.ViewModels
+@model vmVehiculoKm
+@{
+    ViewBag.Title = "Agregar Nuevo Vehículo";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Agregar nuevo vehiculo</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item"><a asp-action="VisualizarVehiculos">Visualizar vehiculo</a></li>
+                <li class="breadcrumb-item active">Agregar nuevo vehiculo</li>
+            </ol>
+            <form asp-action="AgregarVehiculo" method="post">
+                <div class="card">
+                    <div class="card-body row fw-bold">
+                        <div class="col col-lg-6">
+                            <div class="row g-2">
+                                <input data-val="true" data-val-required="El campo ID es obligatorio." value="@Model.Id"
+                                       name="Id" type="hidden">
+                                <input data-val="true" data-val-required="El campo ID es obligatorio." value="@Model.Eliminado"
+                                    name="Eliminado" type="hidden">
+                                <input data-val="true" data-val-required="El campo ID es obligatorio." value="@Model.DireccionImg"
+                                name="DireccionImg" type="hidden">
+                                <div class="col-md-4">
+                                    <label for="inputPatente" class="form-label">Patente</label>
+                                    <input type="text" name="Patente" class="form-control" id="inputPatente" value="@Model.Patente"
+                                    placeholder="Ej. AA1122 o AABB11">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputMarca" class="form-label">Marca</label>
+                                    <input type="text" name="Marca" class="form-control" value="@Model.Marca" id="inputMarca">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputModelo" class="form-label">Modelo</label>
+                                    <input type="text" name="Modelo" class="form-control" id="inputModelo" value="@Model.Modelo">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputKm" class="form-label">Kilometraje actual</label>
+                                    <div class="input-group" id="inputKm">
+                                        <input type="number" class="form-control" name="KilometrajeInicialEntero"
+                                               value="@Model.KilometrajeInicialEntero"/>
+                                        <span class="input-group-text">.</span>
+                                        <input type="number" class="form-control" name="KilometrajeInicialDecimal"
+                                               value="@Model.KilometrajeInicialDecimal"/>
+                                    </div>
+                                    <span class="text-muted">
+                                        <small>
+                                            Decimales solo 2 digitos.
+                                        </small>
+                                    </span>
+                                </div>
+                                <div class="col col-md-6">
+                                    @*<input data-val="true" data-val-required="El campo ID es obligatorio." id="idPeriodo"
+                                           name="id_periodo_kilometraje" type="hidden" value="@Model.IdPeriodoKilometraje">*@
+                                    <label for="inputMantenimiento" class="form-label">Periodos de mantenimiento</label>
+                                    <select id="inputPeriodos" class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
+                                    </select>
+                                </div>
+                                @*<div class="col-md-6">
+                                <label for="formFile" class="form-label">Subir imagen</label>
+                                <input class="form-control" type="file" id="formFile">
+                                </div>*@
+                                <div class="col-12 mt-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="gridCheck" @(Model.Estado ? "checked" : "" )/>
+                                        <label class="form-check-label" for="gridCheck">
+                                            Admitir solicitudes de vehiculo
+                                        </label>
+                                    </div>
+                                    <input id="inputCheck" data-val="true" data-val-required="El campo ID es obligatorio." name="estado" type="hidden">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Agregar vehiculo</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+@section Scripts{
+    <script src="~/js/agregarvehiculo.js"></script>
+}

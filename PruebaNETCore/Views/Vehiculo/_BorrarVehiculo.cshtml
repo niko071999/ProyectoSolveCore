@@ -1,0 +1,55 @@
+﻿@model Vehiculo
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-danger">
+            <h5 class="modal-title text-white" id="exampleModalLabel">Borrar vehiculo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="form_BorrarVehiculo">
+            <div class="modal-body row g-2 fw-bold">
+                <h4 class="mb-2">Estas a punto de eliminar el siguiente vehiculo</h4>
+                <input type="hidden" asp-for="Id" name="id_vehiculo" />
+                <div class="col col-md-4">
+                    <label for="inputPatente" class="form-label">Patente</label>
+                    <input type="text" class="form-control" id="inputPatente"
+                           value="@Model.Patente" disabled>
+                </div>
+                <div class="col col-md-4">
+                    <label for="inputFechaSalida" class="form-label">Marca</label>
+                    <input type="text" class="form-control" id="inputMarca"
+                           value="@Model.Marca" disabled>
+                </div>
+                <div class="col col-md-4">
+                    <label for="inputFechaSalida" class="form-label">Modelo</label>
+                    <input type="text" class="form-control" id="inputPatente"
+                           value="@Model.Modelo" disabled>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button id="btn_delete" type="button" class="btn btn-danger">Eliminar vehiculo</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    var form = document.getElementById('form_BorrarVehiculo'),
+        btn_delete = document.getElementById('btn_delete');
+
+    btn_delete.addEventListener('click', () => {
+        $.ajax({
+            url: '/Vehiculo/BorrarVehiculo',
+            type: 'POST',
+            data: {
+                id_vehiculo: form.id_vehiculo.value
+            },
+            success: function (response) {
+                $.notify(response.mensaje, { type: response.type });
+                location = location.href;
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+</script>

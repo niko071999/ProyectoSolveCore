@@ -1,0 +1,120 @@
+﻿@model ProyectoSolveCore.Models.ViewModels.vmBitacora
+@{
+    ViewBag.Title = "Agregar entrada a la bitacora";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Agregar entrada a la bitacora</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item"><a asp-action="VisualizarBitacora">Visualizar bitacora</a></li>
+                <li class="breadcrumb-item active">Agregar entrada a la bitacora</li>
+            </ol>
+            <form id="form_AgregarBitacora" asp-action="AgregarEntradasBitacora" method="post">
+                <div class="card">
+                    <div class="card-body row fw-bold">
+                        <div class="col col-lg-6">
+                            <div class="row g-2">
+                                <h4>Informacion solicitud</h4>
+                                <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="IdConductor" />
+                                <input type="hidden" asp-for="IdSolicitud" />
+                                <input type="hidden" asp-for="IdVehiculo" />
+                                <input type="hidden" asp-for="Folio" />
+                                <div class="col col-lg-4 col-sm-12">
+                                    <label for="inputFecha" class="form-label">Fecha</label>
+                                    <input type="text" class="form-control" id="inputFecha"
+                                           value="@DateTime.Now" disabled>
+                                </div>
+                                <div class="col col-lg-4 col-sm-12">
+                                    <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
+                                    <input type="text" class="form-control" id="inputFechaLlegada"
+                                           value="@Model.FechaSalida" disabled>
+                                </div>
+                                <div class="col col-lg-4 col-sm-12">
+                                    <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
+                                    <input type="text" class="form-control" id="inputFechaLlegada"
+                                           value="@Model.FechaLlegada" disabled>
+                                </div>
+                                <div class="col col-lg-6 col-sm-12">
+                                    <label for="inputConductor" class="form-label">Conductor</label>
+                                    <input type="text" class="form-control" id="inputConductor"
+                                           value="@Model.NombreCompletoConductor" disabled>
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                                    <input type="text" class="form-control" id="inputVehiculo"
+                                           value="@Model.Vehiculo" disabled>
+                                </div>
+                                <div class="col col-md-4">
+                                    <label for="inputDestino" class="form-label">Destino</label>
+                                    <input type="text" class="form-control" id="inputDestino"
+                                           value="@Model.Destino" disabled>
+                                </div>
+                                <div class="col col-md-8">
+                                    <label for="inputMotivo" class="form-label">Motivo</label>
+                                    <input type="text" class="form-control" id="inputMotivo"
+                                           value="@Model.Motivo" disabled>
+                                </div>
+                                <hr />
+                                <h4 class="mt-2">Informacion adicional bitacora</h4>
+                                <div class="col-md-6">
+                                    <label for="inputKm" class="form-label">Kilometraje inicial</label>
+                                    <div class="input-group" id="inputKm">
+                                        <input type="number" class="form-control" name="KmInicialEntero"
+                                               value="@Model.KmInicialEntero" />
+                                        <span class="input-group-text">,</span>
+                                        <input type="number" class="form-control" name="KmInicialDecimal"
+                                               value="@Model.KmInicialDecimal" />
+                                    </div>
+                                    <span class="text-muted">
+                                        <small>
+                                            Decimales solo 2 digitos.
+                                        </small>
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputKm" class="form-label">Kilometraje final</label>
+                                    <div class="input-group" id="inputKm">
+                                        <input type="number" class="form-control" name="KmFinalEntero"
+                                               value="@Model.KmFinalEntero" />
+                                        <span class="input-group-text">,</span>
+                                        <input type="number" class="form-control" name="KmFinalDecimal"
+                                               value="@Model.KmFinalDecimal" />
+                                    </div>
+                                    <span class="text-muted">
+                                        <small>
+                                            Decimales solo 2 digitos.
+                                        </small>
+                                    </span>
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputCombustible" class="form-label">Combustible ocupado</label>
+                                    <input type="text" class="form-control" id="inputCombustible">
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputObservacion" class="form-label">Observaciones</label>
+                                    <input type="text" name="Observacion" class="form-control" 
+                                        id="inputObservacion" value="@Model.Observacion">
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="d-flex flex-row mb-2">
+                                        <button type="submit" class="btn btn-primary">Agregar entrada y cargar otra solicitud</button>
+                                        <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar entrada</button>
+                                        <a role="button" class="ms-1 btn btn-secondary" asp-action="VisualizarBitacora">Volver a la bitacora</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+@section Scripts{
+    <script src="~/js/agregarbitacora.js"></script>
+}

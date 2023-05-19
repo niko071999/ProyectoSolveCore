@@ -1,0 +1,116 @@
+﻿@using ProyectoSolveCore.Models.ViewModels
+@model List<vmUsuario>
+@{
+    ViewBag.Title = "Visualizar Usuarios";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Visualizar usuarios</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Visualizar usuario</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    <a asp-action="AgregarUsuario" role="button" class="btn btn-primary mb-2">Agregar nuevo usuario</a>
+                    @if (Model != null)
+                    {
+                        <table id="tablaUsuarios" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Rut</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col" style="width:10%">Conductor</th>
+                                    <th scope="col" style="width: 30%">Roles</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var u in Model)
+                                {
+                                    <tr>
+                                        <td>@u.Rut</td>
+                                        <td>@u.Nombre</td>
+                                        <td class="text-center">
+                                        @if (u.Conductor)
+                                        {
+                                            
+                                            <button type="button" class="btn btn-light" 
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                data-bs-title="Es conductor">
+                                                    <i class="fas fa-car fa-2x"></i>
+                                            </button>
+                                            
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-light"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                data-bs-title="No es conductor">
+                                                    <span class="fa-stack fa-lg">
+                                                        <i class="fas fa-car fa-stack-2x"></i>
+                                                        <i class="fa-sharp fa-xmark fa-stack-2x text-danger"></i>
+                                                    </span>
+                                            </button>
+                                            
+
+                                        }
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="badge text-bg-info h5">@u.Roles.Count / 5 roles</span>
+                                            @if (u.Roles.Any())
+                                            {
+                                                foreach (var r in u.Roles)
+                                                {
+                                                    <button type="button" class="btn btn-primary"
+                                                        data-id="@r.Id" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        data-bs-title="@r.rol">
+                                                        @Html.Raw(r.IconRol)
+                                                    </button>
+                                                    <span class="visually-hidden">@r.rol</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="fw-bold text-danger">Sin roles asignados</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @*<button type="button" class="btn btn-primary"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Asignar permisos" data-id="@u.Id">
+                                                <i class="fa-sharp fa-user-tag fa-lg"></i>
+                                            </button>*@
+                                            <button type="button" class="btn btn-warning"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Editar usuario" data-id="@u.Id">
+                                                <i class="fa-sharp fa-pen fa-lg"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Eliminar usuario" data-id="@u.Id">
+                                                <i class="fa-sharp fa-trash-can fa-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+</div>
+@section CSS {
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/js/visualizarusuarios.js"></script>
+}

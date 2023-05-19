@@ -1,0 +1,109 @@
+﻿@model Solicitude
+@{
+    var usuario = ViewBag.Usuario;
+    ViewBag.Title = "Solicitar Vehiculo";
+}
+
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Solicitar vehiculo</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Solicitar vehiculo</li>
+            </ol>
+            <form asp-action="SolicitarVehiculo" method="post">
+                <div class="card">
+                    <div class="card-body row fw-bold">
+                        <div class="col col-lg-6">
+                            <div class="row g-2">
+                                <h4>Informacion del cometido</h4>
+                                <input data-val="true" data-val-required="El campo ID es obligatorio." 
+                                name="IdSolicitante" type="hidden" value="@usuario.Id">
+                                <div class="col-md-6">
+                                    <label for="inputNombre" class="form-label">Nombre del solicitante</label>
+                                    <input type="text" class="form-control" id="inputNombre"
+                                           value="@usuario.NombreCompleto" disabled>
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputDepartamento" class="form-label">Departamento</label>
+                                    <input type="text" class="form-control" id="inputDepartamento"
+                                           value="@usuario.Departamento" disabled>
+                                </div>
+                                <div class="col-md-10">
+                                    <label for="inputModelo" class="form-label">Nombres de los pasajeros</label>
+                                    <input type="text" placeholder="Nombre apellido, Nombre apellido, ..."
+                                           class="form-control" id="inputPasajeros" name="Pasajeros" value="@Model.Pasajeros" required>
+                                    <span class="text-muted fw-light">
+                                        <small>Presione Enter o "," para ingresar nombre.</small>
+                                    </span>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputModelo" class="form-label">N° pasajeros</label>
+                                    <input type="number" class="form-control" name="NumeroPasajeros"
+                                           id="inputNumPasajeros" value="@Model.NumeroPasajeros" required min="1">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="inputDestino" class="form-label">Destino</label>
+                                    <input type="text" class="form-control"
+                                           id="inputModelo" name="Destino" value="@Model.Destino" required />
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="inputModelo" class="form-label">Motivo del cometido</label>
+                                    <textarea cols="1" type="text" class="form-control"
+                                              id="inputModelo" name="Motivo" required>@Model.Motivo</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputFechaSalida" class="form-label">Fecha salida</label>
+                                    <input type="datetime-local" class="form-control" id="inputFechaSalida"
+                                           name="FechaSalida" value="@Model.FechaSalida" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputFechaSalida" class="form-label">Fecha llegada</label>
+                                    <input type="datetime-local" class="form-control" id="inputFechaLlegada"
+                                           name="FechaLlegada" value="@Model.FechaLlegada" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-lg-6">
+                            <h4>Informacion del vehículo seleccionado</h4>
+                            <div class="row mt-3">
+                                <input data-val="true" data-val-required="El campo ID es obligatorio." id="idVehiculo" name="IdVehiculo" type="hidden">
+                                <div class="col col-md-12">
+                                    <label for="inputVehiculos" class="form-label">Vehiculos disponibles</label>
+                                    <select id="inputVehiculos" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col col-md-12 mt-2">
+                                    <img id="imagen-prev" class="img-thumbnail" src="" alt="Aqui se vera la imagen del vehículo">
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <button id="btn_getVehiculo" type="button"
+                                        class="btn btn-success">
+                                    Actualizar lista vehículos disponibles
+                                </button>
+                                <button type="submit" class="btn btn-primary float-end">Solicitar Vehículo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+@section CSS{
+    <link href="~/lib/taginput/tagify.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+}
+@section Scripts {
+    @*<script src="~/lib/datatables/moment.min.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/lib/datatables/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script src="~/lib/taginput/jquery.tagify.min.js"></script>
+    <script src="~/js/solicitarvehiculo.js"></script>
+}
+

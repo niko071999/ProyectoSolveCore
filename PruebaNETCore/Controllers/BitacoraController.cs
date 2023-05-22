@@ -131,6 +131,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 Folio = _context.Bitacoras.LongCount() + 1,
                 Fecha = DateTime.Now,
+                LitrosCombustible = bitacora.Combustible,
                 IdConductor = bitacora.IdConductor,
                 IdKilometraje = km.Id,
                 IdSolicitud = bitacora.IdSolicitud,

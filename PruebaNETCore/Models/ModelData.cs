@@ -96,6 +96,7 @@ public partial class ModelData : DbContext
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha");
+            entity.Property(e => e.LitrosCombustible).HasColumnName("litros_combustible");
             entity.Property(e => e.Observacion).HasColumnName("observacion");
             entity.Property(e => e.Folio).HasColumnName("folio");
             entity.Property(e => e.IdConductor).HasColumnName("id_conductor");
@@ -168,7 +169,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.IdConductor).HasColumnName("id_conductor");
             entity.Property(e => e.IdVehiculo).HasColumnName("id_vehiculo");
             entity.Property(e => e.Kilometraje)
-                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("kilometraje");
 
             entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.FichaMantencions)
@@ -187,10 +187,8 @@ public partial class ModelData : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.IdVehiculo).HasColumnName("id_vehiculo");
             entity.Property(e => e.KilometrajeFinal)
-                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("kilometraje_final");
             entity.Property(e => e.KilometrajeInicial)
-                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("kilometraje_inicial");
 
             entity.HasOne(d => d.IdVehiculoNavigation).WithMany(p => p.Kilometrajes)
@@ -205,7 +203,6 @@ public partial class ModelData : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.PeriodoKilometraje)
-                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("periodo_kilometraje");
         });
 

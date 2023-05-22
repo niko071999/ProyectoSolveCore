@@ -1,14 +1,17 @@
+using Azure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using PruebaNETCore.Models;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container. 
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ModelData>();
+builder.Services.AddScoped<VerificarSolicitudes>();
 builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {

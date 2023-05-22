@@ -45,7 +45,6 @@ namespace ProyectoSolveCore.Controllers
                 Vehiculo = s.IdVehiculoNavigation.Patente + " " + s.IdVehiculoNavigation.Marca + " " + s.IdVehiculoNavigation.Modelo
             }).FirstOrDefault(s => s.IdSolicitud == id);
             return RedirectToAction("MisSolicitudes", "Solicitudes");
-            return View(bitacora);
         }
         [Authorize(Roles = "Adminstrador, Conductor, Solicitador")]
         [HttpPost]

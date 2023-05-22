@@ -7,10 +7,6 @@ using PruebaNETCore.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container. 
-//option =>
-//{
-//    option.Filters.Add(typeof(AccessDeniedFilter));
-//}
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ModelData>();
 builder.Services.AddControllers()
@@ -24,9 +20,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         option.LoginPath = "/Sesion/Login";
         option.ExpireTimeSpan = TimeSpan.FromHours(24);
-        option.AccessDeniedPath = "/Sesion/AccessDenied";
+        option.AccessDeniedPath = "/Error/Error401";
     });
 var app = builder.Build();
+
+app.UseStatusCodePages(async context =>
+{
+    var resp = context.HttpContext.Response;
+    if (resp.StatusCode == (int)HttpStatusCode.NotFound)
+    {
+        resp.Redirect("/Error/Error404");
+    }
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -48,5 +53,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Sesion}/{action=Login}/{id?}",
     defaults: new {controller = "Sesion", action = "Login"});
-
 app.Run();

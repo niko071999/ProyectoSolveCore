@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Models;
@@ -6,6 +7,7 @@ using ProyectoSolveCore.Models.ViewModels;
 
 namespace ProyectoSolveCore.Controllers
 {
+    [Authorize]
     public class BitacoraController : Controller
     {
         private readonly ModelData _context;
@@ -13,6 +15,7 @@ namespace ProyectoSolveCore.Controllers
         {
             _context = context;
         }
+        [Authorize(Roles = "Adminstrador, Jefe, Conductor")]
         public async Task<IActionResult> VisualizarBitacora()
         {
             var bitacoras = await _context.Bitacoras.Include(b => b.IdSolicitudNavigation).Include(b => b.IdVehiculoNavigation)
@@ -20,8 +23,8 @@ namespace ProyectoSolveCore.Controllers
                 .ToListAsync();
             return View(bitacoras);
         }
-
-        public async Task<IActionResult> AgregarEntradaBitacora(int id = 0)
+        [Authorize(Roles = "Adminstrador, Conductor")]
+        public async Task<IActionResult> AgregarEntradasBitacora(int id = 0)
         {
             if (id == 0)
             {
@@ -44,6 +47,7 @@ namespace ProyectoSolveCore.Controllers
 
             return View(bitacora);
         }
+        [Authorize(Roles = "Adminstrador, Conductor")]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradasBitacora(vmBitacora bitacora) //Esta accion permite la insercion de varias entradas a la bitacora.
         {
@@ -54,7 +58,7 @@ namespace ProyectoSolveCore.Controllers
             var checkSol = await _context.Bitacoras.AnyAsync(b => b.IdSolicitud == bitacora.IdSolicitud);
             if (checkSol) //Verifica si existe la solicitud ya ingresada en la bitacora
             {
-                return RedirectToAction("HubServiceSolicitudes", "Solicitud");
+                return RedirectToAction("HubSolicitudes", "Solicitud");
             }
             try
             {
@@ -64,13 +68,14 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return View(bitacora);
                 }
-                return RedirectToAction("HubServiceSolicitudes", "Solicitud");
+                return RedirectToAction("HubSolicitudes", "Solicitud");
             }
             catch (Exception ex)
             {
                 return View(bitacora);
             }
         }
+        [Authorize(Roles = "Adminstrador, Conductor")]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradaBitacora(vmBitacora bitacora)
         {
@@ -82,7 +87,7 @@ namespace ProyectoSolveCore.Controllers
             var checkSol = await _context.Bitacoras.AnyAsync(b => b.IdSolicitud == bitacora.IdSolicitud);
             if (checkSol) //Verifica si existe la solicitud ya ingresada en la bitacora
             {
-                return RedirectToAction("HubServiceSolicitudes", "Solicitud");
+                return RedirectToAction("HubSolicitudes", "Solicitud");
             }
             try
             {
@@ -121,8 +126,8 @@ namespace ProyectoSolveCore.Controllers
 
             await _context.Kilometrajes.AddAsync(km);
 
-            string statusVehiculo = VerificarMantenimientoVehiculo(bitacora.IdVehiculo);
-            if (statusVehiculo.Equals("Deshabilitado"))
+            bool statusVehiculo = VerificarMantenimientoVehiculo(bitacora.IdVehiculo);
+            if (!statusVehiculo)
             {
                 var vehiculo = _context.Vehiculos.Find(bitacora.IdVehiculo);
                 vehiculo.Estado = false;
@@ -160,12 +165,13 @@ namespace ProyectoSolveCore.Controllers
             return true;
         }
 
-        public string VerificarMantenimientoVehiculo(int id = 0)
+        public bool VerificarMantenimientoVehiculo(int id = 0)
         {
             decimal kmRecorrido = 0.0m;
             var fichaMant = _context.FichaMantencions.ToList();
             var kms = _context.Kilometrajes.Where(k => k.IdVehiculo == id).ToList();
-            var periodo = _context.Vehiculos.FirstOrDefault(v => v.Id == id).IdPeriodoKilometrajeNavigation.PeriodoKilometraje;
+            var periodo = _context.Vehiculos.Include(v => v.IdPeriodoKilometrajeNavigation)
+                .FirstOrDefault(v => v.Id == id).IdPeriodoKilometrajeNavigation.PeriodoKilometraje;
             if (!fichaMant.Any())
             {
                 kmRecorrido = kms.Sum(k => k.KilometrajeInicial - k.KilometrajeFinal);
@@ -174,11 +180,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 kmRecorrido = fichaMant.LastOrDefault(fm => fm.IdVehiculo == id).Kilometraje - kms.Sum(k => k.KilometrajeFinal);
             }
-            if (periodo <= kmRecorrido)
-            {
-                return "Deshabilitado";
-            }
-            return "Habilitado";
+            return periodo <= kmRecorrido;
             //var porc = (kmRecorrido / periodo) * 100;
             //if (porc > 50)
             //{

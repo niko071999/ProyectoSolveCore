@@ -1,18 +1,19 @@
 ﻿@model List<Bitacora>
 @{
-    ViewBag.Title = "Visualizar bitacora";
+    ViewBag.Title = "Visualizar bitácora";
 }
 <partial name="_NavMenu" />
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
-            <h1 class="mt-4">Visualizar bitacora</h1>
+            <h1 class="mt-4">Visualizar bitácora</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
-                <li class="breadcrumb-item active">Visualizar bitacora</li>
+                <li class="breadcrumb-item active">Visualizar bitácora</li>
             </ol>
             <div class="card">
                 <div class="card-body">
+                    <a asp-action="HubSolicitudes" asp-controller="Solicitud" role="button" class="btn btn-primary mb-2">Agregar nueva entrada</a>
                     @if (Model != null)
                     {
                         <table id="tablaBitacora" class="display table table-hover w-100">
@@ -53,7 +54,7 @@
                                         <td>@b.Observacion</td>
                                         <td class="text-center">
                                             <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-title="Mostrar mas informacion" data-id="@b.Id"
+                                            data-bs-title="Mostrar mas información" data-id="@b.Id"
                                             class="btn btn-info">
                                                 <i class="fa-sharp fa-circle-info fa-lg"></i>
                                             </button>

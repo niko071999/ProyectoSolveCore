@@ -29,7 +29,7 @@ namespace ProyectoSolveCore.Controllers
         }
         
         //Este metodo funciona para gestionar las solicitudes que estan aprobadas y listas para agregar a la bitacora
-        public IActionResult HubServicesSolicitudes()
+        public IActionResult HubSolicitudes()
         {
             try
             {
@@ -44,7 +44,7 @@ namespace ProyectoSolveCore.Controllers
                     return RedirectToAction("MisSolicitudes", "Solicitud");
                 }
                 int id = solicitud.Id;
-                return RedirectToAction("AgregarEntradaBitacora", "Bitacora", new
+                return RedirectToAction("AgregarEntradasBitacora", "Bitacora", new
                 {
                     id
                 });

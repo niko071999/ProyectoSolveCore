@@ -10,6 +10,7 @@ public partial class Bitacora
     public long Folio { get; set; }
 
     public DateTime Fecha { get; set; }
+    public int LitrosCombustible { get; set; }
 
     public string Observacion { get; set; }
 

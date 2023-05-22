@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 
@@ -19,10 +20,11 @@ namespace ProyectoSolveCore.Controllers
         {
             _context = context;
         }
-
+        [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> VisualizarSolicitudes()
         {
             var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
+                .OrderByDescending(s => s.FechaSolicitado)
                 .ToListAsync();
             //solicitudes = await VerificarSolicitudesAtrasadas(solicitudes);
             return View(solicitudes);
@@ -54,6 +56,7 @@ namespace ProyectoSolveCore.Controllers
                 return View();
             }
         }
+        [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> MisSolicitudes()
         {
             try
@@ -73,8 +76,7 @@ namespace ProyectoSolveCore.Controllers
                             nombreConductor = s.IdConductorNavigation.IdUsuarioNavigation.Nombre + " " + s.IdConductorNavigation.IdUsuarioNavigation.Apellido,
                             CantidadAprobacion = s.Aprobaciones.Count
                         }).ToListAsync();
-                //listSolicitudes = await VerificarSolicitudesAtrasadas(listSolicitudes);
-                
+                //listSolicitudes = await VerificarSolicitudesAtrasadas(listSolicitudes); 
                 return View(listSolicitudes);
             }
             catch (Exception)
@@ -277,6 +279,7 @@ namespace ProyectoSolveCore.Controllers
             }
         }
         //SOLICITUDES PENDIENTES
+        [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> SolicitudesPendientes()
         {
             try
@@ -549,19 +552,5 @@ namespace ProyectoSolveCore.Controllers
                 return "Error";
             }
         }
-        //Revisa si existen solicitudes donde la fecha de salida es menor o igual a la fecha de hoy.
-        //Si es asi se modifica su estado a rechazada
-        //private async Task<List<Solicitude>> VerificarSolicitudesAtrasadas(List<Solicitude> solicitudes)
-        //{
-        //    var hoy = DateTime.Now;
-        //    var s = solicitudes.Where(s => s.Estado == 0 && s.FechaSalida < hoy).ToList();
-        //    if (s.Any())
-        //    {
-        //        s.ForEach(s => s.Estado = 2);
-        //        await _context.SaveChangesAsync();
-        //        return s;
-        //    }
-        //    return solicitudes;
-        //}
     }
 }

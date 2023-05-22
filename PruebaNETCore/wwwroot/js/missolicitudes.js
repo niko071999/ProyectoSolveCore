@@ -6,6 +6,8 @@
         },
     });
 });
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]'),
+    tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 const btn_info = document.querySelectorAll('.btn-info'),
     btn_bitacora = document.querySelectorAll('.btn-primary');
 

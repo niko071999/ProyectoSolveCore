@@ -49,22 +49,39 @@
                                             }
                                         </td>
                                         <td>@solicitud.CantidadAprobacion / 2</td>
-                                        <td>
+                                        <td data-order="@solicitud.Estado">
                                             @switch (solicitud.Estado)
                                             {
                                                 case 0:
-                                                    <span class="badge bg-secondary fs-6"><i class="fa-solid fa-clock fa-xs me-1"></i>Pendiente</span>
+                                                    <button type="button" class="btn btn-link"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Solicitud a la espera de aprobación">
+                                                        <span class="badge bg-secondary fs-6"><i class="fa-solid fa-clock fa-xs me-1"></i>Pendiente</span>
+                                                    </button>
                                                     break;
                                                 case 1:
-                                                    <span class="badge bg-success fs-6"><i class="fa-solid fa-circle-check fa-xs me-1"></i>Aprobada</span>
+                                                    <button type="button" class="btn btn-link"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Solicitud aprobada">
+                                                        <span class="badge bg-success fs-6"><i class="fa-solid fa-circle-check fa-xs me-1"></i>Aprobada</span>
+                                                    </button>
                                                     break;
                                                 case 2:
-                                                    <span class="badge bg-danger fs-6"><i class="fa-solid fa-circle-xmark fa-xs me-1"></i>Rechazada</span>
+                                                    <button type="button" class="btn btn-link"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Solicitud rechazada">
+                                                        <span class="badge bg-danger fs-6"><i class="fa-solid fa-circle-xmark fa-xs me-1"></i>Rechazada</span>
+                                                    </button>
                                                     break;
                                                 case 3:
-                                                    <span class="badge bg-primary fs-6"><i class="fa-sharp fa-circle-info fa-xs me-1"></i>Finalizada</span>
+                                                    <button type="button" class="btn btn-link"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Solicitud agregada a la bitácora">
+                                                        <span class="badge bg-primary fs-6"><i class="fa-sharp fa-circle-info fa-xs me-1"></i>Finalizada</span>
+                                                    </button>
                                                     break;
                                             }
+                                            
                                         </td>
                                         <td class="text-end">
                                             @if (solicitud.Estado == 1)

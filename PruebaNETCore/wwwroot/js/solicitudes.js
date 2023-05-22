@@ -10,8 +10,7 @@
                 searchable: false,
                 orderable: false
             }
-        ],
-        order: [[0, 'desc']]
+        ]
     });
 });
 

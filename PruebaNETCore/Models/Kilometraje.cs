@@ -7,9 +7,9 @@ public partial class Kilometraje
 {
     public int Id { get; set; }
 
-    public decimal KilometrajeInicial { get; set; }
+    public int KilometrajeInicial { get; set; }
 
-    public decimal KilometrajeFinal { get; set; }
+    public int KilometrajeFinal { get; set; }
 
     public int IdVehiculo { get; set; }
 

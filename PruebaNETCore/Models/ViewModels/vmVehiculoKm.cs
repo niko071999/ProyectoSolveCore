@@ -18,7 +18,7 @@ namespace ProyectoSolveCore.Models.ViewModels
         public int IdPeriodoKilometraje { get; set; }
 
         public string? DireccionImg { get; set; }
-        public int KilometrajeInicialEntero { get; set; }
+        public int KilometrajeInicial { get; set; }
         public int KilometrajeInicialDecimal { get; set; }
 
     }

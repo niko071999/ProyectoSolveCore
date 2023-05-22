@@ -61,38 +61,18 @@
                                 <hr />
                                 <h4 class="mt-2">Informacion adicional bitacora</h4>
                                 <div class="col-md-6">
-                                    <label for="inputKm" class="form-label">Kilometraje inicial</label>
-                                    <div class="input-group" id="inputKm">
-                                        <input type="number" class="form-control" name="KmInicialEntero"
-                                               value="@Model.KmInicialEntero" />
-                                        <span class="input-group-text">,</span>
-                                        <input type="number" class="form-control" name="KmInicialDecimal"
-                                               value="@Model.KmInicialDecimal" />
-                                    </div>
-                                    <span class="text-muted">
-                                        <small>
-                                            Decimales solo 2 digitos.
-                                        </small>
-                                    </span>
+                                    <label for="inputKmI" class="form-label">Kilometraje inicial</label>
+                                    <input id="inputKmI" type="number" class="form-control" name="KmInicialEntero"
+                                           value="@Model.KmInicialEntero" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="inputKm" class="form-label">Kilometraje final</label>
-                                    <div class="input-group" id="inputKm">
-                                        <input type="number" class="form-control" name="KmFinalEntero"
+                                    <label for="inputKmF" class="form-label">Kilometraje final</label>
+                                    <input id="inputKmF" type="number" class="form-control" name="KmFinalEntero"
                                                value="@Model.KmFinalEntero" />
-                                        <span class="input-group-text">,</span>
-                                        <input type="number" class="form-control" name="KmFinalDecimal"
-                                               value="@Model.KmFinalDecimal" />
-                                    </div>
-                                    <span class="text-muted">
-                                        <small>
-                                            Decimales solo 2 digitos.
-                                        </small>
-                                    </span>
                                 </div>
                                 <div class="col col-md-6">
-                                    <label for="inputCombustible" class="form-label">Combustible ocupado</label>
-                                    <input type="text" class="form-control" id="inputCombustible">
+                                    <label for="inputCombustible" class="form-label">Litros Combustible</label>
+                                    <input type="number" name="Combustible" class="form-control" id="inputCombustible">
                                 </div>
                                 <div class="col col-md-6">
                                     <label for="inputObservacion" class="form-label">Observaciones</label>

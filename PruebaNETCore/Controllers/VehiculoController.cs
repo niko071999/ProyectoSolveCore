@@ -31,7 +31,7 @@ namespace ProyectoSolveCore.Controllers
                     Marca = v.Marca,
                     Modelo = v.Modelo,
                     Habilitado = v.Estado ? "SI" : "NO",
-                    Km_Recorrido = !v.Kilometrajes.Any() ? decimal.Zero : v.Kilometrajes.FirstOrDefault().KilometrajeInicial + 
+                    Km_Recorrido = !v.Kilometrajes.Any() ? 0 : v.Kilometrajes.FirstOrDefault().KilometrajeInicial + 
                     v.Kilometrajes.Max(k => k.KilometrajeFinal) - v.Kilometrajes.Min(k => k.KilometrajeInicial)
                 }).ToList();
 
@@ -61,12 +61,6 @@ namespace ProyectoSolveCore.Controllers
                     ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
                     return View(v);
                 }
-                var kilometrajeStr = $"{v.KilometrajeInicialEntero}.{v.KilometrajeInicialDecimal}";
-                if (!decimal.TryParse(kilometrajeStr, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out decimal kilometraje))
-                {
-                    ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-                    return View(v);
-                }
 
                 var vehiculo = new Vehiculo()
                 {
@@ -89,8 +83,8 @@ namespace ProyectoSolveCore.Controllers
                 var k = new Kilometraje()
                 {
                     IdVehiculo = vehiculo.Id,
-                    KilometrajeInicial = kilometraje,
-                    KilometrajeFinal = kilometraje,
+                    KilometrajeInicial = v.KilometrajeInicial,
+                    KilometrajeFinal = v.KilometrajeInicial,
 
                 };
                 _context.Add(k);
@@ -128,9 +122,7 @@ namespace ProyectoSolveCore.Controllers
                 var periodos = await _context.PeriodosMantenimientos.Select(p => new vmPeriodosMantenimiento()
                 {
                     id = p.Id,
-                    periodo = 0 < p.PeriodoKilometraje - Math.Floor(p.PeriodoKilometraje) ?
-                        "Cada "+p.PeriodoKilometraje.ToString("N") + " Km"
-                        : "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km",
+                    periodo = "Cada "+p.PeriodoKilometraje.ToString("N") + " Km"
                 }).ToListAsync();
                 ViewBag.IdPeriodoKilometraje = new SelectList(periodos, "id", "periodo", vehiculo.IdPeriodoKilometraje);
                 return PartialView("_EditarVehiculo", vehiculo);
@@ -260,9 +252,7 @@ namespace ProyectoSolveCore.Controllers
             var periodos = _context.PeriodosMantenimientos.Select(p => new SelectListItem
             {
                 Value = p.Id.ToString(),
-                Text = 0 < p.PeriodoKilometraje - Math.Floor(p.PeriodoKilometraje) ?
-                    "Cada " + p.PeriodoKilometraje.ToString("N") + " Km"
-                    : "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km",
+                Text = "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km"
             });
             return periodos;
         }

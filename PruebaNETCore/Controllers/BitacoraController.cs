@@ -106,21 +106,11 @@ namespace ProyectoSolveCore.Controllers
         private async Task<bool> AgregarEntrada(vmBitacora bitacora)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-            string kmInicialjeStr = $"{bitacora.KmInicialEntero}.{bitacora.KmInicialDecimal}";
-            string kmFinaljeStr = $"{bitacora.KmFinalEntero}.{bitacora.KmFinalDecimal}";
-            if (!decimal.TryParse(kmInicialjeStr, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out decimal kilometrajeInicial))
-            {
-                return false;
-            }
-            if (!decimal.TryParse(kmFinaljeStr, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out decimal kilometrajeFinal))
-            {
-                return false;
-            }
             var km = new Kilometraje()
             {
                 IdVehiculo = bitacora.IdVehiculo,
-                KilometrajeInicial = kilometrajeInicial,
-                KilometrajeFinal = kilometrajeFinal
+                KilometrajeInicial = bitacora.KmInicialEntero,
+                KilometrajeFinal = bitacora.KmFinalEntero
             };
 
             await _context.Kilometrajes.AddAsync(km);
@@ -133,12 +123,10 @@ namespace ProyectoSolveCore.Controllers
                 _context.Vehiculos.Update(vehiculo);
             }
             int n = await _context.SaveChangesAsync();
-
             if (n == 0)
             {
                 return false;
             }
-
             var b = new Bitacora()
             {
                 Folio = _context.Bitacoras.LongCount() + 1,

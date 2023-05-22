@@ -39,22 +39,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="inputKm" class="form-label">Kilometraje actual</label>
-                                    <div class="input-group" id="inputKm">
-                                        <input type="number" class="form-control" name="KilometrajeInicialEntero"
-                                               value="@Model.KilometrajeInicialEntero"/>
-                                        <span class="input-group-text">.</span>
-                                        <input type="number" class="form-control" name="KilometrajeInicialDecimal"
-                                               value="@Model.KilometrajeInicialDecimal"/>
-                                    </div>
-                                    <span class="text-muted">
-                                        <small>
-                                            Decimales solo 2 digitos.
-                                        </small>
-                                    </span>
+                                    <input id="inputKm" type="number" class="form-control" name="KilometrajeInicial"
+                                           value="@Model.KilometrajeInicial" />
                                 </div>
                                 <div class="col col-md-6">
-                                    @*<input data-val="true" data-val-required="El campo ID es obligatorio." id="idPeriodo"
-                                           name="id_periodo_kilometraje" type="hidden" value="@Model.IdPeriodoKilometraje">*@
                                     <label for="inputMantenimiento" class="form-label">Periodos de mantenimiento</label>
                                     <select id="inputPeriodos" class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
                                     </select>

@@ -9,7 +9,7 @@ public partial class FichaMantencion
 
     public DateTime FechaMantencion { get; set; }
 
-    public decimal Kilometraje { get; set; }
+    public int Kilometraje { get; set; }
 
     public string Descripcion { get; set; }
 

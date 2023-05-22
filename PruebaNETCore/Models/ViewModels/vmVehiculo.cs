@@ -12,6 +12,6 @@ namespace ProyectoSolveCore.Models.ViewModels
         public string Marca { get; set; }
         public string Modelo { get; set; }
         public string Habilitado { get; set; }
-        public decimal? Km_Recorrido { get; set; }
+        public int? Km_Recorrido { get; set; }
     }
 }

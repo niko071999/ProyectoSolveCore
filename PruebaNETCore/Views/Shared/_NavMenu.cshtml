@@ -37,7 +37,7 @@
                     <div class="collapse" id="Bitacora" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" asp-controller="Bitacora" asp-action="VisualizarBitacora">Visualizar bitacora</a>
-                            <a class="nav-link" asp-controller="Solicitud" asp-action="HubServicesSolicitudes">Agregar entrada a la bitacora</a>
+                            <a class="nav-link" asp-controller="Solicitud" asp-action="HubSolicitudes">Agregar entrada a la bitacora</a>
                         </nav>
                     </div>
                 }
@@ -66,7 +66,7 @@
                     </div>
                 }
                 @if (User.IsInRole("Administrador") || User.IsInRole("Jefe")){
-                    <a class="nav-link" collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Reporte" aria-expanded="false" aria-controls="collapseLayouts">
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Reporte" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                         Informes
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>

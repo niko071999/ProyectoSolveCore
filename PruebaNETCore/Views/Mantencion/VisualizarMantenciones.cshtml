@@ -1,0 +1,69 @@
+﻿@model List<FichaMantencion>
+@{
+    ViewBag.Title = "Visualizar mantenciones";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Visualizar mantenciones</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Visualizar mantenciones</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    <a asp-action="AgregarEntradaFM" role="button" class="btn btn-primary mb-2">Agregar nueva entrada</a>
+                    @if (Model != null)
+                    {
+                        <table id="tablaMantencion" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Fecha</th>@*0*@
+                                    <th scope="col">Vehiculo</th>@*4*@
+                                    <th scope="col">Kilometraje</th>@*1*@
+                                    <th scope="col">Conductor</th>@*3*@
+                                    <th scope="col">Descripcion</th>@*2*@
+                                    <th scope="col"></th>@*10*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var m in Model)
+                                {
+                                    string vehiculo = $"{m.IdVehiculoNavigation.Patente} {m.IdVehiculoNavigation.Marca} {m.IdVehiculoNavigation.Modelo}";
+                                    string conductor = $"{m.IdConductorNavigation.IdUsuarioNavigation.Nombre} {m.IdConductorNavigation.IdUsuarioNavigation.Apellido}";
+                                    <tr>
+                                        <td>@m.FechaMantencion</td>
+                                        <td>@vehiculo</td>
+                                        <td>@m.Kilometraje</td>
+                                        <td>@conductor</td>
+                                        <td>@m.Descripcion</td>
+                                        <td class="text-center">
+                                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Mostrar más información" data-id="@m.Id"
+                                            class="btn btn-info">
+                                                <i class="fa-sharp fa-circle-info fa-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+</div>
+@section CSS {
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+}
+    @section Scripts {
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/moment.min.js"></script>
+    <script src="~/lib/datatables/datetime-moment.js"></script>
+    <script src="~/js/visualizarmantencion.js"></script>
+}

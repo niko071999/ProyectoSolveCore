@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
+using System.Security.Claims;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -336,6 +337,15 @@ namespace ProyectoSolveCore.Controllers
         [HttpPost]
         public async Task<JsonResult> AprobarSolicitud([FromBody] vmIdConductorSolicitud ids)
         {
+            bool exist = VerificarRolJefe();
+            if (!exist)
+            {
+                return Json(new
+                {
+                    mensaje = "Hubo un error al verificar su rol. Al parecer no tiene los permisos suficientes para aprobar solicitudes.",
+                    type = "danger"
+                });
+            }
             try
             {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
@@ -371,45 +381,23 @@ namespace ProyectoSolveCore.Controllers
 
                 await _context.Aprobaciones.AddAsync(aprobacion);
                 int n = await _context.SaveChangesAsync();
-                string estadoAprobacion = VerificarAprobacion(solicitud.Id);
-                if (estadoAprobacion.Equals("Aprobado"))
+                //Se cambia el estado a la solicitud a aprobada
+                solicitud.Estado++;
+                n = await _context.SaveChangesAsync();
+                if (n == 0)
                 {
-                    solicitud.Estado++;
-                    n = await _context.SaveChangesAsync();
-                    if (n == 0)
-                    {
-                        return Json(new
-                        {
-                            mensaje = "Hubo un error al guardar los datos, intentelo nuevamente",
-                            type = "danger"
-                        });
-                    }
-                    await transaction.CommitAsync();
                     return Json(new
                     {
-                        mensaje = "Se a guardado correctamente su aprobación",
-                        type = "success"
-                    });
-
-                }
-                if (estadoAprobacion.Equals("Rechazado"))
-                {
-                    solicitud.Estado = 2;
-                    await _context.SaveChangesAsync();
-                    return Json(new
-                    {
-                        mensaje = "Se a guardado correctamente su aprobación",
-                        type = "success"
+                        mensaje = "Hubo un error al guardar los datos, intentelo nuevamente",
+                        type = "danger"
                     });
                 }
                 await transaction.CommitAsync();
                 return Json(new
                 {
-
-                    mensaje = "Se a aprobado la solicitud satisfactoriamente",
+                    mensaje = "Se a guardado correctamente su aprobación",
                     type = "success"
                 });
-
             }
             catch (Exception ex)
             {
@@ -449,6 +437,15 @@ namespace ProyectoSolveCore.Controllers
         [HttpPost]
         public async Task<JsonResult> RechazarSolicitud([FromBody] vmRechazarSolicitud datos)
         {
+            bool exist = VerificarRolJefe();
+            if (!exist)
+            {
+                return Json(new
+                {
+                    mensaje = "Hubo un error al verificar su rol. Al parecer no tiene los permisos suficientes para aprobar solicitudes.",
+                    type = "danger"
+                });
+            }
             try
             {
                 int id = Convert.ToInt32(User.FindFirst("Id").Value);
@@ -531,18 +528,12 @@ namespace ProyectoSolveCore.Controllers
             }
             return conductoresDisponibles;
         }
-        private string VerificarAprobacion(int id)
+        private bool VerificarRolJefe()
         {
-            try
-            {
-                var aprobaciones = _context.Aprobaciones.Where(a => a.IdSolicitud == id).ToList();
-                if (aprobaciones.Any())
-                {
-                    var numAprobacionRechazo = aprobaciones.Where(a => !a.Estado).ToList().Count;
-                    if (numAprobacionRechazo > 0)
-                    {
-                        return numAprobacionRechazo > 1 ? "Rechazado" : "Pendiente";
-                    }
+            var identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims;
+            return claims.Where(c => c.Type == ClaimTypes.Role).Any(r => r.Value == "Jefe");
+        }
         //Metodo que verifica si la aprobacion tiene 2 aprobaciones por parte de los jefes
         //private string VerificarAprobacion(int id)
         //{

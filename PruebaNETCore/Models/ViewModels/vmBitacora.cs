@@ -14,10 +14,8 @@
         public string Destino { get; set; }
         public string Motivo { get; set; }
         public int KmInicialEntero { get; set; }
-        public int KmInicialDecimal { get; set; }
         public int KmFinalEntero { get; set; }
-        public int KmFinalDecimal { get; set; }
-        public string Combustible { get; set; }
+        public int Combustible { get; set; }
         public string Observacion { get; set; }
     }
 }

@@ -142,7 +142,7 @@ namespace ProyectoSolveCore.Controllers
             await _context.Bitacoras.AddAsync(b);
 
             var solicitud = await _context.Solicitudes.FindAsync(bitacora.IdSolicitud);
-            solicitud.Estado = 3;//Solicitud estado finalizada
+            solicitud.Estado = 3;//Cambiar estado de la solicitud a finalizada
             _context.Solicitudes.Update(solicitud);
             n = await _context.SaveChangesAsync();
             if (n == 0)

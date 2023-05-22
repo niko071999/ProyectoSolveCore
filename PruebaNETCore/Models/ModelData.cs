@@ -158,6 +158,9 @@ public partial class ModelData : DbContext
             entity.ToTable("FichaMantencion");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.FechaMantencion)
+                .HasColumnName("fecha_mantencion")
+                .HasColumnType("datetime");
             entity.Property(e => e.Descripcion)
                 .IsRequired()
                 .HasMaxLength(100)

@@ -7,6 +7,8 @@ public partial class FichaMantencion
 {
     public int Id { get; set; }
 
+    public DateTime FechaMantencion { get; set; }
+
     public decimal Kilometraje { get; set; }
 
     public string Descripcion { get; set; }

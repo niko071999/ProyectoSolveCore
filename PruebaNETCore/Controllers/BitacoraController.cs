@@ -44,7 +44,7 @@ namespace ProyectoSolveCore.Controllers
                 NombreCompletoConductor = s.IdConductorNavigation.IdUsuarioNavigation.Nombre + " " + s.IdConductorNavigation.IdUsuarioNavigation.Apellido,
                 Vehiculo = s.IdVehiculoNavigation.Patente + " " + s.IdVehiculoNavigation.Marca + " " + s.IdVehiculoNavigation.Modelo
             }).FirstOrDefault(s => s.IdSolicitud == id);
-
+            return RedirectToAction("MisSolicitudes", "Solicitudes");
             return View(bitacora);
         }
         [Authorize(Roles = "Adminstrador, Conductor, Solicitador")]

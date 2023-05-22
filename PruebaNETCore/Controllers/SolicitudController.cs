@@ -420,6 +420,7 @@ namespace ProyectoSolveCore.Controllers
                 });
             }
         }
+
         [Authorize(Roles = "Administrador, Jefe")]
         public async Task<PartialViewResult> ConfirmacionRechazar(int id = 0)
         {
@@ -542,15 +543,28 @@ namespace ProyectoSolveCore.Controllers
                     {
                         return numAprobacionRechazo > 1 ? "Rechazado" : "Pendiente";
                     }
-                    var numAprobacionPositiva = aprobaciones.Where(a => a.Estado).ToList().Count;
-                    return numAprobacionPositiva > 1 ? "Aprobado" : "Pendiente";
-                }
-                return "Pendiente";
-            }
-            catch (Exception ex)
-            {
-                return "Error";
-            }
-        }
+        //Metodo que verifica si la aprobacion tiene 2 aprobaciones por parte de los jefes
+        //private string VerificarAprobacion(int id)
+        //{
+        //    try
+        //    {
+        //        var aprobaciones = _context.Aprobaciones.Where(a => a.IdSolicitud == id).ToList();
+        //        if (aprobaciones.Any())
+        //        {
+        //            var numAprobacionRechazo = aprobaciones.Where(a => !a.Estado).ToList().Count;
+        //            if (numAprobacionRechazo > 0)
+        //            {
+        //                return numAprobacionRechazo > 1 ? "Rechazado" : "Pendiente";
+        //            }
+        //            var numAprobacionPositiva = aprobaciones.Where(a => a.Estado).ToList().Count;
+        //            return numAprobacionPositiva > 1 ? "Aprobado" : "Pendiente";
+        //        }
+        //        return "Pendiente";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return "Error";
+        //    }
+        //}
     }
 }

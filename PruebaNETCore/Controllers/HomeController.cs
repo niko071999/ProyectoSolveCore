@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using PruebaNETCore.Models;
 using System.Diagnostics;
@@ -15,16 +16,10 @@ namespace PruebaNETCore.Controllers
         {
             _db = db;
         }
+        [TypeFilter(typeof(VerificarSolicitudes))]
         public IActionResult Agenda()
         {
-
             return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

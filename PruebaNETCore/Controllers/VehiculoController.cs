@@ -59,7 +59,7 @@ namespace ProyectoSolveCore.Controllers
                 if (v == null)
                 {
                     ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-                    return View(v);
+                    return View(new vmVehiculo());
                 }
 
                 var vehiculo = new Vehiculo()

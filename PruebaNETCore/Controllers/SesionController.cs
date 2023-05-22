@@ -113,10 +113,6 @@ namespace ProyectoSolveCore.Controllers
                 return View(usuario);
             }
         }
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
         private async Task<bool> AutenticarUsuario(Usuario usuario, List<string> roles)
         {
             try

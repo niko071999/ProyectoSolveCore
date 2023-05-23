@@ -18,7 +18,8 @@ namespace ProyectoSolveCore.Controllers
             _context = context;
             _cache = cache;
         }
-        [Authorize(Roles = "Adminstrador, Jefe, Conductor")]
+        //[Authorize(Roles = "Adminstrador, Jefe, Conductor, Mantenedor de bitácora")]
+        [Autorizar(19)]
         public async Task<IActionResult> VisualizarBitacora()
         {
             var bitacoras = await _context.Bitacoras.Include(b => b.IdSolicitudNavigation).Include(b => b.IdVehiculoNavigation)

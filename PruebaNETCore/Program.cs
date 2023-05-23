@@ -1,9 +1,6 @@
-using Azure;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Options;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
-using PruebaNETCore.Models;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);

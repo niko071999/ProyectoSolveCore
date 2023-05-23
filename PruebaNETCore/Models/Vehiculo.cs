@@ -13,17 +13,23 @@ public partial class Vehiculo
 
     public string Modelo { get; set; }
 
+    public string Año { get; set; }
+
     public bool Estado { get; set; }
 
     public bool Eliminado { get; set; }
 
+    public string DireccionImg { get; set; }
+
     public int IdPeriodoKilometraje { get; set; }
 
-    public string DireccionImg { get; set; }
+    public int? IdCategoria { get; set; }
 
     public virtual ICollection<Bitacora> Bitacoras { get; set; } = new List<Bitacora>();
 
     public virtual ICollection<FichaMantencion> FichaMantencions { get; set; } = new List<FichaMantencion>();
+
+    public virtual Categoria IdCategoriaNavigation { get; set; }
 
     public virtual PeriodosMantenimiento IdPeriodoKilometrajeNavigation { get; set; }
 

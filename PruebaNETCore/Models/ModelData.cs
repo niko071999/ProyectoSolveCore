@@ -17,9 +17,9 @@ public partial class ModelData : DbContext
 
     public virtual DbSet<Aprobacione> Aprobaciones { get; set; }
 
-    public virtual DbSet<AspNetSessionState> AspNetSessionStates { get; set; }
-
     public virtual DbSet<Bitacora> Bitacoras { get; set; }
+
+    public virtual DbSet<Categoria> Categorias { get; set; }
 
     public virtual DbSet<Conductore> Conductores { get; set; }
 
@@ -46,6 +46,7 @@ public partial class ModelData : DbContext
     public virtual DbSet<Vehiculo> Vehiculos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=LAPTOP-QAAO9ODD;Database=ProyectoSolve;Trusted_Connection=True;TrustServerCertificate=True;User Id=UserSystem;Password=52368993Nc;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -74,20 +75,6 @@ public partial class ModelData : DbContext
                 .HasConstraintName("FK_Aprobaciones_Solicitudes");
         });
 
-        modelBuilder.Entity<AspNetSessionState>(entity =>
-        {
-            entity.HasKey(e => e.SessionId);
-
-            entity.ToTable("AspNetSessionState");
-
-            entity.Property(e => e.SessionId).HasMaxLength(88);
-            entity.Property(e => e.Created).HasColumnType("datetime");
-            entity.Property(e => e.Expires).HasColumnType("datetime");
-            entity.Property(e => e.LockDate).HasColumnType("datetime");
-            entity.Property(e => e.LockDateLocal).HasColumnType("datetime");
-            entity.Property(e => e.SessionItemLong).HasColumnType("image");
-        });
-
         modelBuilder.Entity<Bitacora>(entity =>
         {
             entity.ToTable("Bitacora");
@@ -96,13 +83,16 @@ public partial class ModelData : DbContext
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha");
-            entity.Property(e => e.LitrosCombustible).HasColumnName("litros_combustible");
-            entity.Property(e => e.Observacion).HasColumnName("observacion");
             entity.Property(e => e.Folio).HasColumnName("folio");
             entity.Property(e => e.IdConductor).HasColumnName("id_conductor");
             entity.Property(e => e.IdKilometraje).HasColumnName("id_kilometraje");
             entity.Property(e => e.IdSolicitud).HasColumnName("id_solicitud");
             entity.Property(e => e.IdVehiculo).HasColumnName("id_vehiculo");
+            entity.Property(e => e.LitrosCombustible).HasColumnName("litros_combustible");
+            entity.Property(e => e.Observacion)
+                .IsRequired()
+                .HasMaxLength(250)
+                .HasColumnName("observacion");
 
             entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.Bitacoras)
                 .HasForeignKey(d => d.IdConductor)
@@ -123,6 +113,15 @@ public partial class ModelData : DbContext
                 .HasForeignKey(d => d.IdVehiculo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Bitacora_Vehiculos");
+        });
+
+        modelBuilder.Entity<Categoria>(entity =>
+        {
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Categoria1)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("Categoria");
         });
 
         modelBuilder.Entity<Conductore>(entity =>
@@ -159,17 +158,16 @@ public partial class ModelData : DbContext
             entity.ToTable("FichaMantencion");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.FechaMantencion)
-                .HasColumnName("fecha_mantencion")
-                .HasColumnType("datetime");
             entity.Property(e => e.Descripcion)
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("descripcion");
+            entity.Property(e => e.FechaMantencion)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_mantencion");
             entity.Property(e => e.IdConductor).HasColumnName("id_conductor");
             entity.Property(e => e.IdVehiculo).HasColumnName("id_vehiculo");
-            entity.Property(e => e.Kilometraje)
-                .HasColumnName("kilometraje");
+            entity.Property(e => e.Kilometraje).HasColumnName("kilometraje");
 
             entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.FichaMantencions)
                 .HasForeignKey(d => d.IdConductor)
@@ -186,10 +184,8 @@ public partial class ModelData : DbContext
         {
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.IdVehiculo).HasColumnName("id_vehiculo");
-            entity.Property(e => e.KilometrajeFinal)
-                .HasColumnName("kilometraje_final");
-            entity.Property(e => e.KilometrajeInicial)
-                .HasColumnName("kilometraje_inicial");
+            entity.Property(e => e.KilometrajeFinal).HasColumnName("kilometraje_final");
+            entity.Property(e => e.KilometrajeInicial).HasColumnName("kilometraje_inicial");
 
             entity.HasOne(d => d.IdVehiculoNavigation).WithMany(p => p.Kilometrajes)
                 .HasForeignKey(d => d.IdVehiculo)
@@ -202,8 +198,7 @@ public partial class ModelData : DbContext
             entity.ToTable("PeriodosMantenimiento");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.PeriodoKilometraje)
-                .HasColumnName("periodo_kilometraje");
+            entity.Property(e => e.PeriodoKilometraje).HasColumnName("periodo_kilometraje");
         });
 
         modelBuilder.Entity<Permiso>(entity =>
@@ -303,6 +298,7 @@ public partial class ModelData : DbContext
                 .HasColumnName("direccion_img");
             entity.Property(e => e.Eliminado).HasColumnName("eliminado");
             entity.Property(e => e.IdDepartamento).HasColumnName("id_departamento");
+            entity.Property(e => e.Login).HasColumnName("login");
             entity.Property(e => e.Nombre)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -334,11 +330,16 @@ public partial class ModelData : DbContext
         modelBuilder.Entity<Vehiculo>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Año)
+                .IsRequired()
+                .HasMaxLength(10)
+                .HasColumnName("año");
             entity.Property(e => e.DireccionImg)
                 .HasMaxLength(256)
                 .HasColumnName("direccion_img");
             entity.Property(e => e.Eliminado).HasColumnName("eliminado");
             entity.Property(e => e.Estado).HasColumnName("estado");
+            entity.Property(e => e.IdCategoria).HasColumnName("id_categoria");
             entity.Property(e => e.IdPeriodoKilometraje).HasColumnName("id_periodo_kilometraje");
             entity.Property(e => e.Marca)
                 .IsRequired()
@@ -352,6 +353,10 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("patente");
+
+            entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Vehiculos)
+                .HasForeignKey(d => d.IdCategoria)
+                .HasConstraintName("FK_Vehiculos_Categorias");
 
             entity.HasOne(d => d.IdPeriodoKilometrajeNavigation).WithMany(p => p.Vehiculos)
                 .HasForeignKey(d => d.IdPeriodoKilometraje)

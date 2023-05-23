@@ -26,7 +26,7 @@ namespace ProyectoSolveCore.Controllers
                 .ToListAsync();
             return View(bitacoras);
         }
-        [Authorize(Roles = "Adminstrador, Conductor, Solicitador")]
+        [Authorize(Roles = "Adminstrador, Conductor, Solicitador, Mantenedor de bitácora")]
         public async Task<IActionResult> AgregarEntradasBitacora(int id = 0)
         {
             if (id == 0)
@@ -49,7 +49,7 @@ namespace ProyectoSolveCore.Controllers
             }).FirstOrDefault(s => s.IdSolicitud == id);
             return RedirectToAction("MisSolicitudes", "Solicitudes");
         }
-        [Authorize(Roles = "Adminstrador, Conductor, Solicitador")]
+        [Authorize(Roles = "Adminstrador, Conductor, Solicitador, Mantenedor de bitácora")]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradasBitacora(vmBitacora bitacora) //Esta accion permite la insercion de varias entradas a la bitacora.
         {
@@ -77,7 +77,7 @@ namespace ProyectoSolveCore.Controllers
                 return View(bitacora);
             }
         }
-        [Authorize(Roles = "Adminstrador, Conductor")]
+        [Authorize(Roles = "Adminstrador, Conductor, Solicitador, Mantenedor de bitácora")]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradaBitacora(vmBitacora bitacora)
         {

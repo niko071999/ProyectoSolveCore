@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 
@@ -11,9 +12,11 @@ namespace ProyectoSolveCore.Controllers
     public class BitacoraController : Controller
     {
         private readonly ModelData _context;
-        public BitacoraController(ModelData context)
+        private readonly IMemoryCache _cache;
+        public BitacoraController(ModelData context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
         [Authorize(Roles = "Adminstrador, Jefe, Conductor")]
         public async Task<IActionResult> VisualizarBitacora()
@@ -96,6 +99,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return View(bitacora);
                 }
+                EliminarMemoriaCache();
                 return RedirectToAction("VisualizarBitacora", "Bitacora");
             }
             catch (Exception)
@@ -103,6 +107,15 @@ namespace ProyectoSolveCore.Controllers
                 return View(bitacora);
             }
         }
+
+        private void EliminarMemoriaCache()
+        {
+            if (_cache.TryGetValue("NumeroSolicitudes", out int _))
+            {
+                _cache.Remove("NumeroSolicitudes");
+            }
+        }
+
         private async Task<bool> AgregarEntrada(vmBitacora bitacora)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();

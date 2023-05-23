@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
@@ -14,12 +15,14 @@ namespace ProyectoSolveCore.Controllers
     public class SolicitudController : Controller
     {
         private readonly ModelData _context;
+        private readonly IMemoryCache _cache;
         private const string FormatLong = "dd/MMMM/yy HH:mm";
         private const string FormatShort = "MMMM/dd/yyyy";
 
-        public SolicitudController(ModelData context)
+        public SolicitudController(ModelData context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
         [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> VisualizarSolicitudes()
@@ -27,26 +30,41 @@ namespace ProyectoSolveCore.Controllers
             var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
                 .OrderByDescending(s => s.FechaSolicitado)
                 .ToListAsync();
-            //solicitudes = await VerificarSolicitudesAtrasadas(solicitudes);
             return View(solicitudes);
         }
         
         //Este metodo funciona para gestionar las solicitudes que estan aprobadas y listas para agregar a la bitacora
-        public IActionResult HubSolicitudes()
+        public async Task<IActionResult> HubSolicitudes()
         {
+            EliminarMemoriaCache();
             try
             {
-                int idUsuario = Convert.ToInt32(User.FindFirst("Id").Value);
-
-                var solicitud = _context.Solicitudes.Include(s => s.IdConductorNavigation.IdUsuarioNavigation).Include(s => s.IdVehiculoNavigation)
-                    .OrderBy(s => s.FechaSolicitado)
-                    .FirstOrDefault(s => s.Estado == 1 && s.IdSolicitante == idUsuario);
-
-                if (solicitud == null)
+                MemoryCacheEntryOptions opciones = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+                int id = 0;
+                var slist = await _context.Solicitudes.Include(s => s.IdConductorNavigation.IdUsuarioNavigation).Include(s => s.IdVehiculoNavigation)
+                    .OrderBy(s => s.FechaSolicitado).Where(s => s.Estado == 1 && s.FechaLlegada >= DateTime.Now).ToListAsync();
+                if (slist.Count < 1)
                 {
                     return RedirectToAction("MisSolicitudes", "Solicitud");
                 }
-                int id = solicitud.Id;
+                if (VerificarRolAdmin() || VerificarRolBitacora()) //Con esto recuperamos todas las solicitudes listas para agregar a la bitacora
+                {
+                    _cache.Set("NumeroSolicitudes", slist.Count, opciones);
+                    id = slist.FirstOrDefault().Id;
+                    return RedirectToAction("AgregarEntradasBitacora", "Bitacora", new
+                    {
+                        id
+                    });
+                }
+                int idUsuario = Convert.ToInt32(User.FindFirst("Id").Value);
+                var slist_user = slist.Where(s => s.IdSolicitante == idUsuario).ToList();
+                if (slist_user.Count < 1)
+                {
+                    return RedirectToAction("MisSolicitudes", "Solicitud");
+                }
+                _cache.Set("NumeroSolicitudes", slist_user.Count, opciones);
+                id = slist_user.FirstOrDefault().Id;
                 return RedirectToAction("AgregarEntradasBitacora", "Bitacora", new
                 {
                     id
@@ -54,7 +72,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception ex)
             {
-                return View();
+                return RedirectToAction("MisSolicitudes", "Solicitud");
             }
         }
         [TypeFilter(typeof(VerificarSolicitudes))]
@@ -528,11 +546,30 @@ namespace ProyectoSolveCore.Controllers
             }
             return conductoresDisponibles;
         }
+        private void EliminarMemoriaCache()
+        {
+            if (_cache.TryGetValue("NumeroSolicitudes", out int _))
+            {
+                _cache.Remove("NumeroSolicitudes");
+            }
+        }
         private bool VerificarRolJefe()
         {
             var identity = (ClaimsIdentity)User.Identity;
             var claims = identity.Claims;
             return claims.Where(c => c.Type == ClaimTypes.Role).Any(r => r.Value == "Jefe");
+        }
+        private bool VerificarRolAdmin()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims;
+            return claims.Where(c => c.Type == ClaimTypes.Role).Any(r => r.Value == "Administrador");
+        }
+        private bool VerificarRolBitacora()
+        {
+            var identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims;
+            return claims.Where(c => c.Type == ClaimTypes.Role).Any(r => r.Value == "Mantenedor de bitácora");
         }
         //Metodo que verifica si la aprobacion tiene 2 aprobaciones por parte de los jefes
         //private string VerificarAprobacion(int id)

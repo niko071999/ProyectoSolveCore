@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Models;
+using ProyectoSolveCore.Models.ViewModels;
 
 namespace ProyectoSolveCore.Controllers
 {

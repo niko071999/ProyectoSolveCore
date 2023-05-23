@@ -1,0 +1,65 @@
+﻿@model ProyectoSolveCore.Models.ViewModels.vmFichaMantencion
+@{
+    ViewBag.Title = "Agregar entrada a ficha de mantención";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Agregar entrada a la ficha de mantención</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item"><a asp-action="VisualizarMantenciones">Visualizar ficha mantenciones</a></li>
+                <li class="breadcrumb-item active">Agregar entrada a la ficha de mantención</li>
+            </ol>
+            <form id="form_AgregarBitacora" asp-action="AgregarEntradaFM" method="post">
+                <div class="card">
+                    <div class="card-body row fw-bold">
+                        <div class="col col-lg-6">
+                            <div class="row g-2">
+                                <h4>Informacion solicitud</h4>
+                                <input type="hidden" asp-for="Id" />
+                                <div class="col col-lg-6 col-sm-12">
+                                    <label for="inputFecha" class="form-label">Fecha</label>
+                                    <input type="text" class="form-control" id="inputFecha"
+                                           value="@DateTime.Now" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputConductor" class="form-label">Conductor</label>
+                                    <select id="inputConductor" class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor">
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                                    <select id="inputVehiculo" class="form-select" asp-for="IdVehiculo" asp-items="ViewBag.IdVehiculo">
+                                    </select>
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputKM" class="form-label">Kilometraje</label>
+                                    <input type="number" name="Kilometraje" class="form-control" id="inputKM" value="@Model.Kilometraje">
+                                </div>
+                                <div class="col col-md-12">
+                                    <label for="inputDescripcion" class="form-label">Descripcion de la mantención</label>
+                                    <textarea type="text" cols="2" name="Descripcion" class="form-control" id="inputDescripcion">@Model.Descripcion</textarea>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="d-flex flex-row mb-2">
+                                        <button type="submit" class="btn btn-primary">Agregar entrada de mantención</button>
+                                        <a role="button" class="ms-1 btn btn-secondary" asp-action="VisualizarMantenciones">Volver a la bitacora</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+@section CSS{
+    <link href="~/lib/select-searcheable/select2.min.css" rel="stylesheet" />
+}
+@section Scripts{
+    <script src="~/lib/select-searcheable/select2.min.js"></script>
+    <script src="~/js/agregarmantencion.js"></script>
+}

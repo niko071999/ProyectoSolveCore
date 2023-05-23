@@ -13,7 +13,7 @@
             </ol>
             <div class="card">
                 <div class="card-body">
-                    <a asp-action="AgregarEntradaFM" role="button" class="btn btn-primary mb-2">Agregar nueva entrada</a>
+                    <a asp-action="AgregarEntradaFM" asp-route-id="0" role="button" class="btn btn-primary mb-2">Agregar nueva entrada</a>
                     @if (Model != null)
                     {
                         <table id="tablaMantencion" class="display table table-hover w-100">
@@ -65,5 +65,5 @@
     <script src="~/lib/datatables/jquery.datatables.min.js"></script>
     <script src="~/lib/datatables/moment.min.js"></script>
     <script src="~/lib/datatables/datetime-moment.js"></script>
-    <script src="~/js/visualizarmantencion.js"></script>
+    <script src="~/js/visualizarmantenciones.js"></script>
 }

@@ -28,25 +28,43 @@ namespace ProyectoSolveCore.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(vmLoginUser user)
         {
-            if (!_context.Usuarios.Any())
+            try
             {
-                return RedirectToAction("CrearUsuarioAdmin", "Usuario", user.Rut);
-            }
-            var usuario = _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.UsuariosRoles).FirstOrDefault(u => u.Rut.Equals(user.Rut));
-            if (usuario == null)
-            {
-                return View(user);
-            }
-            if (!Encrypt.VerifyPassword(user.Clave,usuario.Clave))
-            {
-                return View(user);
-            }
-            //Usuario verificado correctamente
-            var roles = _context.UsuariosRoles.Where(ur => ur.IdUsuario == usuario.Id)
-                .Select(ur => ur.IdRolNavigation).Select(r => r.Rol).ToList();
-            bool autenticado = await AutenticarUsuario(usuario, roles);
+                if (!_context.Usuarios.Any())
+                {
+                    return RedirectToAction("CrearUsuarioAdmin", "Usuario", user.Rut);
+                }
+                //.Include(u => u.UsuariosRoles)
+                var usuario = _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.UsuariosRoles)
+                            .FirstOrDefault(u => u.Rut.Equals(user.Rut) && !u.Eliminado);
 
-            return RedirectToAction("Agenda","Home");
+                if (usuario == null)
+                {
+                    return View(user);
+                }
+                if ((bool)!usuario.Login)
+                {
+                    return View(user);
+                }
+                if (!Encrypt.VerifyPassword(user.Clave, usuario.Clave))
+                {
+                    return View(user);
+                }
+                //Usuario verificado correctamente
+                var roles = await _context.UsuariosRoles.Where(ur => ur.IdUsuario == usuario.Id)
+                    .Select(ur => ur.IdRolNavigation).Select(r => r.Rol).ToListAsync();
+                bool autenticado = await AutenticarUsuario(usuario, roles);
+
+                return RedirectToAction("Agenda", "Home");
+            }
+            catch (Exception ex)
+            {
+                if (user == null)
+                {
+                    return View(new vmLoginUser());
+                }
+                return View(user);
+            }
         }
 
         public async Task<IActionResult> Logout()

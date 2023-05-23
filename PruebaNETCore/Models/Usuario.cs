@@ -15,6 +15,8 @@ public partial class Usuario
 
     public string Clave { get; set; }
 
+    public bool Login { get; set; }
+
     public bool Eliminado { get; set; }
 
     public int IdDepartamento { get; set; }

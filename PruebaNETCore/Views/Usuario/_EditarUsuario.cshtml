@@ -12,112 +12,168 @@
                         <input type="hidden" asp-for="ID" />
                         <input type="hidden" asp-for="eliminado" />
                         <input type="hidden" asp-for="direccion_img" />
+                        <input id="Login" type="hidden" asp-for="login" />
                         <input id="idDepartamento" type="hidden" asp-for="id_departamento" />
                         <input id="RolAdministrador" type="hidden" asp-for="RolAdministrador" />
                         <input id="RolJefe" type="hidden" asp-for="RolJefe" />
                         <input id="RolMantendorUsuarios" type="hidden" asp-for="RolMantendorUsuarios" />
                         <input id="RolMantenedorVehiculos" type="hidden" asp-for="RolMantenedorVehiculos" />
                         <input id="RolSolicitador" type="hidden" asp-for="RolSolicitador" />
+                        <input id="RolMantenedorVehiculosMaq" type="hidden" asp-for="RolMantenedorVehiculosMaq" />
+                        <input id="RolMantenedorBitacora" type="hidden" asp-for="RolMantenedorBitacora" />
                         <input type="hidden" asp-for="id_conductor" />
-                        <div class="col-md-4">
-                            <label for="inputRut" class="form-label">RUT</label>
-                            <input type="text" class="form-control" name="rut" id="inputRut"
-                                   placeholder="Con guión y sin puntos" value="@Model.rut" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="inputClave" class="form-label">Nueva clave de acceso</label>
-                            <input type="password" name="clave" class="form-control" id="inputClave"
-                                   placeholder="Minimo 6 caracteres">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="inputClave" class="form-label">Reingrese la nueva clave</label>
-                            <input type="password" class="form-control" name="reclave" id="inputReClave"
-                                   placeholder="Minimo 6 caracteres">
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col col-lg-6 col-sm-12">
                             <label for="inputNombre" class="form-label">Nombre</label>
                             <input type="text" name="nombre" class="form-control" id="inputNombre"
                                    value="@Model.nombre" required>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col col-lg-6 col-sm-12">
                             <label for="inputApellido" class="form-label">Apellido</label>
                             <input type="text" name="apellido" class="form-control" id="inputApellido"
                                    value="@Model.apellido" required>
                         </div>
-                        <div class="col col-md-6">
+                        <div class="col col-lg-6 col-sm-12">
                             <label for="inputDepartamento" class="form-label">Departamento</label>
-                            <select class="form-select" asp-for="id_departamento" asp-items="ViewBag.id_departamento">
+                            <select id="inputDepartamento" class="form-select">
                             </select>
                         </div>
-                        <div class="col col-md-6">
+                        <div class="col col-lg-6 col-sm-12">
                             @*<label for="formFile" class="form-label">Subir imagen</label>
                             <input class="form-control" type="file" id="formFile">*@
                         </div>
-                        <div class="col col-md-12">
-                            <p class="mt-3 mb-2">Roles</p>
-                            @*Administrador*@
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Administrador" @(Model.RolAdministrador?"checked":"")>
-                                <label class="form-check-label" for="Administrador">
-                                    Administrador
-                                </label>
-                            </div>
-                            @*Jefe*@
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Jefe" @(Model.RolJefe?"checked":"")>
-                                <label class="form-check-label" for="Jefe">
-                                    Jefe
-                                </label>
-                            </div>
-                            @*Mant. Usuarios*@
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Usuarios" @(Model.RolMantendorUsuarios?"checked":"")>
-                                <label class="form-check-label" for="Usuarios">
-                                    Mantenedor Usuarios
-                                </label>
-                            </div>
-                            @*Mant. Vehiculos*@
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Vehiculos" @(Model.RolMantenedorVehiculos?"checked":"")>
-                                <label class="form-check-label" for="Vehiculo">
-                                    Mantenedor Vehículos
-                                </label>
-                            </div>
-                            @*Solicitador*@
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="Solicitador" @(Model.RolSolicitador?"checked":"")>
-                                <label class="form-check-label" for="Solicitador">
-                                    Solicitador
-                                </label>
-                            </div>
+                        <hr />
+                        <h4>Datos de acceso</h4>
+                        <div class="col col-sm-12">
+                            <input class="form-check-input" type="checkbox" id="LoginAccess" @(Model.login?"checked":"")>
+                            <label class="form-check-label" for="LoginAccess">
+                                Habilitar inicio de sesion
+                            </label>
                         </div>
-                        <div class="mt-4 col-12 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" 
-                                    id="check_poliza" @(Model.NumeroPoliza != null?"checked":"")>
-                                <label class="form-check-label" for="check_poliza">
-                                    Tiene poliza de conductor
-                                </label>
-                            </div>
+                        <div class="col col-lg-4 col-sm-6">
+                            <label for="inputRut" class="form-label">RUT</label>
+                            <input type="text" class="form-control" name="rut" id="inputRut"
+                                   placeholder="Con guión y sin puntos" value="@Model.rut" required>
                         </div>
-                    </div>
-                    <div class="row g-2" id="conductor" style="display: none;">
-                        <div class="col-md-12">
-                            <label for="inputNumPoliza" class="form-label">Numero de poliza</label>
-                            <input type="text" class="form-control" id="inputNumPoliza" name="NumeroPoliza"
-                                   value="@Model.NumeroPoliza">
+                        <div class="col col-lg-4 col-sm-6">
+                            <label for="inputClave" class="form-label">Clave de acceso</label>
+                            <input type="password" name="clave" class="form-control" id="inputClave"
+                                   placeholder="Minimo 6 caracteres" value="@Model.clave" required>
                         </div>
-                        <div class="col-md-12">
-                            <label class="form-label">Periodo de la poliza</label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="inputGroup-sizing-default">Fecha emitida</span>
-                                <input type="date" class="form-control" id="inputFechaInicio" value="@Model.FechaEmitida?.ToString("yyyy-MM-dd")"
-                                       aria-label="Sizing example input" aria-describedby="inputFechaInicio" name="FechaEmitida">
+                        <div class="col col-lg-4 col-sm-6">
+                            <label for="inputReClave" class="form-label">Reingrese la clave de acceso</label>
+                            <input type="password" name="reclave" class="form-control" id="inputReClave" required>
+                        </div>
+                        <div class="col col-sm-12 mb-2">
+                            <h4 class="mt-3">Roles</h4>
+                            <ul class="row list-group list-group-horizontal list-group-flush">
+                                @*Administrador*@
+                                <li class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Administrador" @(Model.RolAdministrador?"checked":"")>
+                                    <label class="form-check-label" for="Administrador">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Administrador"
+                                           data-bs-content="Tiene las facultades de realizar todas las funciones del sistema">
+                                            Administrador
+                                        </a>
+                                    </label>
+                                </li>
+                                @*Jefe*@
+                                <div class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Jefe" @(Model.RolJefe?"checked":"")>
+                                    <label class="form-check-label" for="Jefe">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Jefe"
+                                           data-bs-content="Tiene las facultades de realizar las funciones de Aprobar, Rechazar y visualizar solicitudes. Como también visualizar informes y descargarlos.">
+                                            Jefe
+                                        </a>
+                                    </label>
+                                </div>
+                                @*Mant. Usuarios*@
+                                <div class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Usuarios" @(Model.RolMantendorUsuarios?"checked":"")>
+                                    <label class="form-check-label" for="Usuarios">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de usuarios"
+                                           data-bs-content="Tiene las facultades de mantener a los usuarios del sistema.">
+                                            Mantenedor usuarios
+                                        </a>
+                                    </label>
+                                </div>
+                                @*Mant. Vehiculos*@
+                                <div class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Vehiculos" @(Model.RolMantenedorVehiculos?"checked":"")>
+                                    <label class="form-check-label" for="Vehiculo">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos no pesados"
+                                           data-bs-content="Tiene las facultades de mantener a los vehiculos no pesados del sistema.">
+                                            Mantenedor vehículos no pesados
+                                        </a>
+                                    </label>
+                                </div>
+                                @*Mantenedor de maquinarias*@
+                                <div class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Maquinaria" @(Model.RolMantenedorVehiculosMaq?"checked":"")>
+                                    <label class="form-check-label" for="Maquinaria">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos pesados"
+                                           data-bs-content="Tiene las facultades de mantener a los vehiculos pesados del sistema.">
+                                            Mantenedor de vehículos pesados
+                                        </a>
+                                    </label>
+                                </div>
+                                @*Bitácora*@
+                                <div class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Bitacora_c" @(Model.RolSolicitador?"checked":"")>
+                                    <label class="form-check-label" for="Bitacora_c">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de la bitácora"
+                                           data-bs-content="Tiene las facultades de mantener a la bitacora de los vehículos.">
+                                            Mantenedor de bitácora
+                                        </a>
+                                    </label>
+                                </div>
+                                @*Solicitador*@
+                                <div class="list-group-item col col-lg-6">
+                                    <input class="form-check-input" type="checkbox" id="Solicitador" @(Model.RolSolicitador?"checked":"")>
+                                    <label class="form-check-label" for="Solicitador">
+                                        <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                           data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Solicitador"
+                                           data-bs-content="Tiene las facultades de solicitar vehículos.">
+                                            Solicitador
+                                        </a>
+                                    </label>
+                                </div>
+                            </ul>
+                            <hr />
+                            <h4>Datos de conductor</h4>
+                            <div class="mt-4 col-sm-12 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="check_poliza">
+                                    <label class="form-check-label" for="check_poliza">
+                                        Tiene poliza de conductor
+                                    </label>
+                                </div>
                             </div>
-                            <div class="input-group">
-                                <span class="input-group-text" id="inputGroup-sizing-default">Fecha vencimiento</span>
-                                <input type="date" class="form-control" id="inputFechaFin" value="@Model.FecheVencimiento?.ToString("yyyy-MM-dd")"
-                                       aria-label="Sizing example input" aria-describedby="inputFechaFin" name="FecheVencimiento">
+                            <div class="row g-2" id="conductor" style="display: none;">
+                                <div class="col-sm-12">
+                                    <label for="inputNumPoliza" class="form-label">Numero de poliza</label>
+                                    <input type="text" class="form-control" id="inputNumPoliza" name="NumeroPoliza"
+                                           value="@Model.NumeroPoliza">
+                                </div>
+                                <div class="col-sm-12">
+                                    <label class="form-label">Periodo de la poliza</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Desde</span>
+                                        <input type="date" class="form-control" id="inputFechaInicio" value="@Model.FechaEmitida"
+                                               aria-label="Sizing example input" aria-describedby="inputFechaInicio" name="FechaEmitida">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Hasta</span>
+                                        <input type="date" class="form-control" id="inputFechaFin" value="@Model.FecheVencimiento"
+                                               aria-label="Sizing example input" aria-describedby="inputFechaFin" name="FecheVencimiento">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <button id="btn_form" type="button" class="btn btn-primary">Agregar usuario</button>
                             </div>
                         </div>
                     </div>
@@ -134,19 +190,27 @@
     </div>
 </div>
 <script type="text/javascript">
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
     var contenedores_conductores = document.querySelector("#conductor");
-    var admin = document.querySelector("#Administrador");
-    var jefe = document.querySelector("#Jefe");
-    var vehiculos = document.querySelector("#Vehiculos");
-    var usuarios = document.querySelector("#Usuarios");
-    var solicitador = document.querySelector("#Solicitador");
-    var inputs = contenedores_conductores.getElementsByTagName('input');
-
-    var rolAdmin = document.querySelector("#RolAdministrador");
-    var rolJefe = document.querySelector("#RolJefe");
-    var rolMantenedorUsuarios = document.querySelector("#RolMantendorUsuarios");
-    var rolMantenedorVehiculos = document.querySelector("#RolMantenedorVehiculos");
-    var rolSolicitador = document.querySelector("#RolSolicitador");
+    //CHECKBOXS
+    const admin = document.querySelector("#Administrador"),
+        jefe = document.querySelector("#Jefe"),
+        vehiculos = document.querySelector("#Vehiculos"),
+        usuarios = document.querySelector("#Usuarios"),
+        solicitador = document.querySelector("#Solicitador"),
+        maquinaria = document.querySelector("#Maquinaria"),
+        bitacora = document.querySelector("#Bitacora_c"),
+        login = document.querySelector("#LoginAccess");
+    //INPUTS
+    const rolAdmin = document.querySelector("#RolAdministrador"),
+        rolJefe = document.querySelector("#RolJefe"),
+        rolMantenedorUsuarios = document.querySelector("#RolMantendorUsuarios"),
+        rolMantenedorVehiculos = document.querySelector("#RolMantenedorVehiculos"),
+        rolSolicitador = document.querySelector("#RolSolicitador"),
+        rolMaquinaria = document.querySelector("#RolMantenedorVehiculosMaq"),
+        rolBitacora = document.querySelector("#RolMantenedorBitacora"),
+        inp_login = document.querySelector("#Login");
 
     $('#form_EditarUsuario').submit(function (e) {
         e.preventDefault();
@@ -189,28 +253,36 @@
         
     });
 
-    if (check_poliza.checked) {
-        contenedores_conductores.style.display = "block";
-        for (var i = 0; i < inputs.length; i++) {
-            inputs[i].setAttribute('required', '');
-        }
-    }
-
     admin.addEventListener("click", function () {
         jefe.checked = admin.checked;
         vehiculos.checked = admin.checked;
         usuarios.checked = admin.checked;
-        solicitador.checked = admin.checked;
+        maquinaria.checked = admin.checked;
+        bitacora.checked = admin.checked;
+        if (admin.checked) {
+            solicitador.checked = admin.checked;
+        }
         updateInputs();
     });
+    solicitador.addEventListener("click", () => {
+        if (!admin.checked || !jefe.checked && !vehiculos.checked && !usuarios.checked
+            && !bitacora.checked && !maquinaria.checked) {
+            solicitador.checked = true;
+        }
+    })
 
     jefe.addEventListener("change", updateInputs);
     vehiculos.addEventListener("change", updateInputs);
     usuarios.addEventListener("change", updateInputs);
     solicitador.addEventListener("change", updateInputs);
+    maquinaria.addEventListener("change", updateInputs);
+    bitacora.addEventListener("change", updateInputs);
+    login.addEventListener("change", function () {
+        inp_login.value = login.checked;
+    });
 
     function updateInputs() {
-        if (jefe.checked && vehiculos.checked && usuarios.checked && solicitador.checked) {
+        if (jefe.checked && vehiculos.checked && usuarios.checked && solicitador.checked && maquinaria.checked && bitacora.checked) {
             admin.checked = true;
         } else {
             admin.checked = false;
@@ -220,19 +292,16 @@
         rolMantenedorVehiculos.value = vehiculos.checked;
         rolMantenedorUsuarios.value = usuarios.checked;
         rolSolicitador.value = solicitador.checked;
+        rolMaquinaria.value = maquinaria.checked;
+        rolBitacora.value = bitacora.checked;
     }
 
     //Verificar si el check de la poliza esta activado
     check_poliza.addEventListener('change', () => {
+        console.log('hola');
         if (check_poliza.checked) {
             contenedores_conductores.style.display = "block";
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].setAttribute('required', '');
-            }
         } else {
-            for (var i = 0; i < inputs.length; i++) {
-                inputs[i].removeAttribute('required');
-            }
             contenedores_conductores.style.display = "none";
         }
     });

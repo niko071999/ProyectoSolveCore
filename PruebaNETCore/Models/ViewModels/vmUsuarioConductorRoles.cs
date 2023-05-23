@@ -12,6 +12,7 @@ namespace ProyectoSolveCore.Models.ViewModels
         public string clave { get; set; }
         public string nombre { get; set; }
         public string apellido { get; set; }
+        public bool login { get; set; }
         public bool eliminado { get; set; }
         public string direccion_img { get; set; }
         public int id_departamento { get; set; }
@@ -24,5 +25,7 @@ namespace ProyectoSolveCore.Models.ViewModels
         public bool RolMantendorUsuarios { get; set; }
         public bool RolMantenedorVehiculos { get; set; }
         public bool RolSolicitador { get; set; }
+        public bool RolMantenedorVehiculosMaq { get; set; }
+        public bool RolMantenedorBitacora { get; set; }
     }
 }

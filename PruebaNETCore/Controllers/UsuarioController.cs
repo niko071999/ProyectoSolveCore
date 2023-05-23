@@ -76,6 +76,7 @@ namespace ProyectoSolveCore.Controllers
                     Rut = uc.rut,
                     Nombre = uc.nombre,
                     Apellido = uc.apellido,
+                    Login = uc.login,
                     Clave = Encrypt.EncryptPassword(uc.clave),
                     IdDepartamento = uc.id_departamento,
                     DireccionImg = "/assets/sin-foto.png",
@@ -325,7 +326,9 @@ namespace ProyectoSolveCore.Controllers
                 { 2, uc.RolJefe },
                 { 3, uc.RolMantenedorVehiculos },
                 { 4, uc.RolMantendorUsuarios },
-                { 5, uc.RolSolicitador }
+                { 5, uc.RolSolicitador },
+                { 7, uc.RolMantenedorVehiculosMaq },
+                { 8, uc.RolMantenedorBitacora }
             };
 
             for (int i = 0; i < 5; i++)
@@ -416,7 +419,9 @@ namespace ProyectoSolveCore.Controllers
                 { 3, "<i class=\"fa-solid fa-car-side\"></i>" },
                 { 4, "<i class=\"fa-solid fa-user-pen\"></i>" },
                 { 5, "<i class=\"fa-solid fa-calendar-check\"></i>" },
-                {6, "<i class=\"fa-solid fa-id-card\"></i>" }
+                { 6, "<i class=\"fa-solid fa-id-card\"></i>" },
+                { 7, "<i class=\"fa-solid fa-truck-moving\"></i>" },
+                { 8, "<i class=\"fa-solid fa-book\"></i>" }
             };
             if (roles.ContainsKey(id_rol))
                 return roles[id_rol];

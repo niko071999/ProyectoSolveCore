@@ -15,7 +15,7 @@ namespace ProyectoSolveCore.Controllers
         }
         public async Task<IActionResult> VisualizarMantenciones()
         {
-            var mantenciones = await _context.FichaMantencions.Include(m => m.IdConductorNavigation.IdUsuarioNavigation).Include(m => m.IdVehiculoNavigation)
+            var mantenciones = await _context.Fichamantencions.Include(m => m.IdConductorNavigation.IdUsuarioNavigation).Include(m => m.IdVehiculoNavigation)
                 .ToListAsync();
             return View(mantenciones);
         }
@@ -77,7 +77,7 @@ namespace ProyectoSolveCore.Controllers
             try
             {
                 using var transaction = await _context.Database.BeginTransactionAsync();
-                FichaMantencion ficha = new()
+                Fichamantencion ficha = new()
                 {
                     FechaMantencion = DateTime.Now,
                     Kilometraje = fm.Kilometraje,
@@ -85,7 +85,7 @@ namespace ProyectoSolveCore.Controllers
                     IdConductor = fm.IdConductor,
                     IdVehiculo = fm.IdVehiculo
                 };
-                await _context.FichaMantencions.AddAsync(ficha);
+                await _context.Fichamantencions.AddAsync(ficha);
                 int n = await _context.SaveChangesAsync();
                 var v = await _context.Vehiculos.FindAsync(fm.IdVehiculo);
                 if (v == null) return View(fm);

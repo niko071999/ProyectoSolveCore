@@ -143,14 +143,14 @@ namespace ProyectoSolveCore.Controllers
         }
         /// <summary>
         /// Verifica el kilometraje y modifica el estado de los vehículos. Asigna un mensaje de estado correspondiente a cada vehículo.
-        /// </summary>
+        
         /// <param name="viewViehiculos">Lista de vehículos a verificar.</param>
         /// <returns>Una lista de objetos vmVehiculo con los mensajes de estado asignados.</returns>
         private async Task<List<vmVehiculo>> VerificarKmVehiculo(List<vmVehiculo> viewViehiculos)
         {
             List<vmVehiculo> newList = new();
-            var fichaMants = await _context.FichaMantencions.ToListAsync();
-            var kms = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.FichaMantencions)
+            var fichaMants = await _context.Fichamantencions.ToListAsync();
+            var kms = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.Fichamantencions)
                     .ToListAsync();
             var vehiculoIds = viewViehiculos.Select(v => v.Id).ToList();
             var periodos = await _context.Vehiculos.Include(v => v.IdPeriodoKilometrajeNavigation)
@@ -448,7 +448,7 @@ namespace ProyectoSolveCore.Controllers
         }
         private List<SelectListItem> GetPeriodosMantencion()
         {
-            var periodos = _context.PeriodosMantenimientos.OrderBy(p => p.PeriodoKilometraje).Select(p => new SelectListItem
+            var periodos = _context.Periodosmantenimientos.OrderBy(p => p.PeriodoKilometraje).Select(p => new SelectListItem
             {
                 Value = p.Id.ToString(),
                 Text = "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km"

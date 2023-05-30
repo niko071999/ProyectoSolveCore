@@ -221,7 +221,7 @@ namespace ProyectoSolveCore.Controllers
         public bool VerificarMantenimientoVehiculo(int id = 0)
         {
             int kmRecorrido = 0;
-            var fichaMant = _context.FichaMantencions
+            var fichaMant = _context.Fichamantencions
                 .Where(f => f.IdVehiculo == id)
                 .ToList();
             var kms = _context.Kilometrajes

@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 
 namespace ProyectoSolveCore.Models;
-
-public partial class UsuariosRole
+public partial class Usuariosrole
 {
     public int Id { get; set; }
+    public int Idusuario { get; set; }
+    public int Idrol { get; set; }
+    public string Trial829 { get; set; }
 
-    public int IdUsuario { get; set; }
+    public virtual Role IdrolNavigation { get; set; }
 
-    public int IdRol { get; set; }
-
-    public virtual Role IdRolNavigation { get; set; }
-
-    public virtual Usuario IdUsuarioNavigation { get; set; }
+    public virtual Usuario IdusuarioNavigation { get; set; }
 }

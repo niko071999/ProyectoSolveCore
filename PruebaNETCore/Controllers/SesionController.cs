@@ -32,7 +32,7 @@ namespace ProyectoSolveCore.Controllers
         {
             try 
             {
-                var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.UsuariosRoles)
+                var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.Usuariosroles)
                             .FirstOrDefaultAsync(u => u.Rut.Equals(user.Rut) && !u.Eliminado);
 
                 if (usuario == null)
@@ -48,8 +48,8 @@ namespace ProyectoSolveCore.Controllers
                     return View(user);
                 }
                 //Usuario verificado correctamente
-                var roles = await _context.UsuariosRoles.Where(ur => ur.IdUsuario == usuario.Id)
-                    .Select(ur => ur.IdRolNavigation).Select(r => r.Rol).ToListAsync();
+                var roles = await _context.Usuariosroles.Where(ur => ur.Idusuario == usuario.Id)
+                    .Select(ur => ur.IdrolNavigation).Select(r => r.Rol).ToListAsync();
                 bool autenticado = await AutenticarUsuario(usuario, roles);
 
                 return RedirectToAction("Agenda", "Home");
@@ -114,13 +114,13 @@ namespace ProyectoSolveCore.Controllers
                     return View(uc);
                 }
                 uc.ID = usuario.Id;
-                var UsuarioRole = ObtenerRoles(uc).Where(ur => ur.check).Select(ur => new UsuariosRole()
+                var UsuarioRole = ObtenerRoles(uc).Where(ur => ur.check).Select(ur => new Usuariosrole()
                 {
-                    IdRol = ur.IdRol,
-                    IdUsuario = ur.IdUsuario
+                    Idrol = ur.IdRol,
+                    Idusuario = ur.IdUsuario
                 });
 
-                await _context.UsuariosRoles.AddRangeAsync(UsuarioRole);
+                await _context.Usuariosroles.AddRangeAsync(UsuarioRole);
                 n = await _context.SaveChangesAsync();
                 if (n == 0)
                 {

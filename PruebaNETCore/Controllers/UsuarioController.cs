@@ -32,13 +32,13 @@ namespace ProyectoSolveCore.Controllers
                     Nombre = u.Nombre + " " + u.Apellido,
                     Departamento = u.IdDepartamentoNavigation.Departamento1,
                     NombreVehiculo = u.Conductores.SelectMany(c => c.Vehiculos).FirstOrDefault(),
-                    Roles = u.UsuariosRoles.Select(ur => ur.IdRolNavigation).Select(r => new vmRol()
+                    Roles = u.Usuariosroles.Select(ur => ur.IdrolNavigation).Select(r => new vmRol()
                     {
                         Id = r.Id,
                         rol = r.Rol,
                         IconRol = ObtenerIconRol(r.Id)
                     }).ToList(),
-                    Permisos = u.UsuariosRoles.Select(ur => ur.IdRolNavigation).SelectMany(r => r.RolesPermisos).Select(rp => rp.IdPermisoNavigation).Select(p => new VmPermiso()
+                    Permisos = u.Usuariosroles.Select(ur => ur.IdrolNavigation).SelectMany(r => r.RolesPermisos).Select(rp => rp.IdPermisoNavigation).Select(p => new VmPermiso()
                     {
                         Permiso = p.Permiso1,
                         IconPermiso = ObtenerIconPermiso(p.Id)
@@ -97,13 +97,13 @@ namespace ProyectoSolveCore.Controllers
                     return View(uc);
                 }
                 uc.ID = usuario.Id;
-                var UsuarioRole = ObtenerRoles(uc).Where(ur => ur.check).Select(ur => new UsuariosRole()
+                var UsuarioRole = ObtenerRoles(uc).Where(ur => ur.check).Select(ur => new Usuariosrole()
                 {
-                    IdRol = ur.IdRol,
-                    IdUsuario = ur.IdUsuario
+                    Idrol = ur.IdRol,
+                    Idusuario = ur.IdUsuario
                 });
 
-                await _context.UsuariosRoles.AddRangeAsync(UsuarioRole);
+                await _context.Usuariosroles.AddRangeAsync(UsuarioRole);
                 await _context.SaveChangesAsync();
 
                 // VERIFICA SI EXISTEN DATOS DEL CONDUCTOR, SI ESTÁN NULOS GUARDA EN BASE DE DATOS LOS DATOS DE USUARIO
@@ -119,10 +119,10 @@ namespace ProyectoSolveCore.Controllers
                     return RedirectToAction(nameof(VisualizarUsuarios));
                 }
                 //Se agrega el rol de conductor
-                await _context.UsuariosRoles.AddAsync(new UsuariosRole()
+                await _context.Usuariosroles.AddAsync(new Usuariosrole()
                 {
-                    IdRol = 6,
-                    IdUsuario = usuario.Id
+                    Idrol = 6,
+                    Idusuario = usuario.Id
                 });
                 await _context.SaveChangesAsync();
 
@@ -196,13 +196,13 @@ namespace ProyectoSolveCore.Controllers
                     NumeroPoliza = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).NumeroPoliza : null,
                     FechaEmitida = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).FechaEmision : null,
                     FecheVencimiento = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).FechaVencimiento : null,
-                    RolAdministrador = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 1),
-                    RolJefe = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 2),
-                    RolMantenedorVehiculos = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 3),
-                    RolMantendorUsuarios = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 4),
-                    RolSolicitador = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 5),
-                    RolMantenedorVehiculosMaq = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 7),
-                    RolMantenedorBitacora = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 8)
+                    RolAdministrador = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 1),
+                    RolJefe = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 2),
+                    RolMantenedorVehiculos = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 3),
+                    RolMantendorUsuarios = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 4),
+                    RolSolicitador = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 5),
+                    RolMantenedorVehiculosMaq = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 7),
+                    RolMantenedorBitacora = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 8)
                 }).FirstOrDefaultAsync();
                 if (usuario == null)
                 {
@@ -264,40 +264,40 @@ namespace ProyectoSolveCore.Controllers
                 await _context.SaveChangesAsync();
 
                 var UsuarioRole = ObtenerRoles(uc);
-                var RolesUsuario = await _context.UsuariosRoles.Where(ur => ur.IdUsuario == uc.ID).ToListAsync();
+                var RolesUsuario = await _context.Usuariosroles.Where(ur => ur.Idusuario == uc.ID).ToListAsync();
                 int contains = 0;//Cuenta si hubieron roles que se ingresaron a la base de datos para verificar
                 foreach (var ur in UsuarioRole)
                 {
-                    var usuarioRol = await _context.UsuariosRoles.FirstOrDefaultAsync(x =>
-                        x.IdRol == UsuarioRole[contains].IdRol
-                        && x.IdUsuario == UsuarioRole[contains].IdUsuario);
+                    var usuarioRol = await _context.Usuariosroles.FirstOrDefaultAsync(x =>
+                        x.Idrol == UsuarioRole[contains].IdRol
+                        && x.Idusuario == UsuarioRole[contains].IdUsuario);
 
                     if (usuarioRol != null)
                     {
                         if (!UsuarioRole[contains].check)
                         {
-                            _context.UsuariosRoles.Remove(usuarioRol); // Eliminar el registro
+                            _context.Usuariosroles.Remove(usuarioRol); // Eliminar el registro
                             await _context.SaveChangesAsync();
                         }
                         // No hacer nada si el rol existe y está seleccionado
                     }
                     else if (UsuarioRole[contains].check)
                     {
-                        var nuevoUsuarioRol = new UsuariosRole()
+                        var nuevoUsuarioRol = new Usuariosrole()
                         {
-                            IdUsuario = UsuarioRole[contains].IdUsuario,
-                            IdRol = UsuarioRole[contains].IdRol
+                            Idusuario = UsuarioRole[contains].IdUsuario,
+                            Idrol = UsuarioRole[contains].IdRol
                         };
-                        await _context.UsuariosRoles.AddAsync(nuevoUsuarioRol); // Agregar el nuevo registro
+                        await _context.Usuariosroles.AddAsync(nuevoUsuarioRol); // Agregar el nuevo registro
                         await _context.SaveChangesAsync();
                     }
                     contains++;
                 }
 
                 // VERIFICA SI EXISTEN DATOS DEL CONDUCTOR, SI ESTÁN NULOS GUARDA EN BASE DE DATOS LOS DATOS DE USUARIO
-                var rolConductor = await _context.UsuariosRoles.FirstOrDefaultAsync(ur => 
-                    ur.IdRol == 6 
-                    && ur.IdUsuario == uc.ID);
+                var rolConductor = await _context.Usuariosroles.FirstOrDefaultAsync(ur => 
+                    ur.Idrol == 6 
+                    && ur.Idusuario == uc.ID);
                 if (uc.FechaEmitida == null || uc.FecheVencimiento == null || uc.NumeroPoliza == null)
                 {
                     //Quitar el id del conductor del vehiculo asignado
@@ -334,10 +334,10 @@ namespace ProyectoSolveCore.Controllers
 
                 if (rolConductor == null)
                 {
-                    await _context.UsuariosRoles.AddAsync(new UsuariosRole()
+                    await _context.Usuariosroles.AddAsync(new Usuariosrole()
                     {
-                        IdRol = 6,
-                        IdUsuario = uc.ID,
+                        Idrol = 6,
+                        Idusuario = uc.ID,
                     });
                 }
 

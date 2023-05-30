@@ -174,7 +174,7 @@
         parseElement: function (element, skipAttach) {
             /// <summary>
             /// Parses a single HTML element for unobtrusive validation attributes.
-            /// </summary>
+            /// <summary>
             /// <param name="element" domElement="true">The HTML element to be parsed.</param>
             /// <param name="skipAttach" type="Boolean">[Optional] true to skip attaching the
             /// validation to the form. If parsing just this single element, you should specify true.
@@ -227,7 +227,7 @@
             /// Parses all the HTML elements in the specified selector. It looks for input elements decorated
             /// with the [data-val=true] attribute value and enables validation according to the data-val-*
             /// attribute values.
-            /// </summary>
+            
             /// <param name="selector" type="String">Any valid jQuery selector.</param>
 
             // $forms includes all forms in selector's DOM hierarchy (parent, children and self) that have at least one

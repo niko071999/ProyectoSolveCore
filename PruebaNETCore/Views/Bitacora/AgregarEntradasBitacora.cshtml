@@ -95,7 +95,12 @@
                                                 <span class="badge text-bg-secondary">@count</span>
                                             </button>
                                         }
-                                        <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar solo esta entrada</button>
+                                        @if (count == 1)
+                                        {
+                                            <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar entrada</button>
+                                        }else{
+                                            <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar solo esta entrada</button>
+                                        }
                                         <a role="button" class="ms-1 btn btn-secondary" asp-action="VisualizarBitacora">Volver a la bitacora</a>
                                     </div>
                                 </div>

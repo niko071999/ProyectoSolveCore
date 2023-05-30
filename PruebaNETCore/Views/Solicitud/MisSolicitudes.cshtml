@@ -87,7 +87,7 @@
                                             @if (solicitud.Estado == 1)
                                             {
                                                 @*&& solicitud.FechaSalida >= DateTime.Now*@
-                                                <a asp-controller="Bitacora" asp-action="AgregarEntradaBitacora" asp-route-id="@solicitud.id"
+                                                <a asp-controller="Bitacora" asp-action="AgregarEntradasBitacora" asp-route-id="@solicitud.id"
                                                     role="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top"
                                                     data-bs-title="Agregar entrada a la bitácora"><i class="fas fa-book-open fa-lg"></i></a>
                                             }

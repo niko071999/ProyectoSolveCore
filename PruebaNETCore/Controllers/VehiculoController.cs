@@ -88,31 +88,32 @@ namespace ProyectoSolveCore.Controllers
 
                 viewVehiculos = await VerificarKmVehiculo(viewVehiculos);
 
-                List<vmVehiculo> NewList = new();
-                if (fv.IdCategoria == 0 && string.IsNullOrEmpty(fv.Marca) && string.IsNullOrEmpty(fv.Modelo) 
+                
+                if (fv.IdCategoria == 0 && string.IsNullOrEmpty(fv.Marca) && string.IsNullOrEmpty(fv.Modelo)
                     && string.IsNullOrEmpty(fv.Patente) && fv.OpcionEstado == 0)
                 {
                     return View(viewVehiculos);
                 }
+                List<vmVehiculo> NewList = new(viewVehiculos);
                 if (fv.IdCategoria > 0)
                 {
-                    NewList = viewVehiculos.Where(v => v.IdCategoria == fv.IdCategoria).ToList();
+                    NewList = NewList.Where(v => v.IdCategoria == fv.IdCategoria).ToList();
                 }
                 if (!string.IsNullOrEmpty(fv.Marca))
                 {
-                    NewList = viewVehiculos.Where(v => v.Marca.Equals(fv.Marca)).ToList();
+                    NewList = NewList.Where(v => v.Marca.Equals(fv.Marca)).ToList();
                 }
                 if (!string.IsNullOrEmpty(fv.Modelo))
                 {
-                    NewList = viewVehiculos.Where(v => v.Modelo.Equals(fv.Modelo)).ToList();
+                    NewList = NewList.Where(v => v.Modelo.Equals(fv.Modelo)).ToList();
                 }
                 if (!string.IsNullOrEmpty(fv.Patente))
                 {
-                    NewList = viewVehiculos.Where(v => v.Patente.Equals(fv.Patente)).ToList();
+                    NewList = NewList.Where(v => v.Patente.Equals(fv.Patente)).ToList();
                 }
                 if (fv.OpcionEstado > 0)
                 {
-                    NewList = viewVehiculos.Where(v => v.Estado == fv.OpcionEstado).ToList();
+                    NewList = NewList.Where(v => v.Estado == fv.OpcionEstado).ToList();
                 }
 
                 ViewBag.Patente = new SelectList(GetPatentes(NewList), "Value", "Text", fv.Patente);
@@ -148,75 +149,80 @@ namespace ProyectoSolveCore.Controllers
         /// <returns>Una lista de objetos vmVehiculo con los mensajes de estado asignados.</returns>
         private async Task<List<vmVehiculo>> VerificarKmVehiculo(List<vmVehiculo> viewViehiculos)
         {
-            List<vmVehiculo> newList = new();
-            var fichaMants = await _context.Fichamantencions.ToListAsync();
-            var kms = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.Fichamantencions)
-                    .ToListAsync();
-            var vehiculoIds = viewViehiculos.Select(v => v.Id).ToList();
-            var periodos = await _context.Vehiculos.Include(v => v.IdPeriodoKilometrajeNavigation)
-                .Where(v => vehiculoIds.Contains(v.Id)).ToListAsync();
-
-            foreach (var v in viewViehiculos)
+            try
             {
-                if (v.Estado == 1 || v.Estado == 2)
-                {
-                    var periodo = periodos.FirstOrDefault(p => p.Id == v.Id)?.IdPeriodoKilometrajeNavigation?.PeriodoKilometraje ?? 0;
-                    var fichaMant = fichaMants.FirstOrDefault(f => f.IdVehiculo == v.Id);
-                    var vehiculoKms = kms.Where(k => k.IdVehiculo == v.Id).ToList();
-                    var vehiculoFichaMant = fichaMants.LastOrDefault(f => f.IdVehiculo == v.Id);
+                List<vmVehiculo> newList = new();
+                var fichaMants = await _context.Fichamantencions.ToListAsync();
+                var kms = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.Fichamantencions)
+                        .ToListAsync();
+                var vehiculoIds = viewViehiculos.Select(v => v.Id).ToList();
+                var periodos = await _context.Vehiculos.Include(v => v.IdPeriodoKilometrajeNavigation)
+                    .Where(v => vehiculoIds.Contains(v.Id)).ToListAsync();
 
-                    int kmRecorrido;
-                    if (fichaMant == null)
+                foreach (var v in viewViehiculos)
+                {
+                    if (v.Estado == 1 || v.Estado == 2)
                     {
-                        kmRecorrido = vehiculoKms.Sum(k => k.KilometrajeFinal - k.KilometrajeInicial);
+                        var periodo = periodos.FirstOrDefault(p => p.Id == v.Id)?.IdPeriodoKilometrajeNavigation?.PeriodoKilometraje ?? 0;
+                        var vehiculoKms = kms.Where(k => k.IdVehiculo == v.Id).ToList();
+                        var vehiculoFichaMant = fichaMants.LastOrDefault(f => f.IdVehiculo == v.Id);
+
+                        int kmRecorrido;
+                        if (vehiculoFichaMant == null)
+                        {
+                            kmRecorrido = vehiculoKms.Sum(k => k.KilometrajeFinal - k.KilometrajeInicial);
+                        }
+                        else
+                        {
+                            kmRecorrido = vehiculoFichaMant.Kilometraje - vehiculoKms
+                                .Sum(k => k.KilometrajeFinal);
+                        }
+
+                        if (kmRecorrido == 0)
+                        {
+                            v.MensajeEstado = "El vehiculo se encuentra en 0 Kilometros";
+                            newList.Add(v);
+                            continue;
+                        }
+
+                        double porc = ((double)kmRecorrido / periodo) * 100;
+                        if (periodo <= kmRecorrido)
+                        {
+                            v.MensajeEstado = "El vehiculo necesita obligatoriamente mantencion";
+                            v.Estado = 0; //Estado: Desahabilitado
+                            var vehiculo = await _context.Vehiculos.FindAsync(v.Id);
+                            if (vehiculo != null && vehiculo.Estado)
+                            {
+                                vehiculo.Estado = false;
+                                await _context.SaveChangesAsync();
+                            }
+                            newList.Add(v);
+                            continue;
+                        }
+
+                        if (porc > 50)
+                        {
+                            var diferencia = periodo - kmRecorrido;
+                            v.Estado = 2;//Estado: Advertencia
+                            v.MensajeEstado = $"Al vehículo le faltan {diferencia} km para hacerle mantencion";
+                            newList.Add(v);
+                            continue;
+                        }
+
+                        v.MensajeEstado = "El vehículo esta en perfecto estado";
+                        newList.Add(v);
                     }
                     else
                     {
-                        kmRecorrido = fichaMant.Kilometraje - vehiculoKms
-                            .Where(k => k.FechaCreacion >= vehiculoFichaMant.FechaMantencion)
-                            .Sum(k => k.KilometrajeFinal);
-                    }
-
-                    if (kmRecorrido == 0)
-                    {
-                        v.MensajeEstado = "El vehiculo se encuentra en 0 Kilometros";
                         newList.Add(v);
-                        continue;
                     }
-
-                    double porc = ((double)kmRecorrido / periodo) * 100;
-                    if (periodo <= kmRecorrido)
-                    {
-                        v.MensajeEstado = "El vehiculo necesita obligatoriamente mantencion";
-                        v.Estado = 0; //Estado: Desahabilitado
-                        var vehiculo = await _context.Vehiculos.FindAsync(v.Id);
-                        if (vehiculo != null && vehiculo.Estado)
-                        {
-                            vehiculo.Estado = false;
-                            await _context.SaveChangesAsync();
-                        }
-                        newList.Add(v);
-                        continue;
-                    }
-
-                    if (porc > 50)
-                    {
-                        var diferencia = periodo - kmRecorrido;
-                        v.Estado = 2;//Estado: Advertencia
-                        v.MensajeEstado = $"Al vehículo le faltan {diferencia} km para hacerle mantencion";
-                        newList.Add(v);
-                        continue;
-                    }
-
-                    v.MensajeEstado = "El vehículo esta en perfecto estado";
-                    newList.Add(v);
                 }
-                else
-                {
-                    newList.Add(v);
-                }
+                return newList;
             }
-            return newList;
+            catch (Exception ex)
+            {
+                return new List<vmVehiculo>();
+            }
         }
 
         public IActionResult AgregarVehiculo()

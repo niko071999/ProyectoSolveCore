@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
-using PruebaNETCore.Models;
-using System.Linq;
-using System.Security.Claims;
+using System.Collections;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -23,12 +21,17 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
-                var usuarios = _context.Usuarios.Where(u => !u.Eliminado).Select(u => new vmUsuario()
+                var usuarios = _context.Usuarios.Where(u => !u.Eliminado 
+                    && u.Id != 1 
+                    && u.Id != 2
+                    && u.Id != int.Parse(User.FindFirst("Id").Value))
+                .Select(u => new vmUsuario()
                 {
                     Id = u.Id,
                     Rut = u.Rut,
                     Nombre = u.Nombre + " " + u.Apellido,
                     Departamento = u.IdDepartamentoNavigation.Departamento1,
+                    NombreVehiculo = u.Conductores.SelectMany(c => c.Vehiculos).FirstOrDefault(),
                     Roles = u.UsuariosRoles.Select(ur => ur.IdRolNavigation).Select(r => new vmRol()
                     {
                         Id = r.Id,
@@ -47,13 +50,15 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return View(new vmUsuario());
             }
         }
-        public ActionResult AgregarUsuario()
+        public async Task<IActionResult> AgregarUsuario()
         {
+            ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", null, "Group"); 
             return View(new vmUsuarioConductorRoles());
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AgregarUsuario(vmUsuarioConductorRoles uc)
@@ -65,6 +70,7 @@ namespace ProyectoSolveCore.Controllers
             var userAny = await _context.Usuarios.Where(u => !u.Eliminado).AnyAsync(u => u.Rut == uc.rut);
             if (userAny)//ERROR: Verifica si existe otro usuario con el mismo rut
             {
+                ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                 return View(uc);
             }
             try
@@ -87,6 +93,7 @@ namespace ProyectoSolveCore.Controllers
                 int n = await _context.SaveChangesAsync();
                 if (n == 0)
                 {
+                    ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                     return View(uc);
                 }
                 uc.ID = usuario.Id;
@@ -104,6 +111,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     if (n == 0)
                     {
+                        ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                         return View(uc);
                     }
 
@@ -128,18 +136,37 @@ namespace ProyectoSolveCore.Controllers
                 };
 
                 _context.Conductores.Add(conductor);
+
                 n = await _context.SaveChangesAsync();
 
                 if (n == 0)
                 {
+                    ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                     return View(uc);
                 }
 
+                if (uc.id_vehiculo.HasValue)
+                {
+                    var vehiculo = await _context.Vehiculos.FindAsync(uc.id_vehiculo);
+                    if (vehiculo == null) //VERIFICA SI EL ELEMENTO ES VACIO, SI ES ASI, DIRIGE A LA VISTA
+                    {
+                        ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
+                        return View(uc);
+                    }
+                    vehiculo.IdConductor = conductor.Id;
+                    n = await _context.SaveChangesAsync();
+                    if (n == 0)
+                    {
+                        ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
+                        return View(uc);
+                    }
+                }
                 await transaction.CommitAsync();
                 return RedirectToAction("VisualizarUsuarios");
             }
             catch (Exception ex)
             {
+                ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                 return View(uc);
             }
         }
@@ -152,15 +179,20 @@ namespace ProyectoSolveCore.Controllers
                     string mensaje = "Hubo un error al recibir los datos";
                     return PartialView("_PartialModalError", mensaje);
                 }
-                var usuario = await _context.Usuarios.Where(u => !u.Eliminado && u.Id == id).Select(u => new vmUsuarioConductorRoles()
+                var usuario = await _context.Usuarios
+                    .Where(u => !u.Eliminado && u.Id == id).Select(u => new vmUsuarioConductorRoles()
                 {
                     ID = u.Id,
+                    rutold = u.Rut,
                     rut = u.Rut,
                     nombre = u.Nombre,
                     apellido = u.Apellido,
+                    login = u.Login,
                     id_departamento = u.IdDepartamentoNavigation.Id,
                     direccion_img = u.DireccionImg,
                     id_conductor = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).Id:null,
+                    id_vehiculo = u.Conductores.Select(c => c.Vehiculos).Any() ? 
+                        u.Conductores.SelectMany(c => c.Vehiculos).FirstOrDefault().Id : null,
                     NumeroPoliza = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).NumeroPoliza : null,
                     FechaEmitida = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).FechaEmision : null,
                     FecheVencimiento = u.Conductores.Any() ? u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).FechaVencimiento : null,
@@ -168,18 +200,23 @@ namespace ProyectoSolveCore.Controllers
                     RolJefe = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 2),
                     RolMantenedorVehiculos = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 3),
                     RolMantendorUsuarios = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 4),
-                    RolSolicitador = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 5)
+                    RolSolicitador = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 5),
+                    RolMantenedorVehiculosMaq = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 7),
+                    RolMantenedorBitacora = u.UsuariosRoles.Any(ur => ur.IdUsuario == u.Id && ur.IdRol == 8)
                 }).FirstOrDefaultAsync();
                 if (usuario == null)
                 {
                     return PartialView("_PartialModalError", usuario);
                 }
-                ViewBag.id_departamento = new SelectList(_context.Departamentos.ToList(), "Id", "Departamento1", usuario.id_departamento);
+                var departamentos = await _context.Departamentos.ToListAsync();
+                ViewBag.id_departamento = new SelectList(departamentos, "Id", "Departamento1", usuario.id_departamento);
+                ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", usuario.id_vehiculo.HasValue
+                           ? usuario.id_vehiculo : null, "Group");
                 return PartialView("_EditarUsuario", usuario);
             }
             catch (Exception ex)
             {
-                string mensaje = "Hubo un error inesperado: "+ex.Message;
+                string mensaje = "Hubo un error inesperado";
                 return PartialView("_PartialModalError",mensaje);
             }
         }
@@ -194,53 +231,53 @@ namespace ProyectoSolveCore.Controllers
                     type = "error"
                 });
             }
-            var usuarios = await _context.Usuarios.Where(u => !u.Eliminado && u.Rut == uc.rut).ToListAsync();
-            if (usuarios.Count > 1)
-            {
-                //Verifico si hay mas de 1 elemento con el rut del usuario
-                return Json(new
-                {
-                    mensaje = "El rut pertenece a otro usuario registrado",
-                    type = "error"
-                });
-            }
             try
             {
+                var u = await _context.Usuarios.FirstOrDefaultAsync(u => !u.Eliminado && u.Rut == uc.rut);
+                if (u != null)
+                {
+                    if (uc.rut != uc.rutold)
+                    {
+                        //Verifico si hay mas de 1 elemento con el rut del usuario
+                        return Json(new
+                        {
+                            mensaje = "El rut pertenece a otro usuario registrado",
+                            type = "error"
+                        });
+                    }
+                }
                 using var transaction = await _context.Database.BeginTransactionAsync();
-                int contains = 0;//Cuenta si hubieron roles que se ingresaron a la base de datos para verificar
 
-                var usuario = new Usuario()
+                var usuario = await _context.Usuarios.FindAsync(uc.ID);
+                usuario.Rut = uc.rut;
+                usuario.Nombre = uc.nombre;
+                usuario.Apellido = uc.apellido;
+                usuario.Login = uc.login;
+                if (!string.IsNullOrEmpty(uc.clave))
                 {
-                    Id = uc.ID,
-                    Rut = uc.rut,
-                    Nombre = uc.nombre,
-                    Apellido = uc.apellido,
-                    Clave = !string.IsNullOrEmpty(uc.clave) ? Encrypt.EncryptPassword(uc.clave) : "",
-                    IdDepartamento = uc.id_departamento,
-                    DireccionImg = "",
-                    Eliminado = false
-                };
-                if (string.IsNullOrEmpty(uc.clave))
-                {
-                    //Si la clave viene vacia o nula, no se modifica en la base de datos
-                    _context.Entry(usuario).Property(u => u.Clave).IsModified = false;
+                    usuario.Clave = Encrypt.EncryptPassword(uc.clave);
                 }
-                else
-                {
-                    _context.Update(usuario).State = EntityState.Modified;
-                }
+                usuario.IdDepartamento = uc.id_departamento;
+                usuario.DireccionImg = uc.direccion_img;
+                usuario.Eliminado = false;
+                _context.Entry(usuario).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
                 var UsuarioRole = ObtenerRoles(uc);
-                var RolesUsuario = _context.UsuariosRoles.Where(ur => ur.IdUsuario == uc.ID).ToList();
+                var RolesUsuario = await _context.UsuariosRoles.Where(ur => ur.IdUsuario == uc.ID).ToListAsync();
+                int contains = 0;//Cuenta si hubieron roles que se ingresaron a la base de datos para verificar
                 foreach (var ur in UsuarioRole)
                 {
-                    var usuarioRol = await _context.UsuariosRoles.FirstOrDefaultAsync(x => x.IdRol == UsuarioRole[contains].IdRol 
-                                        && x.IdUsuario == UsuarioRole[contains].IdUsuario);
+                    var usuarioRol = await _context.UsuariosRoles.FirstOrDefaultAsync(x =>
+                        x.IdRol == UsuarioRole[contains].IdRol
+                        && x.IdUsuario == UsuarioRole[contains].IdUsuario);
 
                     if (usuarioRol != null)
                     {
                         if (!UsuarioRole[contains].check)
                         {
                             _context.UsuariosRoles.Remove(usuarioRol); // Eliminar el registro
+                            await _context.SaveChangesAsync();
                         }
                         // No hacer nada si el rol existe y está seleccionado
                     }
@@ -251,27 +288,42 @@ namespace ProyectoSolveCore.Controllers
                             IdUsuario = UsuarioRole[contains].IdUsuario,
                             IdRol = UsuarioRole[contains].IdRol
                         };
-                        _context.UsuariosRoles.Add(nuevoUsuarioRol); // Agregar el nuevo registro
+                        await _context.UsuariosRoles.AddAsync(nuevoUsuarioRol); // Agregar el nuevo registro
+                        await _context.SaveChangesAsync();
                     }
                     contains++;
                 }
+
                 // VERIFICA SI EXISTEN DATOS DEL CONDUCTOR, SI ESTÁN NULOS GUARDA EN BASE DE DATOS LOS DATOS DE USUARIO
-                var rolConductor = _context.UsuariosRoles.FirstOrDefault(ur => ur.IdRol == 6 && ur.IdUsuario == uc.ID);
+                var rolConductor = await _context.UsuariosRoles.FirstOrDefaultAsync(ur => 
+                    ur.IdRol == 6 
+                    && ur.IdUsuario == uc.ID);
                 if (uc.FechaEmitida == null || uc.FecheVencimiento == null || uc.NumeroPoliza == null)
                 {
+                    //Quitar el id del conductor del vehiculo asignado
+                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.ID);
+                    if (vehiculo.IdConductor.HasValue)
+                    {
+                        vehiculo.IdConductor = null;
+                        _context.Vehiculos.Update(vehiculo);
+                        await _context.SaveChangesAsync();
+                    }
+
                     //Borrar rol conductor
                     if (rolConductor != null)
                     {
                         _context.Remove(rolConductor);
+                        await _context.SaveChangesAsync();
                     }
                     //Borrar conductor
                     var c = _context.Conductores.Find(uc.id_conductor);
                     if (c != null)
                     {
                         _context.Conductores.Remove(c);
+                        await _context.SaveChangesAsync();
                     }
 
-                    await _context.SaveChangesAsync();
+                    if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
                     return Json(new
                     {
@@ -290,17 +342,38 @@ namespace ProyectoSolveCore.Controllers
                 }
 
                 //Actualizar el conductor
-                var conductor = new Conductore()
+                var conductor = await _context.Conductores.FindAsync(uc.id_conductor);
+                if (conductor != null)
                 {
-                    Estado = true,
-                    FechaEmision = (DateTime)uc.FechaEmitida,
-                    FechaVencimiento = (DateTime)uc.FecheVencimiento,
-                    IdUsuario = usuario.Id,
-                    NumeroPoliza = (int)uc.NumeroPoliza,
-                };
+                    conductor.Estado = true;
+                    conductor.FechaEmision = (DateTime)uc.FechaEmitida;
+                    conductor.FechaVencimiento = (DateTime)uc.FecheVencimiento;
+                    conductor.IdUsuario = usuario.Id;
+                    conductor.NumeroPoliza = (int)uc.NumeroPoliza;
+                }
+                else
+                {
+                    conductor = new Conductore()
+                    {
+                        Estado = true,
+                        FechaEmision = (DateTime)uc.FechaEmitida,
+                        FechaVencimiento = (DateTime)uc.FecheVencimiento,
+                        IdUsuario = usuario.Id,
+                        NumeroPoliza = (int)uc.NumeroPoliza,
+                    };
+                }
                 _context.Conductores.Update(conductor);
-                await _context.SaveChangesAsync();
 
+                if (uc.id_vehiculo.HasValue)
+                {
+                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.id_vehiculo);
+                    if (uc.id_conductor != vehiculo.IdConductor)
+                    {
+                        vehiculo.IdConductor = conductor.Id;
+                        _context.Update(vehiculo);
+                    }
+                }
+                if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return Json(new
                 {
@@ -317,27 +390,6 @@ namespace ProyectoSolveCore.Controllers
                 });
             }
         }
-        private static List<vmRolCheck> ObtenerRoles(vmUsuarioConductorRoles uc)
-        {
-            List<vmRolCheck> lur = new();
-            Dictionary<int, bool> roles = new()
-            {
-                { 1, uc.RolAdministrador },
-                { 2, uc.RolJefe },
-                { 3, uc.RolMantenedorVehiculos },
-                { 4, uc.RolMantendorUsuarios },
-                { 5, uc.RolSolicitador },
-                { 7, uc.RolMantenedorVehiculosMaq },
-                { 8, uc.RolMantenedorBitacora }
-            };
-
-            for (int i = 0; i < 5; i++)
-            {
-                lur.Add(new vmRolCheck { IdRol = i+1, IdUsuario = uc.ID, check = roles[i+1] });
-            }
-            return lur;
-        }
-
         public async Task<PartialViewResult> EliminarUsuario(int id = 0)
         {
             try
@@ -409,6 +461,40 @@ namespace ProyectoSolveCore.Controllers
                     type = "danger"
                 });
             }
+        }
+        private static List<vmRolCheck> ObtenerRoles(vmUsuarioConductorRoles uc)
+        {
+            List<vmRolCheck> lur = new();
+            Dictionary<int, bool> roles = new()
+            {
+                { 1, uc.RolAdministrador },
+                { 2, uc.RolJefe },
+                { 3, uc.RolMantenedorVehiculos },
+                { 4, uc.RolMantendorUsuarios },
+                { 5, uc.RolSolicitador },
+                { 7, uc.RolMantenedorVehiculosMaq },
+                { 8, uc.RolMantenedorBitacora }
+            };
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (i + 1 != 6)
+                {
+                    lur.Add(new vmRolCheck { IdRol = i + 1, IdUsuario = uc.ID, check = roles[i + 1] });
+                }
+            }
+            return lur;
+        }
+        private async Task<List<SelectListWithGroups>> GetVehiculosWithCategoria()
+        {
+            return await _context.Vehiculos.Include(v => v.IdCategoriaNavigation)
+                    .Where(v => !v.Eliminado)
+                    .Select(v => new SelectListWithGroups()
+                    {
+                        Value = v.Id.ToString(),
+                        Text = $"{v.Patente} - {v.Marca} {v.Modelo}",
+                        Group = v.IdCategoriaNavigation.Categoria1
+                    }).ToListAsync();
         }
         private static string ObtenerIconRol(int id_rol)
         {

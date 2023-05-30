@@ -2,6 +2,8 @@
 @{
     var s = Model.solicitud;
     string estado = string.Empty;
+    string border = string.Empty;
+    bool isNull = s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id) == null;
     switch (s.Estado)
     {
         case 0:
@@ -9,18 +11,21 @@
             break;
         case 1:
             estado = "Aprobada";
+            border = "border-success text-success";
             break;
         case 2:
             estado = "Rechazada";
+            border = "border-danger text-danger";
             break;
         case 3:
             estado = "Finalizada";
+            border = "border-primary text-primary";
             break;
     }
 }
 <div class="modal-dialog modal-lg">
     <div class="modal-content fw-bold">
-        <div class="modal-header">
+        <div class="modal-header text-bg-primary">
             <h5 class="modal-title" id="exampleModalLabel">Ficha de la solicitud</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -29,17 +34,17 @@
                 <div class="col col-lg-4 col-md-12">
                     <label for="inputFechaSolicitado" class="form-label">Fecha solicitada</label>
                     <input type="text" class="form-control" id="inputFechaSolicitado"
-                           value="@s.FechaSolicitado" disabled>
+                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm:ss}", s.FechaSolicitado))" disabled>
                 </div>
                 <div class="col col-lg-4 col-sm-12">
                     <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                           value="@s.FechaSalida" disabled>
+                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", s.FechaSalida)) Hrs" disabled>
                 </div>
                 <div class="col col-lg-4 col-sm-12">
                     <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                           value="@s.FechaLlegada" disabled>
+                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", s.FechaLlegada)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputSolicitante" class="form-label">Nombre del solicitante</label>
@@ -48,24 +53,19 @@
                 </div>
                 <div class="col col-md-6">
                     <label for="inputEstado" class="form-label">Estado</label>
-                    <input type="text" class="form-control" id="inputEstado" value="@estado" disabled>
+                    <input type="text" class="form-control @border" id="inputEstado" value="@estado" disabled>
                 </div>
-                @if (s.IdConductor.HasValue)
-                {
-                    <div class="col col-md-6">
-                        <label for="inputConductor" class="form-label">Conductor</label>
-                        <input type="text" class="form-control" id="inputConductor"
-                           value="@s.IdConductorNavigation.IdUsuarioNavigation.Nombre @s.IdConductorNavigation.IdUsuarioNavigation.Apellido" disabled>
-                    </div>
-                }
-                else
-                {
-                    <div class="col col-md-6">
-                        <label for="inputConductor" class="form-label">Conductor</label>
-                        <input type="text" class="form-control text-danger" id="inputConductor"
-                           value="Sin conductor asignado" disabled>
-                    </div>
-                }
+                <div class="col col-12 @(s.Estado == 0 || s.Estado == 1 || s.Estado == 3 ? "visually-hidden" : string.Empty)">
+                    <label for="inputMotivoAprob" class="form-label">Motivo del rechazo de la solicitud</label>
+                    <textarea type="text" cols="2" class="form-control" id="inputMotivoAprob" disabled>@(isNull ? "Sin motivo" : s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id).Motivo)</textarea>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputConductor" class="form-label">Conductor</label>
+                    <input type="text" class="form-control" id="inputConductor"
+                           value="@(s.IdConductor.HasValue
+                            ? $"{s.IdConductorNavigation.IdUsuarioNavigation.Nombre} {s.IdConductorNavigation.IdUsuarioNavigation.Apellido}"
+                            : Html.Raw("Sin conductor asignado"))" disabled>
+                </div>
                 <div class="col col-md-6">
                     <label for="inputVehiculo" class="form-label">Vehiculo</label>
                     <input type="text" class="form-control" id="inputVehiculo"
@@ -87,24 +87,56 @@
                            value="@s.Destino" disabled>
                 </div>
                 <div class="col col-md-8">
-                    <label for="inputMotivo" class="form-label">Motivo</label>
+                    <label for="inputMotivo" class="form-label">Motivo del viaje</label>
                     <input type="text" class="form-control" id="inputMotivo"
                            value="@s.Motivo" disabled>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-center">
-                @if (Model.aprobacion)
-                {
-                    <button type="button" class="btn btn-success" data-id="@s.Id" onclick="ConfirmacionAprobacion(event)">
+            @if (Model.aprobacion){
+                <div class="modal-footer d-flex justify-content-center">
+                    <button id="btn_aprobarModal" type="button" class="btn btn-success" data-id="@s.Id">
                         <i class="fa-sharp fa-thumbs-up fa-sm"></i>
                         Aprobar solicitud
                     </button>
-                    <button type="button" class="btn btn-danger" data-id="@s.Id" onclick="ConfirmacionRechazar(event)">
+                    <button id="btn_rechazarModal" type="button" class="btn btn-danger" data-id="@s.Id">
                         <i class="fa-sharp fa-thumbs-down fa-sm"></i>
                         Rechazar solicitud
                     </button>
-                }
-            </div>
+                </div>
+            }
         </form>
     </div>
 </div>
+<script type="text/javascript">
+    if (document.getElementById('btn_aprobarModal') || document.getElementById('btn_rechazarModal')) {
+        var btn_aprobarModal = document.getElementById('btn_aprobarModal');
+        var btn_rechazarModal = document.getElementById('btn_rechazarModal');
+
+        btn_aprobarModal.addEventListener('click', function () {
+            var id = btn_aprobarModal.dataset.id;
+            $.ajax({
+                url: '/Solicitud/AsignarConductor?id=' + id,
+                type: 'GET',
+                success: function (result) {
+                    abrirModal(result);
+                },
+                error: function (xhr, error) {
+                    console.log(error);
+                }
+            });
+        });
+        btn_rechazarModal.addEventListener('click', function () {
+            var id = btn_rechazarModal.dataset.id;
+            $.ajax({
+                url: '/Solicitud/ConfirmacionRechazar?id=' + id,
+                type: 'GET',
+                success: function (result) {
+                    abrirModal(result);
+                },
+                error: function (status, error) {
+                    console.log(status, error);
+                }
+            });
+        });
+    }    
+</script>

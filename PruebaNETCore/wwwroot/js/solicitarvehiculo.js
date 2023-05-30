@@ -69,31 +69,37 @@ function obtenerPasajeros() {
 }
 
 function getVehiculos() {
-    var datos = {
-        fecha_salida: fecha_salida_input.value,
-        fecha_llegada: fecha_llegada_input.value
-    };
+    if (fecha_salida_input.value !== '' || fecha_llegada_input.value !== '') {
+        var datos = {
+            fecha_salida: fecha_salida_input.value,
+            fecha_llegada: fecha_llegada_input.value
+        };
 
-    $.ajax({
-        url: '/Solicitud/GetVehiculos',
-        type: 'POST',
-        dataType: 'json',
-        data: JSON.stringify(datos),
-        contentType: 'application/json',
-        success: function (response) {
-            if (response.data.length > 0) {
-                dropDown.innerHTML = '';
-                for (var i = 0; i < response.data.length; i++) {
-                    var option = document.createElement('option');
-                    option.value = response.data[i].Value;
-                    option.innerHTML = response.data[i].Text;
-                    console.log(response.data[i].Text);
-                    dropDown.appendChild(option);
+        $.ajax({
+            url: '/Solicitud/GetVehiculos',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(datos),
+            contentType: 'application/json',
+            success: function (response) {
+                console.log(response);
+                if (response.data.length > 0) {
+                    dropDown.innerHTML = '';
+                    for (var i = 0; i < response.data.length; i++) {
+                        var option = document.createElement('option');
+                        option.value = response.data[i].Value;
+                        option.innerHTML = response.data[i].Text;
+                        console.log(response.data[i].Text);
+                        dropDown.appendChild(option);
+                    }
+                    document.getElementById('idVehiculo').value = response.data[0].Value
+                } else {
+                    alert(response.mensaje);
                 }
-                document.getElementById('idVehiculo').value = response.data[0].Value
-            } else {
-                $.notify("No existen vehiculos en el sistema, si eres administrador o mantenedor de vehiculos, empieza por agregando uno", { type: "danger", button: "Confirmar", autoHide: false });
             }
-        }
-    });
+        });
+        return;
+    }
+    alert("Antes de desplegar vehiculos, se deben seleccionar la fecha de salida como la de llegada");
+
 }

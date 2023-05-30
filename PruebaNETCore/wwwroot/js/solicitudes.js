@@ -1,6 +1,8 @@
 ﻿$(document).ready(function () {
     $.fn.dataTable.moment('DD-MM-YYYY H:mm:ss');
     $('#tableSolicitudes').DataTable({
+        pageLength: 8,
+        lengthChange: false,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-CL.json',
         },
@@ -35,7 +37,7 @@ const MostrarFichaSolicitud = (boton) => {
         },
         error: function (xhr, error) {
             if (xhr.status === 400) {
-                $.notify(xhr.responseText, { type: 'error' });
+                alert(xhr.responseText);
             } else {
                 console.log(error);
             }

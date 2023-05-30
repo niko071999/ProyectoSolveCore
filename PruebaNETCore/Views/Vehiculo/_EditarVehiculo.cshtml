@@ -12,26 +12,40 @@
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="Eliminado" />
                         <input type="hidden" asp-for="DireccionImg" />
-                        <input type="hidden" asp-for="IdPeriodoKilometraje" />
                         <input type="hidden" asp-for="Estado" />
-                        <div class="col-md-6">
+                        <div class="col-md-2">
                             <label for="patente" class="form-label">Patente</label>
                             <input type="text" class="form-control" 
                                 placeholder="Ej. AA1122 o AABB11" asp-for="Patente" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-2">
+                            <label for="Year" class="form-label">Año</label>
+                            <input type="text" class="form-control" asp-for="Year" />
+                        </div>
+                        <div class="col-md-4">
                             <label for="marca" class="form-label">Marca</label>
                             <input type="text" class="form-control"
                                    placeholder="Ej. AA1122 o AABB11" asp-for="Marca" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="modelo" class="form-label">Modelo</label>
                             <input type="text" class="form-control"
                                    placeholder="Ej. AA1122 o AABB11" asp-for="Modelo" />
                         </div>
                         <div class="col col-md-6">
+                            <label for="inputMantenimiento" class="form-label">Categoria</label>
+                            <select class="form-select" asp-for="IdCategoria" asp-items="ViewBag.IdCategoria">
+                            </select>
+                        </div>
+                        <div class="col col-md-6">
                             <label for="inputMantenimiento" class="form-label">Periodos de mantenimiento</label>
                             <select class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
+                            </select>
+                        </div>
+                        <div class="col col-md-6">
+                            <label for="inputConductor" class="form-label">Asignar conductor</label>
+                            <select id="inputConductor" class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor">
+                                <option value="">Sin asignar conductor</option>
                             </select>
                         </div>
                         @*<div class="col-md-6">
@@ -83,7 +97,7 @@
             objeto[key] = value
         }
 
-        console.log(objeto);
+        //console.log(objeto);
 
         $.ajax({
             url: '/Vehiculo/EditarVehiculo',

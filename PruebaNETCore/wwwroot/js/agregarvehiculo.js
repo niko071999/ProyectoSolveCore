@@ -16,16 +16,19 @@ function obtenerPeriodos() {
         url: '/Vehiculo/GetPeriodosMantencion',
         type: 'GET',
         success: function (result) {
-            dropDown.innerHTML = '';
-            for (var i = 0; i < result.length; i++) {
-                var option = document.createElement('option');
-                option.value = result[i].Value;
-                option.innerHTML = result[i].Text;
-                dropDown.appendChild(option);
+            if (result !== null || result.length > 0) {
+                dropDown.innerHTML = '';
+                for (var i = 0; i < result.length; i++) {
+                    var option = document.createElement('option');
+                    option.value = result[i].Value;
+                    option.innerHTML = result[i].Text;
+                    dropDown.appendChild(option);
+                }
             }
+            alert("No existen registros de periodos de mantención");
         },
         error: function (xhr, error) {
-            console.log(error);
+            alert(error);
         }
     });
 }

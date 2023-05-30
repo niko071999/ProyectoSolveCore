@@ -183,6 +183,9 @@ public partial class ModelData : DbContext
         modelBuilder.Entity<Kilometraje>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnType("datetime")
+                .HasColumnName("fecha_creacion");
             entity.Property(e => e.IdVehiculo).HasColumnName("id_vehiculo");
             entity.Property(e => e.KilometrajeFinal).HasColumnName("kilometraje_final");
             entity.Property(e => e.KilometrajeInicial).HasColumnName("kilometraje_inicial");
@@ -330,16 +333,13 @@ public partial class ModelData : DbContext
         modelBuilder.Entity<Vehiculo>(entity =>
         {
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Año)
-                .IsRequired()
-                .HasMaxLength(10)
-                .HasColumnName("año");
             entity.Property(e => e.DireccionImg)
                 .HasMaxLength(256)
                 .HasColumnName("direccion_img");
             entity.Property(e => e.Eliminado).HasColumnName("eliminado");
             entity.Property(e => e.Estado).HasColumnName("estado");
             entity.Property(e => e.IdCategoria).HasColumnName("id_categoria");
+            entity.Property(e => e.IdConductor).HasColumnName("id_conductor");
             entity.Property(e => e.IdPeriodoKilometraje).HasColumnName("id_periodo_kilometraje");
             entity.Property(e => e.Marca)
                 .IsRequired()
@@ -353,10 +353,18 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("patente");
+            entity.Property(e => e.Year)
+                .IsRequired()
+                .HasMaxLength(10)
+                .HasColumnName("year");
 
             entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Vehiculos)
                 .HasForeignKey(d => d.IdCategoria)
                 .HasConstraintName("FK_Vehiculos_Categorias");
+
+            entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.Vehiculos)
+                .HasForeignKey(d => d.IdConductor)
+                .HasConstraintName("FK_Vehiculos_Conductores");
 
             entity.HasOne(d => d.IdPeriodoKilometrajeNavigation).WithMany(p => p.Vehiculos)
                 .HasForeignKey(d => d.IdPeriodoKilometraje)

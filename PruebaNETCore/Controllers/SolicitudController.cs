@@ -7,7 +7,11 @@ using Newtonsoft.Json;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
+using ProyectoSolveCore.Models.ViewModelsFilter;
 using System.Security.Claims;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -27,12 +31,114 @@ namespace ProyectoSolveCore.Controllers
         [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> VisualizarSolicitudes()
         {
-            var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
+            if (!await _context.Solicitudes.AnyAsync())
+            {
+                return View(new List<Solicitude>());
+            }
+            var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation)
+                .Include(s => s.IdVehiculoNavigation.IdCategoriaNavigation).Include(s => s.Aprobaciones)
                 .OrderByDescending(s => s.FechaSolicitado)
                 .ToListAsync();
+
+            ViewBag.Estado = new SelectList(ObtenerEstados(), "Value", "Text");
+            ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
+            ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
+            ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+            ViewBag.FechaDesde = await _context.Solicitudes.AnyAsync() ? await _context.Solicitudes.MinAsync(s => s.FechaSolicitado)
+                    : DateTime.Now;
+            ViewBag.FechaHasta = await _context.Solicitudes.MaxAsync(s => s.FechaSolicitado);
+            ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
+
             return View(solicitudes);
         }
-        
+        [HttpPost]
+        public async Task<IActionResult> VisualizarSolicitudes(vmFiltrosSolicitudes fs)
+        {
+            try
+            {
+                var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
+                        .ToListAsync();
+
+                List<Solicitude> NewList = new();
+
+                if (fs == null)
+                {
+                    return View(solicitudes);
+                }
+                //Verificar si seleciono algun estado, destino o vehiculo
+                if (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo)
+                    && fs.FechaDesde == DateTime.MinValue)
+                {
+                    return View(solicitudes);
+                }
+                if (fs.Estado > -1)
+                {
+                    NewList = solicitudes.Where(s => s.Estado == fs.Estado).ToList();
+                }
+                if (string.IsNullOrEmpty(fs.Destino))
+                {
+                    NewList = solicitudes.Where(s => s.Destino.Equals(fs.Destino)).ToList();
+                }
+                if (string.IsNullOrEmpty(fs.Vehiculo))
+                {
+                    NewList = solicitudes.Where(s =>
+                        string.Equals($"{s.IdVehiculoNavigation.Patente} - {s.IdVehiculoNavigation.Marca} {s.IdVehiculoNavigation.Modelo}"
+                            , fs.Vehiculo)).ToList();
+                }
+                if (fs.FechaHasta == DateTime.MinValue)
+                {
+                    if (fs.Opcion == 1)
+                    {
+                        NewList = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde).ToList();
+                    }
+                    if (fs.Opcion == 2)
+                    {
+                        NewList = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde).ToList();
+                    }
+                    if (fs.Opcion == 3)
+                    {
+                        NewList = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde).ToList();
+                    }
+                }
+                else
+                {
+                    if (fs.Opcion == 1)
+                    {
+                        NewList = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde
+                            && s.FechaSolicitado <= fs.FechaHasta)
+                            .ToList();
+                    }
+                    if (fs.Opcion == 2)
+                    {
+                        NewList = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde
+                            && s.FechaSalida <= fs.FechaHasta)
+                            .ToList();
+                    }
+                    if (fs.Opcion == 3)
+                    {
+                        NewList = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde
+                            && s.FechaLlegada <= fs.FechaHasta)
+                            .ToList();
+                    }
+                }
+
+                ViewBag.Estado = new SelectList(ObtenerEstados(), "Value", "Text");
+                ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
+                ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", fs.Vehiculo, "Group");
+                ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+                ViewBag.FechaDesde = fs.FechaDesde;
+                ViewBag.FechaHasta = fs.FechaHasta;
+                ViewBag.Opcion = fs.Opcion;
+
+                return View(NewList);
+            }
+            catch (Exception ex)
+            {
+                var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
+                        .ToListAsync();
+                return View(solicitudes);
+            }
+        }
         //Este metodo funciona para gestionar las solicitudes que estan aprobadas y listas para agregar a la bitacora
         public async Task<IActionResult> HubSolicitudes()
         {
@@ -80,7 +186,7 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
-                int Id = Convert.ToInt32(User.FindFirst("Id").Value);
+                int Id = int.Parse(User.FindFirst("Id").Value);
                 var listSolicitudes = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation).Include(s => s.Aprobaciones)
                         .Include(s => s.IdConductorNavigation.IdUsuarioNavigation).OrderByDescending(s => s.FechaSolicitado)
                         .Where(s => s.IdSolicitante == Id)
@@ -98,9 +204,9 @@ namespace ProyectoSolveCore.Controllers
                 //listSolicitudes = await VerificarSolicitudesAtrasadas(listSolicitudes); 
                 return View(listSolicitudes);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound();
+                return View(new vmSolicitud());
             }
         }
         //METODO EL CUAL OBTIENE TODAS LAS SOLICITUDES PARA MOSTRARLAS EN EL CALENDAR
@@ -149,7 +255,8 @@ namespace ProyectoSolveCore.Controllers
                 }
 
                 var solicitud = await _context.Solicitudes
-                    .Include(s => s.IdVehiculoNavigation).Include(s => s.IdSolicitanteNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation)
+                    .Include(s => s.IdVehiculoNavigation).Include(s => s.IdSolicitanteNavigation)
+                    .Include(s => s.IdConductorNavigation.IdUsuarioNavigation).Include(s => s.Aprobaciones)
                     .FirstOrDefaultAsync(s => s.Id == id);
 
                 if (solicitud == null)
@@ -200,7 +307,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 if (solicitud == null)
                 {
-                    return NotFound();
+                    return View(new Solicitude());
                 }
                 var hoy = DateTime.Now;
                 if (solicitud.FechaLlegada <= hoy || solicitud.FechaSalida <= hoy
@@ -215,24 +322,29 @@ namespace ProyectoSolveCore.Controllers
                     return View(solicitud);
                 }
 
+                var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == solicitud.IdVehiculo);
+
                 // Convertir el JSON a una lista de objetos
                 List<PasajerosAux> valueList = JsonConvert.DeserializeObject<List<PasajerosAux>>(solicitud.Pasajeros);
                 //Unir todo a cadena de texto
                 solicitud.Pasajeros = string.Join(", ", valueList.ConvertAll(x => x.value));
-
                 solicitud.FechaSolicitado = hoy;
-                _context.Solicitudes.Add(solicitud);
-                int n = await _context.SaveChangesAsync();
+                if (vehiculo.IdConductor.HasValue)
+                {
+                    solicitud.IdConductor = vehiculo.IdConductor;
+                }
+                await _context.Solicitudes.AddAsync(solicitud);
 
+                int n = await _context.SaveChangesAsync();
                 if (n > 0)
                 {
-                    return RedirectToAction(nameof(MisSolicitudes));
+                    return RedirectToAction("MisSolicitudes");
                 }
                 return View(solicitud);
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return View(new Solicitude());
             }
         }
         [HttpPost]
@@ -245,7 +357,8 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrió un error inesperado, contacte con el administrador del sitio o intente más tarde",
+                        data = new List<SelectListItem>(),
+                        mensaje = "Al parecer las fechas seleccionadas son incorrectas o algunos campos están vacíos, contacte con el administrador del sitio o intente más tarde",
                         type = "danger"
                     });
                 }
@@ -288,11 +401,12 @@ namespace ProyectoSolveCore.Controllers
                     type = "success"
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, contacte con administrador del sitio o intente mas tarde",
+                    data = new List<SelectListItem>(),
+                    mensaje = "Ocurrio un error inesperado, contacte con administrador del sitio o intente mas tarde: "+ex.Message,
                     type = "danger"
                 });
             }
@@ -303,22 +417,31 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
-                int id = Convert.ToInt32(User.FindFirst("Id").Value);
-                var solicitudesPendientes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
-                    .Where(s => s.Estado == 0)
+                int id = int.Parse(User.FindFirst("Id").Value);
+                var solicitudesFiltradas = await _context.Solicitudes
+                    .Include(s => s.IdSolicitanteNavigation)
+                    .Include(s => s.IdVehiculoNavigation)
+                    .Where(s => s.Estado == 0 && !s.Aprobaciones.Any(aS => aS.IdSolicitud == s.Id))
                     .ToListAsync();
 
-                var aprobacionesSolicitud = await _context.Aprobaciones
-                    .Where(a => a.IdJefe == id)
-                    .ToListAsync();
-
-                solicitudesPendientes.RemoveAll(sp => aprobacionesSolicitud.Any(aS => aS.IdSolicitud == sp.Id));
-
-                return View(solicitudesPendientes);
+                return View(solicitudesFiltradas);
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return View(new List<Solicitude>());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SolicitudesPendientes(vmFiltrosSolicitudes fs)
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View(new List<Solicitude>());
             }
         }
         [Authorize(Roles = "Administrador, Jefe")]
@@ -326,10 +449,11 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
-                var solicitud = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation)
+                var solicitud = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation).Include(s => s.IdSolicitanteNavigation)
                     .FirstOrDefaultAsync(s => s.Id == id);
-                var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == solicitud.IdSolicitante);
+                Usuario usuario = solicitud.IdSolicitanteNavigation;
                 List<vmConductoresList> conductores = new();
+                int ConductorAsignado = solicitud.IdVehiculoNavigation.IdConductor??0;
                 if (!solicitud.IdConductor.HasValue)
                 {
                     conductores = await GetConductoresDisponibles(solicitud);
@@ -342,7 +466,7 @@ namespace ProyectoSolveCore.Controllers
                         rut = c.IdUsuarioNavigation.Rut
                     }).ToListAsync();
                 ViewBag.NombreSolicitante = usuario.Nombre + " " + usuario.Apellido;
-                ViewBag.IdConductor = new SelectList(conductores, "Id", "Nombre");
+                ViewBag.IdConductor = new SelectList(conductores, "Id", "Nombre", (ConductorAsignado != 0) ? ConductorAsignado : null);
                 return PartialView("_AsignarConductor", solicitud);
             }
             catch (Exception)
@@ -366,7 +490,7 @@ namespace ProyectoSolveCore.Controllers
             }
             try
             {
-                int id = Convert.ToInt32(User.FindFirst("Id").Value);
+                int id = int.Parse(User.FindFirst("Id").Value);
                 if (ids.IdConductor == null)
                 {
                     return Json(new
@@ -545,6 +669,85 @@ namespace ProyectoSolveCore.Controllers
                     }).ToListAsync();
             }
             return conductoresDisponibles;
+        }
+        private static List<SelectListItem> ObtenerEstados()
+        {
+            List<SelectListItem> list = new();
+            Dictionary<int, string> EstadosDicc = new()
+            {
+                { 0, "Pendiente" },
+                { 1, "Aprobada" },
+                { 2, "Rechazada" },
+                { 3, "Finalizada" },
+            };
+
+            foreach (var key in EstadosDicc.Keys)
+            {
+                var e = EstadosDicc[key];
+                list.Add(new SelectListItem
+                {
+                    Value = key.ToString(),
+                    Text = e
+                });
+            }
+            return list;
+        }
+        private List<SelectListItem> ObtenerDestinos(List<Solicitude> solicitudes)
+        {
+            List<SelectListItem> list = new();
+            var destinos = solicitudes.Select(s => s.Destino)
+                .Distinct().ToList();
+
+            foreach (var d in destinos)
+            {
+                if (solicitudes.Any(s => s.Destino.Equals(d)))
+                {
+                    list.Add(new SelectListItem
+                    {
+                        Value = d,
+                        Text = d
+                    });
+                }
+            }
+            return list;
+        }
+        private static List<SelectListWithGroups> ObtenerVehiculo(List<Solicitude> solicitudes)
+        {
+            List<SelectListWithGroups> list = new();
+            var vehiculos = solicitudes.Select(s => s.IdVehiculoNavigation).Where(v => !v.Eliminado).ToList();
+            foreach (var v in vehiculos)
+            {
+                if (solicitudes.Any(s => s.IdVehiculo == v.Id))
+                {
+                    list.Add(new SelectListWithGroups()
+                    {
+                        Value = $"{v.Patente} - {v.Marca} {v.Modelo}",
+                        Text = $"{v.Patente} - {v.Marca} {v.Modelo}",
+                        Group = v.IdCategoriaNavigation.Categoria1
+                    });
+                }
+            }
+            return list;
+        }
+        private List<SelectListItem> ObtenerUsuarios(List<Solicitude> solicitudes)
+        {
+            List<SelectListItem> list = new();
+            var usuarios = solicitudes.Select(s => s.IdSolicitanteNavigation).ToList();
+
+            foreach (var u in usuarios)
+            {
+                var exist = solicitudes.Any(s => s.IdSolicitante == u.Id);
+                if (exist)
+                {
+                    list.Add(new SelectListItem
+                    {
+                        Value = u.Id.ToString(),
+                        Text = $"{u.Nombre} {u.Apellido}",
+                    });
+                }
+            }
+
+            return list;
         }
         private void EliminarMemoriaCache()
         {

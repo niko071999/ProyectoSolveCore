@@ -14,7 +14,20 @@
             </ol>
             <div class="card">
                 <div class="card-body">
-                    <a asp-action="AgregarVehiculo" role="button" class="btn btn-primary mb-2">Agregar nuevo vehículo</a>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a asp-action="AgregarVehiculo" role="button" class="btn btn-primary mb-2 me-md-2">
+                            Agregar nuevo vehículo
+                        </a>
+                        <div class="btn-group dropend">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" 
+                                data-bs-auto-close="inside" aria-expanded="false">
+                                Filtros
+                            </button>
+                            <div class="dropdown-menu p-4 fw-bold" style="width: 450px; max-width: 450px; max-height: 700px">
+                                <partial name="_FiltersVehiculo" />
+                            </div>
+                        </div>
+                    </div>
                     @if (Model != null)
                     {
                         <table id="tablaVehiculos" class="display table table-hover w-100">
@@ -36,12 +49,17 @@
                                         <td>@vehiculo.Marca</td>
                                         <td>@vehiculo.Modelo</td>
                                         <td class="text-center">
-                                            @if (vehiculo.Habilitado.Equals("SI"))
+                                            <a role="button" class="btn btn-light" data-bs-placement="top" 
+                                            data-bs-toggle="tooltip" data-bs-title="@vehiculo.MensajeEstado">
+                                            @if (vehiculo.Estado == 1)
                                             {
                                                 <i class="fa-sharp fa-circle-check fa-lg text-success"></i>
-                                            }else{
+                                            }else if (vehiculo.Estado == 0){
                                                 <i class="fa-sharp fa-circle-xmark fa-lg text-danger"></i>
+                                            }else{
+                                                <i class="fa-sharp fa-circle-exclamation fa-lg text-warning"></i>
                                             }
+                                            </a>
                                         </td>
                                         <td>@vehiculo.Km_Recorrido?.ToString("N", new System.Globalization.NumberFormatInfo{
                                                 NumberGroupSeparator = "."
@@ -76,5 +94,7 @@
     @*<script src="~/lib/datatables/moment.min.js"></script>
     <script src="~/lib/datatables/datetime-moment.js"></script>*@
     <script src="~/js/visualizarvehiculos.js"></script>
+    @*JS Vista parcial*@
+    <script src="~/js/filtervehiculos.js"></script>
 }
 

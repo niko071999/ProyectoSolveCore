@@ -1,0 +1,60 @@
+﻿<form id="FormFilter" asp-action="VisualizarSolicitudes" method="post">
+    <div class="row fw-bold">
+        <div class="col col-12">
+            <label for="inputGroup" class="form-label">Fechas</label>
+            <div id="inputGroup" class="input-group">
+                <span class="input-group-text" id="Desde">Desde</span>
+                <input id="FechaDesde" type="datetime-local" class="form-control" name="FechaDesde"
+                       value="ViewBag.FechaDesde" aria-describedby="Desde" />
+                <span class="input-group-text" id="Hasta">Hasta</span>
+                <input id="FechaHasta" type="datetime-local" class="form-control" name="FechaHasta"
+                       value="ViewBag.FechaHasta" aria-describedby="Hasta" />
+            </div>
+        </div>
+        <label class="form-label">Tipos</label>
+        <div class="col col-12">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio1"
+                       value="1" @(ViewBag.Opcion == 1 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio1">Solicitado</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio2"
+                       value="2" @(ViewBag.Opcion == 2 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio2">Salida</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio3"
+                       value="3" @(ViewBag.Opcion == 3 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio3">Llegada</label>
+            </div>
+        </div>
+        <div class="col col-12">
+            <label for="inputSolicitado" class="form-label">Solicitado por</label>
+            <select id="inputSolicitado" class="form-select" name="IdSolicitado" asp-items="ViewBag.IdSolicitado">
+                <option value="-1">Todos los usuarios</option>
+            </select>
+        </div>
+        <div class="col col-12">
+            <label for="inputEstado" class="form-label">Estado</label>
+            <select id="inputEstado" class="form-select" name="Estado" asp-items="ViewBag.Estado">
+                <option value="-1">Todos los estados</option>
+            </select>
+        </div>
+        <div class="col col-12">
+            <label for="inputVehiculo" class="form-label">Vehículo</label>
+            <select id="inputVehiculo" class="form-select" name="Vehiculo" asp-items="ViewBag.Vehiculo">
+                <option>Todos los vehículos</option>
+            </select>
+        </div>
+        <div class="col col-12">
+            <label for="inputDestino" class="form-label">Destino</label>
+            <select id="inputDestino" class="form-select" name="Destino" asp-items="ViewBag.Destino">
+                <option>Todos los destinos</option>
+            </select>
+        </div>
+        <div class="col col-12 d-grid gap-2 mt-2">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>

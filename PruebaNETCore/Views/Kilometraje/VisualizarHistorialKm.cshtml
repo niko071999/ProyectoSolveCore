@@ -1,0 +1,95 @@
+﻿@model List<Kilometraje>
+
+@{
+    ViewBag.Title = "Visualizar historial de kilometraje";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Visualizar historial de kilometraje</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Visualizar historial de kilometraje</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    <a asp-controller="Kilometraje" asp-action="AgregarKilometrajeVehiculo" asp-route-id="0"
+                        role="button" class="btn btn-primary mb-2">Agregar nueva entrada</a>
+                    @if (Model.Count > 0)
+                    {
+                        <form asp-action="VisualizarHistorialKm" method="post">
+                            <label for="SelectVehiculo" class="form-label">Seleccione un vehículo</label>
+                            <select id="SelectVehiculo" name="IdVehiculo" asp-items="ViewBag.IdVehiculo" class="form-select"></select>
+                            <button type="submit" class="btn btn-primary mt-2">Cargar kilometraje</button>
+                        </form>
+
+                        <table id="tablaBitacora" class="display table table-hover w-100 mt-2">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Fecha creacion</th>@*0*@
+                                    <th scope="col">Kilometraje inicial</th>@*0*@
+                                    <th scope="col">Kilometraje final</th>@*0*@
+                                    <th scope="col">Vehiculo</th>@*0*@
+                                    <th scope="col"></th>@*10*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var k in Model)
+                                {
+                                    string patente = k.IdVehiculoNavigation.Patente;
+                                    string marca = k.IdVehiculoNavigation.Marca;
+                                    string modelo = k.IdVehiculoNavigation.Modelo;
+                                    <tr>
+                                        <td>@k.FechaCreacion</td>
+                                        <td>@k.KilometrajeInicial</td>
+                                        <td>@k.KilometrajeFinal</td>
+                                        <td>@patente - @marca @modelo</td>
+                                        <td class="text-center">
+                                            <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-title="Mostrar mas información" data-id="@k.Id"
+                                            class="btn btn-info">
+                                                <i class="fa-sharp fa-circle-info fa-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }else{
+                        <table class="table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Fecha creacion</th>@*0*@
+                                    <th scope="col">Kilometraje inicial</th>@*0*@
+                                    <th scope="col">Kilometraje final</th>@*0*@
+                                    <th scope="col">Vehiculo</th>@*0*@
+                                    <th scope="col"></th>@*10*@
+                                </tr>
+                            </thead>
+                        </table>
+                        <h5 class="text-center">No existen registros</h5>
+                        <form asp-action="VisualizarHistorialKm" method="post">
+                            <div class="card">
+                                <div class="card-body bg-light">
+                                    <h5 class="card-title mb-2">Seleccione un vehículo para visualizar sus kilometrajes</h5>
+                                    <select class="form-select" name="IdVehiculo" 
+                                        asp-items="ViewBag.IdVehiculo"></select>
+                                    <button type="submit" class="btn btn-primary mt-2">Ver kilometraje</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+@section CSS{
+    <link href="~/lib/select-searcheable/select2.min.css" rel="stylesheet" />
+}
+@section Scripts{
+    <script src="~/lib/select-searcheable/select2.min.js"></script>
+    <script src="~/js/visualizarkilometraje.js"></script>
+}

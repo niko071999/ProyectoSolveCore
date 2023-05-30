@@ -2,6 +2,8 @@
 $(document).ready(function () {
     $.fn.dataTable.moment('DD-MM-YYYY H:mm:ss');
     $('#tableSolPendiente').DataTable({
+        pageLength: 8,
+        lengthChange: false,
         columnDefs: [
             {
                 target: 0,
@@ -57,9 +59,7 @@ const ConfirmacionRechazar = (boton) => {
         url: '/Solicitud/ConfirmacionRechazar?id=' + id,
         type: 'GET',
         success: function (result) {
-            if (result !== null) {
-                abrirModal(result);
-            }
+            abrirModal(result);
         },
         error: function (status, error) {
             console.log(status, error);

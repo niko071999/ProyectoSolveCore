@@ -63,10 +63,9 @@
         },
         error: function (xhr, error) {
             if (xhr.status === 400) {
-                $.notify(xhr.responseText, { type: 'error' });
+                alert(xhr.responseText);
             } else {
-                $.notify('Ocurrio un error inesperado, recargue la pagina', { type: 'error' });
-                console.log(xhr);
+                alert('Ocurrio un error inesperado, recargue la pagina');
             }
         }
     });
@@ -84,7 +83,7 @@ $('#calendar').on('selectEvent', function (activeEvent, e) {
         },
         error: function (xhr) {
             if (xhr.status === 400) {
-                $.notify(xhr.responseText, { type: 'error' });
+                alert(xhr.responseText);
             } else {
                 console.log(xhr);
             }

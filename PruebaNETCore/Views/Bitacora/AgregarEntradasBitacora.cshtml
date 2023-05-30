@@ -23,9 +23,6 @@
                 <div class="card">
                     <div class="card-body row fw-bold">
                         <div class="col col-lg-6">
-                            <div class="alert alert-success" role="alert">
-                                Hay @count solicitudes por ingresar a la bitácora
-                            </div>
                             <div class="row g-2">
                                 <h4>Informacion solicitud</h4>
                                 <input type="hidden" asp-for="Id" />
@@ -69,7 +66,7 @@
                                            value="@Model.Motivo" disabled>
                                 </div>
                                 <hr />
-                                <h4 class="mt-2">Informacion adicional bitacora</h4>
+                                <h4 class="mt-2">Informacion de la bitácora</h4>
                                 <div class="col-md-6">
                                     <label for="inputKmI" class="form-label">Kilometraje inicial</label>
                                     <input id="inputKmI" type="number" class="form-control" name="KmInicialEntero"
@@ -91,8 +88,14 @@
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     <div class="d-flex flex-row mb-2">
-                                        <button type="submit" class="btn btn-primary">Agregar entrada y cargar otra solicitud</button>
-                                        <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar entrada</button>
+                                        @if (count > 1)
+                                        {
+                                            <button type="submit" class="btn btn-primary">
+                                                Agregar y cargar otra solicitud
+                                                <span class="badge text-bg-secondary">@count</span>
+                                            </button>
+                                        }
+                                        <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar solo esta entrada</button>
                                         <a role="button" class="ms-1 btn btn-secondary" asp-action="VisualizarBitacora">Volver a la bitacora</a>
                                     </div>
                                 </div>

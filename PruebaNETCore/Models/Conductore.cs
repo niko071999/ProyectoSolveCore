@@ -26,4 +26,6 @@ public partial class Conductore
     public virtual Usuario IdUsuarioNavigation { get; set; }
 
     public virtual ICollection<Solicitude> Solicitudes { get; set; } = new List<Solicitude>();
+
+    public virtual ICollection<Vehiculo> Vehiculos { get; set; } = new List<Vehiculo>();
 }

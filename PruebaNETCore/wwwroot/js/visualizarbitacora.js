@@ -1,6 +1,8 @@
 ﻿$(document).ready(function () {
     $.fn.dataTable.moment('DD-MM-YYYY H:mm:ss');
     $('#tablaBitacora').DataTable({
+        pageLength: 8,
+        lengthChange: false,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-CL.json',
         },
@@ -37,14 +39,14 @@ btn_solicitud.forEach(function (boton) {
 const MostrarFichaBitacora = (boton) => {
     const id = boton.dataset.id;
     $.ajax({
-        url: '/Bitacora/MasInformacionBitacora?id=',
+        url: '/Bitacora/MasInformacionBitacora?id='+id,
         type: 'GET',
         success: function (result) {
             abrirModal(result);
         },
         error: function (xhr, error) {
             if (xhr.status === 400) {
-                $.notify(xhr.responseText, { type: 'error' });
+                alert(xhr.responseText);
             } else {
                 console.log(error);
             }

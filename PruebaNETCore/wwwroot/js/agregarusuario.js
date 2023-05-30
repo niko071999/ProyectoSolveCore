@@ -9,7 +9,8 @@ const admin = document.querySelector("#Administrador"),
     solicitador = document.querySelector("#Solicitador"),
     maquinaria = document.querySelector("#Maquinaria"),
     bitacora = document.querySelector("#Bitacora_c"),
-    login = document.querySelector("#LoginAccess");
+    login = document.querySelector("#LoginAccess"),
+    check_poliza = document.getElementById('check_poliza');
 //INPUTS
 const rolAdmin = document.querySelector("#RolAdministrador"),
     rolJefe = document.querySelector("#RolJefe"),
@@ -22,13 +23,21 @@ const rolAdmin = document.querySelector("#RolAdministrador"),
 const form = document.querySelector("#form_AgregarUsuario");
 const btn_form = document.getElementById('btn_form');
 btn_form.addEventListener('click', () => {
-    if (document.getElementById('inputClave').value !== document.getElementById('inputReClave').value) {
+    if (document.getElementById('inputClave').value.lenght < 6) {
+        alert("La contraseña debe tener como minimo 6 caracteres");
         return;
     }
-    if (!check_poliza.checked) {
-        document.getElementById('inputNumPoliza').value = null;
-        document.getElementById('inputFechaInicio').value = null;
-        document.getElementById('inputFechaFin').value = null;
+    if (document.getElementById('inputClave').value !== document.getElementById('inputReClave').value) {
+        alert("Las claves ingresadas no son las mismas");
+        return;
+    }
+
+    if (check_poliza) {
+        if (!check_poliza.checked) {
+            document.getElementById('inputNumPoliza').value = null;
+            document.getElementById('inputFechaInicio').value = null;
+            document.getElementById('inputFechaFin').value = null;
+        }
     }
     form.submit();
 });
@@ -87,14 +96,16 @@ function updateInputs() {
 }
 
 //Verificar si el check de la poliza esta activado
-check_poliza.addEventListener('change', () => {
-    console.log('hola');
-    if (check_poliza.checked) {
-        contenedores_conductores.style.display = "block";
-    } else {
-        contenedores_conductores.style.display = "none";
-    }
-});
+
+if (check_poliza) {
+    check_poliza.addEventListener('change', () => {
+        if (check_poliza.checked) {
+            contenedores_conductores.style.display = "block";
+        } else {
+            contenedores_conductores.style.display = "none";
+        }
+    });
+}
 
 let dropDown = document.getElementById('inputDepartamento');
 obtenerDepartamentos();
@@ -110,18 +121,21 @@ function obtenerDepartamentos() {
         type: 'GET',
         dataType: 'json',
         success: function (result) {
-            console.log(result);
-            dropDown.innerHTML = '';
-            result.data.forEach((d) => {
-                var option = document.createElement('option');
-                option.value = d.Id;
-                option.innerHTML = d.Departamento1;
-                dropDown.appendChild(option);
-            });
-            document.getElementById('idDepartamento').value = result.data[0].Id;
+            if (result !== null || result.data.lenght > 0) {
+                dropDown.innerHTML = '';
+                result.data.forEach((d) => {
+                    var option = document.createElement('option');
+                    option.value = d.Id;
+                    option.innerHTML = d.Departamento1;
+                    dropDown.appendChild(option);
+                });
+                document.getElementById('idDepartamento').value = result.data[0].Id;
+            } else {
+                alert("No existen registros de departamentos para mostrar");
+            }
         },
         error: function (xhr, error) {
-            console.log(error);
+            alert(error);
         }
     });
 }

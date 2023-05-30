@@ -6,6 +6,7 @@ using ProyectoSolveCore.Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -21,28 +22,24 @@ namespace ProyectoSolveCore.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return _context.Usuarios.Any() ? View(new vmLoginUser()): RedirectToAction("CrearUsuarioAdmin");
+                //u => u.Id != 1
+                return _context.Usuarios.Any() ? View(new vmLoginUser()) : RedirectToAction("CrearUsuarioAdmin");
             }
             return RedirectToAction("Agenda","Home");
         }
         [HttpPost]
         public async Task<IActionResult> Login(vmLoginUser user)
         {
-            try
+            try 
             {
-                if (!_context.Usuarios.Any())
-                {
-                    return RedirectToAction("CrearUsuarioAdmin", "Usuario", user.Rut);
-                }
-                //.Include(u => u.UsuariosRoles)
-                var usuario = _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.UsuariosRoles)
-                            .FirstOrDefault(u => u.Rut.Equals(user.Rut) && !u.Eliminado);
+                var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.UsuariosRoles)
+                            .FirstOrDefaultAsync(u => u.Rut.Equals(user.Rut) && !u.Eliminado);
 
                 if (usuario == null)
                 {
                     return View(user);
                 }
-                if ((bool)!usuario.Login)
+                if (!usuario.Login)
                 {
                     return View(user);
                 }
@@ -72,63 +69,70 @@ namespace ProyectoSolveCore.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction(nameof(Login));
         }
-        public IActionResult CrearUsuarioAdmin(string rut)
+        public IActionResult CrearUsuarioAdmin()
         {
-            var usuario = new Usuario
+            ViewBag.id_departamento = new SelectList(_context.Departamentos.ToList(), "Id", "Departamento1");
+
+            return View(new vmUsuarioConductorRoles()
             {
-                Rut = rut
-            };
-            return View(usuario);
+                RolAdministrador = true,
+                RolJefe = true,
+                RolMantenedorBitacora = true,
+                RolMantendorUsuarios = true,
+                RolMantenedorVehiculos = true,
+                RolSolicitador = true,
+                RolMantenedorVehiculosMaq = true,
+            });
         }
         [HttpPost]
-        public async Task<IActionResult> CrearUsuarioAdmin(Usuario usuario)
+        public async Task<IActionResult> CrearUsuarioAdmin(vmUsuarioConductorRoles uc)
         {
-            if (usuario == null || usuario.Clave.Trim().Length < 6)
+            if (uc == null)
             {
-                return View(new Usuario());
-            }
-            var userAny = await _context.Usuarios.AnyAsync(u => u.Rut == usuario.Rut);
-            if (userAny)
-            {
-                return View(usuario);
+                return View(new vmUsuarioConductorRoles());
             }
             try
             {
                 using var transaction = await _context.Database.BeginTransactionAsync();
-                var u = new Usuario()
+
+                var usuario = new Usuario()
                 {
-                    Rut = usuario.Rut,
-                    Nombre = usuario.Nombre,
-                    Apellido = usuario.Apellido,
-                    Clave = Encrypt.EncryptPassword(usuario.Clave),
-                    IdDepartamento = usuario.IdDepartamento,
-                    DireccionImg = "",
+                    Rut = uc.rut,
+                    Nombre = uc.nombre,
+                    Apellido = uc.apellido,
+                    Login = uc.login,
+                    Clave = Encrypt.EncryptPassword(uc.clave),
+                    IdDepartamento = uc.id_departamento,
+                    DireccionImg = "/assets/sin-foto.png",
                     Eliminado = false
                 };
 
-                _context.Usuarios.Add(u);
+                await _context.Usuarios.AddAsync(usuario);
                 int n = await _context.SaveChangesAsync();
                 if (n == 0)
                 {
-                    return View(usuario);
+                    return View(uc);
                 }
-                var UsuarioRoles = _context.Roles.Select(r => new UsuariosRole()
+                uc.ID = usuario.Id;
+                var UsuarioRole = ObtenerRoles(uc).Where(ur => ur.check).Select(ur => new UsuariosRole()
                 {
-                    IdRol = r.Id,
-                    IdUsuario = u.Id
+                    IdRol = ur.IdRol,
+                    IdUsuario = ur.IdUsuario
                 });
-                await _context.UsuariosRoles.AddRangeAsync(UsuarioRoles);
+
+                await _context.UsuariosRoles.AddRangeAsync(UsuarioRole);
                 n = await _context.SaveChangesAsync();
                 if (n == 0)
                 {
-                    return View(usuario);
+                    return View(uc);
                 }
+
                 await transaction.CommitAsync();
                 return RedirectToAction(nameof(Login));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return View(usuario);
+                return View(uc);
             }
         }
         private async Task<bool> AutenticarUsuario(Usuario usuario, List<string> roles)
@@ -155,6 +159,29 @@ namespace ProyectoSolveCore.Controllers
             {
                 return false;
             }
+        }
+        private static List<vmRolCheck> ObtenerRoles(vmUsuarioConductorRoles uc)
+        {
+            List<vmRolCheck> lur = new();
+            Dictionary<int, bool> roles = new()
+            {
+                { 1, uc.RolAdministrador },
+                { 2, uc.RolJefe },
+                { 3, uc.RolMantenedorVehiculos },
+                { 4, uc.RolMantendorUsuarios },
+                { 5, uc.RolSolicitador },
+                { 7, uc.RolMantenedorVehiculosMaq },
+                { 8, uc.RolMantenedorBitacora }
+            };
+
+            for (int i = 0; i < 8; i++)
+            {
+                if (i + 1 != 6)
+                {
+                    lur.Add(new vmRolCheck { IdRol = i + 1, IdUsuario = uc.ID, check = roles[i + 1] });
+                }
+            }
+            return lur;
         }
     }
 }

@@ -1,0 +1,79 @@
+﻿@model ProyectoSolveCore.Models.ViewModels.vmBitacoraInfo;
+@{
+    
+}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content fw-bold">
+        <div class="modal-header text-bg-primary">
+            <h5 class="modal-title" id="exampleModalLabel">Ficha de la bitácora</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <h5>Información bitácora</h5>
+            <div class="row g-2">
+                <div class="col col-lg-6 col-md-12">
+                    <label for="inputFechaBitacora" class="form-label">Fecha</label>
+                    <input type="text" class="form-control" id="inputFechaBitacora"
+                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm:ss}", Model.FechaBitacora))" disabled>
+                </div>
+                <div class="col col-lg-6 col-sm-12">
+                    <label for="inputLitros" class="form-label">Litros cargados</label>
+                    <input type="text" class="form-control" id="inputLitros"
+                            value="@Model.LitrosCombustible" disabled>
+                </div>
+                <div class="col col-12">
+                    <label for="inputObservacion" class="form-label">Observación</label>
+                    <textarea type="text" cols="2" class="form-control" id="inputObservacion" disabled>@Model.Observacion</textarea>
+                </div>
+            </div>
+            <hr />
+            <h5>Información de la solicitud</h5>
+            <div class="row g-2">
+                <div class="col col-lg-4 col-md-12">
+                    <label for="inputFechaSolicitado" class="form-label">Fecha solicitada</label>
+                    <input type="text" class="form-control" id="inputFechaSolicitado"
+                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm:ss}", Model.FechaSolicitado))" disabled>
+                </div>
+                <div class="col col-lg-4 col-sm-12">
+                    <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
+                    <input type="text" class="form-control" id="inputFechaLlegada"
+                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaSalida)) Hrs" disabled>
+                </div>
+                <div class="col col-lg-4 col-sm-12">
+                    <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
+                    <input type="text" class="form-control" id="inputFechaLlegada"
+                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaLlegada)) Hrs" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputSolicitante" class="form-label">Nombre del solicitante</label>
+                    <input type="text" class="form-control" id="inputSolicitante"
+                            value="@Model.Solicitante" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputConductor" class="form-label">Conductor</label>
+                    <input type="text" class="form-control" id="inputConductor"
+                            value="@Model.Conductor" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                    <input type="text" class="form-control" id="inputVehiculo"
+                            value="@Model.Vehiculo" disabled>
+                </div>
+            </div>
+            <hr />
+            <h5>Información del kilometrjae</h5>
+            <div class="row g-2">
+                <div class="col col-md-6">
+                    <label for="inputKmInicial" class="form-label">Inicial</label>
+                    <input type="text" class="form-control" id="inputKmInicial"
+                            value="@Model.KmInicial" disabled>
+                </div>
+                <div class="col col-md-6">
+                    <label for="inputKmFinal" class="form-label">Final</label>
+                    <input type="text" class="form-control" id="inputKmFinal"
+                            value="@Model.KmFinal" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,6 +11,7 @@ namespace ProyectoSolveCore.Models.ViewModels
         public string Rut { get; set; }
         public string Nombre { get; set; }
         public string Departamento { get; set; }
+        public Vehiculo NombreVehiculo { get; set; }
         public List<vmRol> Roles { get; set; }
         public List<VmPermiso> Permisos { get; set; }
         public bool Conductor { get; set; }

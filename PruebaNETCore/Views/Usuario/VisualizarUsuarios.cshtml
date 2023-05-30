@@ -30,6 +30,15 @@
                             <tbody>
                                 @foreach (var u in Model)
                                 {
+                                    string patente = string.Empty;
+                                    string marca = string.Empty;
+                                    string modelo = string.Empty;
+                                    if (u.NombreVehiculo != null)
+                                    {
+                                        patente = u.NombreVehiculo.Patente;
+                                        marca = u.NombreVehiculo.Marca;
+                                        modelo = u.NombreVehiculo.Modelo;
+                                    }
                                     <tr>
                                         <td>@u.Rut</td>
                                         <td>@u.Nombre</td>
@@ -39,7 +48,8 @@
                                             
                                             <button type="button" class="btn btn-light" 
                                                 data-bs-toggle="tooltip" data-bs-placement="top"
-                                                data-bs-title="Es conductor">
+                                            data-bs-title="Es conductor @(string.IsNullOrEmpty(patente+marca+modelo) 
+                                                ? "sin vehículo asignado" : $"del vehículo {patente} - {marca} {modelo}")">
                                                     <i class="fas fa-car fa-2x"></i>
                                             </button>
                                             
@@ -59,12 +69,25 @@
                                         }
                                         </td>
                                         <td class="text-end">
-                                            <span class="badge text-bg-info h5">@u.Roles.Count / 6 roles</span>
+                                            <span class="badge text-bg-info h5">@u.Roles.Count / 8 roles</span>
                                             @if (u.Roles.Any())
                                             {
+                                                string color_btn = string.Empty;
+                                                switch (u.Id)
+                                                {
+                                                    case 1:
+                                                        color_btn = "btn-success";
+                                                        break;
+                                                    case 2:
+                                                        color_btn = "btn-primary";
+                                                        break;
+                                                    default:
+                                                        color_btn = "btn-secondary";
+                                                        break;
+                                                }
                                                 foreach (var r in u.Roles)
                                                 {
-                                                    <button type="button" class="btn btn-primary"
+                                                    <button type="button" class="btn @color_btn"
                                                         data-id="@r.Id" data-bs-toggle="tooltip" data-bs-placement="top"
                                                         data-bs-title="@r.rol">
                                                         @Html.Raw(r.IconRol)

@@ -27,19 +27,29 @@ namespace ProyectoSolveCore.Controllers
             }
             try
             {
-                List<SelectListGroup> groups = IniciarInstanciasGroups();
                 var vlist = await _context.Vehiculos.Include(v => v.IdCategoriaNavigation)
-                    .Where(v => !v.Eliminado).Select(v => new SelectListWithGroups()
+                    .Where(v => !v.Eliminado)
+                    .Select(v => new SelectListWithGroups()
                     {
                         Value = v.Id.ToString(),
                         Text = $"{v.Patente} - {v.Marca} {v.Modelo}",
                         Group = v.IdCategoriaNavigation.Categoria1
                 }).ToListAsync();
-                var clist = await _context.Conductores.Include(c => c.IdUsuarioNavigation).Where(c => !c.Eliminado).Select(c => new SelectListWithGroups()
+                //Verifica si el usuario es mantenedor de vehiculos normales para mostrar solo las categorias correspondiente para el rol
+                if (User.IsInRole("Mantenedor de vehículos no pesados"))  
                 {
-                    Value = c.Id.ToString(),
-                    Text = $"{c.IdUsuarioNavigation.Nombre} {c.IdUsuarioNavigation.Apellido}"
-                }).ToListAsync();
+                    vlist = vlist.Where(vl => vl.Group.Equals("SUV") || vl.Group.Equals("Camioneta") 
+                        || vl.Group.Equals("Auto") || vl.Group.Equals("Furgon"))
+                        .ToList();
+                }
+
+                var clist = await _context.Conductores.Include(c => c.IdUsuarioNavigation)
+                    .Where(c => !c.Eliminado)
+                    .Select(c => new SelectListWithGroups()
+                    {
+                        Value = c.Id.ToString(),
+                        Text = $"{c.IdUsuarioNavigation.Nombre} {c.IdUsuarioNavigation.Apellido}"
+                    }).ToListAsync();
                 if (id == 0)
                 {
                     ViewBag.IdVehiculo = new SelectList(vlist, "Value", "Text", null, "Group");
@@ -57,14 +67,6 @@ namespace ProyectoSolveCore.Controllers
             }
         }
 
-        private List<SelectListGroup> IniciarInstanciasGroups()
-        {
-            List<SelectListGroup> groups = _context.Categorias.Select(c => new SelectListGroup(){
-                Name = c.Categoria1
-            }).ToList();
-            return groups;
-        }
-
         [HttpPost]
         public async Task<IActionResult> AgregarEntradaFM(vmFichaMantencion fm)
         {
@@ -74,6 +76,7 @@ namespace ProyectoSolveCore.Controllers
             }
             try
             {
+                using var transaction = await _context.Database.BeginTransactionAsync();
                 FichaMantencion ficha = new()
                 {
                     FechaMantencion = DateTime.Now,
@@ -82,13 +85,17 @@ namespace ProyectoSolveCore.Controllers
                     IdConductor = fm.IdConductor,
                     IdVehiculo = fm.IdVehiculo
                 };
-
                 await _context.FichaMantencions.AddAsync(ficha);
                 int n = await _context.SaveChangesAsync();
-                if (n == 0)
+                var v = await _context.Vehiculos.FindAsync(fm.IdVehiculo);
+                if (v == null) return View(fm);
+                if (!v.Estado)
                 {
-                    return View(fm);
+                    v.Estado = true;
+                    n = await _context.SaveChangesAsync();
                 }
+                if (n == 0) return View(fm);
+                await transaction.CommitAsync();
                 return RedirectToAction("VisualizarMantenciones");
             }
             catch (Exception ex)

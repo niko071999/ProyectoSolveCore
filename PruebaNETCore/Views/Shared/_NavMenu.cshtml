@@ -59,7 +59,7 @@
                                 <a class="nav-link" asp-controller="Solicitud" asp-action="SolicitarVehiculo">Solicitar vehículo</a>
                             }
                             @if (User.IsInRole("Administrador") || User.IsInRole("Jefe")){
-                                <a class="nav-link" asp-controller="Solicitud" asp-action="SolicitudesPendientes">Solicitudes pendientes</a>
+                                <a class="nav-link" asp-controller="Solicitud" asp-action="SolicitudesPendientes">Solicitudes por aprobar</a>
                             }
                             <a class="nav-link" asp-controller="Solicitud" asp-action="MisSolicitudes">Mis solicitudes</a>
                         </nav>
@@ -82,40 +82,6 @@
                         </nav>
                     </div>
                 }
-                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor vehiculos") || User.IsInRole("Jefe"))
-                {
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Vehiculo" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fas fa-car-side"></i></div>
-                        Vehiculos
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="Vehiculo" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" asp-controller="Vehiculo" asp-action="VisualizarVehiculos">Visualizar vehículos</a>
-                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor vehiculos"))
-                            {
-                                <a class="nav-link" asp-controller="Vehiculo" asp-action="AgregarVehiculo">Agregar nuevo vehículo</a>
-                            }
-                        </nav>
-                    </div>
-                }
-                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor vehiculos") || User.IsInRole("Jefe"))
-                {
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Mantencion" aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fa-sharp fa-wrench"></i></div>
-                        Mantenciones
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="Mantencion" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" asp-controller="Mantencion" asp-action="VisualizarMantenciones">Visualizar mantenciones de vehículos</a>
-                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor vehiculos"))
-                            {
-                                <a class="nav-link" asp-controller="Mantencion" asp-action="AgregarEntradaFM" asp-route-id="0">Agregar nueva entrada mantención</a>
-                            }
-                        </nav>
-                    </div>
-                }
                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor usuarios") || User.IsInRole("Jefe"))
                 {
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Usuario" aria-expanded="false" aria-controls="collapseLayouts">
@@ -127,7 +93,59 @@
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" asp-controller="Usuario" asp-action="VisualizarUsuarios">Visualizar usuarios</a>
                             <a class="nav-link" asp-controller="Usuario" asp-action="AgregarUsuario">Agregar nuevo usuario</a>
-                            <a class="nav-link" asp-controller="Usuario" asp-action="AsignarPermisos">Asignar permisos</a>
+                        </nav>
+                    </div>
+                }
+                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados")
+               || User.IsInRole("Mantenedor de vehículos pesados") || User.IsInRole("Jefe"))
+                {
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Vehiculo" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-car-side"></i></div>
+                        Vehiculos
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Vehiculo" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Vehiculo" asp-action="VisualizarVehiculos">Visualizar vehículos</a>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados") 
+                                || User.IsInRole("Mantenedor de vehículos pesados"))
+                            {
+                                <a class="nav-link" asp-controller="Vehiculo" asp-action="AgregarVehiculo">Agregar nuevo vehículo</a>
+                            }
+                        </nav>
+                    </div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Kilometraje" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                        Kilometraje
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Kilometraje" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Kilometraje" asp-action="VisualizarHistorialKm">Visualizar historial de kilometraje</a>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados")
+                                || User.IsInRole("Mantenedor de vehículos pesados"))
+                            {
+                                <a class="nav-link" asp-controller="Kilometraje" asp-action="AgregarKilometrajeVehiculo" asp-route-id="0">Agregar kilometraje a vehiculo</a>
+                            }
+                        </nav>
+                    </div>
+                }
+                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados")
+                    || User.IsInRole("Mantenedor de vehículos pesados") || User.IsInRole("Jefe"))
+                {
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Mantencion" aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fa-sharp fa-wrench"></i></div>
+                        Mantenciones
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="Mantencion" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" asp-controller="Mantencion" asp-action="VisualizarMantenciones">Visualizar mantenciones de vehículos</a>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados") 
+                                || User.IsInRole("Mantenedor de vehículos pesados"))
+                            {
+                                <a class="nav-link" asp-controller="Mantencion" asp-action="AgregarEntradaFM" asp-route-id="0">Agregar nueva entrada mantención</a>
+                            }
                         </nav>
                     </div>
                 }

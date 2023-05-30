@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="col col-lg-6 col-sm-12">
                                     <label for="inputDepartamento" class="form-label">Departamento</label>
-                                    <select id="inputDepartamento" class="form-select">
+                                    <select id="inputDepartamento" class="form-select" asp-for="id_departamento" asp-items="ViewBag.id_departamento">
                                     </select>
                                 </div>
                                 <div class="col col-lg-6 col-sm-12">
@@ -162,7 +162,7 @@
                             <h4>Datos de conductor</h4>
                             <div class="mt-4 col-sm-12 mb-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="check_poliza">
+                                    <input class="form-check-input" type="checkbox" id="check_poliza" @(Model.FechaEmitida.HasValue?"checked":"")>
                                     <label class="form-check-label" for="check_poliza">
                                         Tiene poliza de conductor
                                     </label>
@@ -184,6 +184,12 @@
                                         <input type="date" class="form-control" id="inputFechaFin" value="@Model.FecheVencimiento"
                                                aria-label="Sizing example input" aria-describedby="inputFechaFin" name="FecheVencimiento">
                                     </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="inputVehiculo" class="form-label">Asignar vehículo</label>
+                                    <select id="inputDepartamento" class="form-select" asp-for="id_vehiculo" asp-items="ViewBag.id_vehiculo">
+                                        <option value="">Seleccione un vehiculo</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

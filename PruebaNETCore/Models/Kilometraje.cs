@@ -7,6 +7,8 @@ public partial class Kilometraje
 {
     public int Id { get; set; }
 
+    public DateTime FechaCreacion { get; set; }
+
     public int KilometrajeInicial { get; set; }
 
     public int KilometrajeFinal { get; set; }

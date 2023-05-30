@@ -18,16 +18,18 @@
                     <div class="card-body row fw-bold">
                         <div class="col col-lg-6">
                             <div class="row g-2">
-                                <input data-val="true" data-val-required="El campo ID es obligatorio." value="@Model.Id"
-                                       name="Id" type="hidden">
-                                <input data-val="true" data-val-required="El campo ID es obligatorio." value="@Model.Eliminado"
-                                    name="Eliminado" type="hidden">
-                                <input data-val="true" data-val-required="El campo ID es obligatorio." value="@Model.DireccionImg"
-                                name="DireccionImg" type="hidden">
-                                <div class="col-md-4">
+                                <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="Eliminado" />
+                                <input type="hidden" asp-for="DireccionImg" />
+                                <input id="inputCheck" type="hidden" asp-for="Estado" />
+                                <div class="col-md-2">
                                     <label for="inputPatente" class="form-label">Patente</label>
                                     <input type="text" name="Patente" class="form-control" id="inputPatente" value="@Model.Patente"
-                                    placeholder="Ej. AA1122 o AABB11">
+                                    placeholder="AA-0000">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="inputPatente" class="form-label">Año</label>
+                                    <input type="text" name="Year" class="form-control" id="inputYear" value="@Model.Year">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="inputMarca" class="form-label">Marca</label>
@@ -43,8 +45,19 @@
                                            value="@Model.KilometrajeInicial" />
                                 </div>
                                 <div class="col col-md-6">
-                                    <label for="inputMantenimiento" class="form-label">Periodos de mantenimiento</label>
-                                    <select id="inputPeriodos" class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
+                                    <label for="inputCategoria" class="form-label">Periodos de mantenimiento</label>
+                                    <select id="inputCategoria" class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
+                                    </select>
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputMantenimiento" class="form-label">Categoria</label>
+                                    <select id="inputPeriodos" class="form-select" asp-for="IdCategoria" asp-items="ViewBag.IdCategoria">
+                                    </select>
+                                </div>
+                                <div class="col col-md-6">
+                                    <label for="inputConductor" class="form-label">Asignar conductor</label>
+                                    <select id="inputConductor" class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor">
+                                        <option value="">Sin asignar conductor</option>
                                     </select>
                                 </div>
                                 @*<div class="col-md-6">
@@ -58,7 +71,7 @@
                                             Admitir solicitudes de vehiculo
                                         </label>
                                     </div>
-                                    <input id="inputCheck" data-val="true" data-val-required="El campo ID es obligatorio." name="estado" type="hidden">
+                                    
                                 </div>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary">Agregar vehiculo</button>

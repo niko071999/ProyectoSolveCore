@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     $('#tablaUsuarios').DataTable({
-
+        pageLength: 8,
+        lengthChange: false,
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/es-CL.json',
         },

@@ -1,0 +1,178 @@
+﻿@model ProyectoSolveCore.Models.ViewModels.vmPermisoCirculacion
+@{
+    Layout = null;
+    DateTime fsalida = Model.FechaSalida;
+    DateTime fllegada = Model.FechaLlegada;
+    string fsalidaformat = String.Format("{0:dddd d 'de' MMMM yyyy}", fsalida.Date);
+    fsalidaformat = char.ToUpper(fsalidaformat[0]) + fsalidaformat.Substring(1);
+    string fllegadaformat = String.Format("{0:dddd d 'de' MMMM yyyy}", fllegada.Date);
+    fllegadaformat = char.ToUpper(fllegadaformat[0]) + fllegadaformat.Substring(1);
+    string horasalida = String.Format("{0:00}:{1:00}", fsalida.Hour, fsalida.Minute);
+    string horallegada = String.Format("{0:00}:{1:00}", fllegada.Hour, fllegada.Minute);
+    string mensaje = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Permiso circulación</title>
+    <style type="text/css">
+        body {
+            font-family: Arial;
+            font-size: 24.0px
+        }
+
+        .pos {
+            position: absolute;
+            z-index: 0;
+            left: 0px;
+            top: 0px
+        }
+    </style>
+</head>
+<body>
+    <nobr>
+        <nowrap>
+            <div class="pos" id="_0:0" style="top:0">
+                <img name="_1100:850" src="~/assets/page_001.jpg" height="1100" width="850" border="0" usemap="#Map">
+            </div>
+            <div class="pos" id="_78:149" style="top:149px;left:78px">
+                <span id="_13.1" style=" font-family:Arial; font-size:13.1px; color:#000000">
+                    REPUBLICA DE CHILE
+                </span>
+            </div>
+            <div class="pos" id="_78:167" style="top:167px;left:78px">
+                <span id="_13.1" style=" font-family:Arial; font-size:13.1px; color:#000000">
+                    PROVINCIA DE TALCA
+                </span>
+            </div>
+            <div class="pos" id="_78:186" style="top:186px;left:78px">
+                <span id="_13.1" style=" font-family:Arial; font-size:13.1px; color:#000000">
+                    I. MUNICIPALIDAD PELARCO
+                </span>
+            </div>
+            <div class="pos" id="_393:235" style="top:235px;left:393px">
+                <span id="_14.8" style=" font-family:Arial; font-size:14.8px; color:#000000">
+                    PERMISO DE CICULACIÓN N°______________________
+                </span>
+            </div>
+            <div class="pos" id="_394:268" style="top:268px;left:394px">
+                <span id="_16.3" style=" font-family:Arial; font-size:16.3px; color:#000000">
+                    PELARCO
+                </span>
+            </div>
+            <div class="pos" id="_78:312" style="top:312px;left:78px">
+                <span id="_17.8" style=" font-family:Arial; font-size:17.8px; color:#000000">
+                    De conformidad a las facultades que me confiere la ley N&#176; 18.695 de 1988, sobre el uso
+                </span>
+            </div>
+            <div class="pos" id="_78:348" style="top:348px;left:78px">
+                <span id="_17.8" style=" font-family:Arial; font-size:17.8px; color:#000000">
+                    y circulaci&#243;n de veh&#237;culos estatales y las actuales disposiciones legales sobre la materia,
+                </span>
+            </div>
+            <div class="pos" id="_78:383" style="top:383px;left:78px">
+                <span id="_17.8" style=" font-family:Arial; font-size:17.8px; color:#000000">
+                    otorgo el presente permiso de circulaci&#243;n.
+                </span>
+            </div>
+            <div class="pos" id="_86:430" style="top:430px;left:78px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    SERVICIO
+                </span>
+            </div>
+            <div class="pos" id="_243:430" style="top:430px;left:255px">
+                <span id="_16.9" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    @Model.servicio.ToUpper()
+                </span>
+            </div>
+            <div class="pos" id="_86:478" style="top:478px;left:78px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    VEHÍCULO
+                </span>
+            </div>
+            <div class="pos" id="_243:478" style="top:478px;left:255px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    @Model.vehiculo.ToUpper()
+                </span>
+            </div>
+            <div class="pos" id="_86:525" style="top:525px;left:78px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    CONDUCTOR
+                </span>
+            </div>
+            <div class="pos" id="_243:525" style="top:525px;left:255px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    @Model.nombreConductor.ToUpper()
+                </span>
+            </div>
+            <div class="pos" id="_86:573" style="top:573px;left:78px">
+                <span id="_17.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    ACOMPAÑANTE/S
+                </span>
+            </div>
+            <div class="pos" id="_243:573" style="top:573px;left:255px">
+                <span id="_16.6" style=" font-family:Arial; font-size:16.6px; color:#000000">
+                    @Html.Raw(Model.pasajeros.ToUpper())
+                </span>
+            </div>
+            <div class="pos" id="_86:620" style="top:668px;left:78px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    COMETIDO
+                </span>
+            </div>
+            <div class="pos" id="_243:620" style="top:668px;left:255px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    @Model.motivo.ToUpper()
+                </span>
+            </div>
+            <div class="pos" id="_86:668" style="top:715px;left:78px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    LOCALIDAD
+                </span>
+            </div>
+            <div class="pos" id="_243:668" style="top:715px;left:255px">
+                <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    @Model.destino.ToUpper()
+                </span>
+            </div>
+            <div class="pos" id="_86:715" style="top:762px;left:78px">
+                <span id="_16.9" style=" font-family:Arial; font-size:19px; color:#000000">
+                    DIA AUTORIZADO
+                </span>
+            </div>
+            <div class="pos" id="_86:715" style="top:762px;left:255px">
+                <span id="_16.9" style=" font-family:Arial; font-size:19.1px; color:#000000">
+                    @Html.Raw(fsalida.Day == fllegada.Day ? $"{fsalidaformat} desde las {horasalida} hrs, hasta las {horallegada} hrs"
+                        : $"Desde el dia {fsalidaformat} {horasalida} <br /> Hasta el dia {fllegadaformat} {horallegada}")
+                </span>
+            </div>
+            <div class="pos" id="_78:762" style="top:820px;left:78px">
+                <span id="_13.3" style="font-weight:bold; font-family:Arial; font-size:13.3px; color:#000000">
+                    NOTA: LA PRESENTE AUTORIZACI&#211;N ES V&#193;LIDA PARA LOS DIAS Y EL VEH&#205;CULO SE&#209;ALADO EN LA PRESENTE
+                </span>
+            </div>
+            <div class="pos" id="_78:782" style="top:840px;left:78px">
+                <span id="_13.3" style="font-weight:bold; font-family:Arial; font-size:13.3px; color:#000000">
+                    AUTORIZACIÓN
+                </span>
+            </div>
+            <div class="pos" id="_553:926" style="top:1025px;left:553px">
+                <span id="_13.3" style=" font-family:Arial; font-size:14px; color:#000000">
+                    @Model.NombreFirma
+                </span>
+            </div>
+            <div class="pos" id="_596:946" style="top:1040px;left:596px">
+                <span id="_13.3" style="font-weight:bold; font-family:Arial; font-size:13.3px; color:#000000">
+                    ALCALDE(S)
+                </span>
+            </div>
+            <div class="pos" id="_193:1014" style="top:1120px;left:193px">
+                <span id="_15.0" style=" font-family:Arial; font-size:15.0px; color:#000000">
+                    SVP/jnc
+                </span>
+            </div>
+        </nowrap>
+    </nobr>
+</body>
+</html>

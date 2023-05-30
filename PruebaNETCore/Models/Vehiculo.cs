@@ -13,7 +13,7 @@ public partial class Vehiculo
 
     public string Modelo { get; set; }
 
-    public string Año { get; set; }
+    public string Year { get; set; }
 
     public bool Estado { get; set; }
 
@@ -25,11 +25,15 @@ public partial class Vehiculo
 
     public int? IdCategoria { get; set; }
 
+    public int? IdConductor { get; set; }
+
     public virtual ICollection<Bitacora> Bitacoras { get; set; } = new List<Bitacora>();
 
     public virtual ICollection<FichaMantencion> FichaMantencions { get; set; } = new List<FichaMantencion>();
 
     public virtual Categoria IdCategoriaNavigation { get; set; }
+
+    public virtual Conductore IdConductorNavigation { get; set; }
 
     public virtual PeriodosMantenimiento IdPeriodoKilometrajeNavigation { get; set; }
 

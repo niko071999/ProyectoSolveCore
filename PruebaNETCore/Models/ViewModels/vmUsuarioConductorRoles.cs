@@ -8,6 +8,7 @@ namespace ProyectoSolveCore.Models.ViewModels
     public class vmUsuarioConductorRoles
     {
         public int ID { get; set; }
+        public string rutold { get; set; }
         public string rut { get; set; }
         public string clave { get; set; }
         public string nombre { get; set; }
@@ -17,6 +18,7 @@ namespace ProyectoSolveCore.Models.ViewModels
         public string direccion_img { get; set; }
         public int id_departamento { get; set; }
         public int? id_conductor { get; set; }
+        public int? id_vehiculo { get; set; }
         public int? NumeroPoliza { get; set; }
         public DateTime? FechaEmitida { get; set; }
         public DateTime? FecheVencimiento { get; set; }

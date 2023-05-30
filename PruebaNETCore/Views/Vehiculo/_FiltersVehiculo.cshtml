@@ -1,0 +1,54 @@
+﻿<form id="FormFilter" asp-action="VisualizarVehiculos" method="post">
+    <div class="row fw-bold">
+        <label class="form-label">Estado</label>
+        <div class="col col-12">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="OpcionEstado" id="inlineRadio1"
+                       value="0" @(ViewBag.OpcionEstado == 0 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio1">Todos</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="OpcionEstado" id="inlineRadio1"
+                       value="1" @(ViewBag.OpcionEstado == 1 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio1">Habilitado</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="OpcionEstado" id="inlineRadio2"
+                       value="2" @(ViewBag.OpcionEstado == 2 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio2">Precaucion</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="OpcionEstado" id="inlineRadio3"
+                       value="3" @(ViewBag.OpcionEstado == 3 ? "checked":"")>
+                <label class="form-check-label" for="inlineRadio3">Deshabilitado</label>
+            </div>
+        </div>
+        <div class="col col-12">
+            <label for="inputCategoria" class="form-label">Categoria</label>
+            <select id="inputCategoria" class="form-select" name="IdCategoria" asp-items="ViewBag.IdCategoria">
+                <option value="0">--</option>
+            </select>
+        </div>
+        <div class="col col-12">
+            <label for="inputPatente" class="form-label">Patente</label>
+            <select id="inputEstado" class="form-select" name="Patente" asp-items="ViewBag.Patente">
+                <option value="">--</option>
+            </select>
+        </div>
+        <div class="col col-12">
+            <label for="inputMarca" class="form-label">Marca</label>
+            <select id="inputMarca" class="form-select" name="Marca" asp-items="ViewBag.Marca">
+                <option value="">--</option>
+            </select>
+        </div>
+        <div class="col col-12">
+            <label for="inputModelo" class="form-label">Modelo</label>
+            <select id="inputModelo" class="form-select" name="Modelo" asp-items="ViewBag.Modelo">
+                <option value="">--</option>
+            </select>
+        </div>
+        <div class="col col-12 d-grid gap-2 mt-2">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>

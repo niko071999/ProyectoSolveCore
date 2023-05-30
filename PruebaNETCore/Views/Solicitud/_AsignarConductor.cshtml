@@ -18,12 +18,12 @@
                 <div class="col col-md-6">
                     <label for="inputFechaSalida" class="form-label">Fecha de salida</label>
                     <input type="text" class="form-control" id="inputFechaSalida"
-                           value="@Model.FechaSalida" disabled>
+                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaSalida)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                           value="@Model.FechaLlegada" disabled>
+                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaLlegada)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputNombreSolicitante" class="form-label">Nombre del solicitante</label>

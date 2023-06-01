@@ -50,18 +50,19 @@
             IdSolicitud: document.getElementById('idsolicitud').value,
             Nombre: nombre
         }
+        window.open('/GenerateDocument/PermisoCirculacion?nombre=' + objeto.Nombre + '&id=' + objeto.IdSolicitud, '_blank');
 
-        $.ajax({
-            url: '/GenerateDocument/MostrarPermisoCirculacionModal',
-            type: 'POST',
-            contentType: "application/json",
-            data: JSON.stringify(objeto),
-            success: function (result) {
-                abrirModal(result);
-            },
-            error: function (xhr, error) {
-                console.log(error);
-            }
-        });
+        //$.ajax({
+        //    url: '/GenerateDocument/MostrarPermisoCirculacionModal',
+        //    type: 'POST',
+        //    contentType: "application/json",
+        //    data: JSON.stringify(objeto),
+        //    success: function (result) {
+        //        abrirModal(result);
+        //    },
+        //    error: function (xhr, error) {
+        //        console.log(error);
+        //    }
+        //});
     });
 </script>

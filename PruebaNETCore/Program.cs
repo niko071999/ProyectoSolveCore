@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
-using ProyectoSolveCore.Extension;
 using System.Net;
-using DinkToPdf;
-using DinkToPdf.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ModelData>();
 builder.Services.AddScoped<VerificarSolicitudes>();
-var context = new CustomAssemblyLoadContext();
-context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), "LibreriaPDF/libwkhtmltox.dll"));
-builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 builder.Services.AddControllers()
         .AddJsonOptions(options =>

@@ -1,0 +1,57 @@
+﻿@model List<ProyectoSolveCore.Models.ClasesReportes.CountViajesFuncionarios>
+@{
+    ViewBag.Title = "Reporte cantidad viajes de funcionarios";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Reporte cantidad viajes de funcionarios</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Reporte cantidad viajes de funcionarios</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    @if (Model != null)
+                    {
+                        <table id="tablaCVF" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Departamento</th>@*0*@
+                                    <th scope="col">Empleado</th>@*4*@
+                                    <th scope="col">Cantidad</th>@*1*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cvf in Model)
+                                {
+                                    <tr>
+                                        <td>@cvf.Departamento</td>
+                                        <td>@cvf.Nombre</td>
+                                        <td>@cvf.NumeroViaje.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+@section CSS{
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables/buttons/buttons.datatables.min.css" rel="stylesheet" />
+}
+    @section Scripts{
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/buttons/datatables.buttons.min.js"></script>
+    <script src="~/lib/datatables/buttons/jszip.min.js"></script>
+    <script src="~/lib/datatables/buttons/pdfmake.min.js"></script>
+    <script src="~/lib/datatables/buttons/vfs_fonts.js"></script>
+    <script src="~/lib/datatables/buttons/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables/buttons/buttons.print.min.js"></script>
+    <script src="~/lib/datatables/buttons/buttons.colvis.min.js"></script>
+    <script src="~/js/reportes.js"></script>
+}

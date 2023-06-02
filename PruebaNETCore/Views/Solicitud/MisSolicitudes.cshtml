@@ -16,7 +16,19 @@
             </ol>
             <div class="card p-2">
                 <div class="card-body">
-                    <a asp-action="SolicitarVehiculo" role="button" class="btn btn-primary mb-2">Solicitar un vehículo</a>
+                    <partial name="_CardError" />
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a asp-action="SolicitarVehiculo" role="button" class="btn btn-primary mb-2">Solicitar un vehículo</a>
+                        <div class="btn-group dropend">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="inside" aria-expanded="false">
+                                Filtros
+                            </button>
+                            <div class="dropdown-menu p-4 fw-bold" style="width: 550px; max-height: 700px">
+                                <partial name="_FiltersSolicitud" model='new Accion{accion = "MisSolicitudes"}' />
+                            </div>
+                        </div>
+                    </div>
                     @if (Model != null)
                     {
                         <table id="tablaSolicitud" class="display table table-hover w-100">

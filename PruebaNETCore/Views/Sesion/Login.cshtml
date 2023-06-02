@@ -16,16 +16,14 @@
     <link href="~/css/login.css" rel="stylesheet" />
     <!-- Favicons -->
     <meta name="theme-color" content="#712cf9">
-    <!-- Custom styles for this template -->
-    <link href="signin.css" rel="stylesheet">
 </head>
 <body class="text-center">
-
     <main class="form-signin w-100 m-auto">
         <form asp-action="Login" method="post">
             <h1>SGV</h1>
             <hr />
             <h1 class="h3 mb-3 fw-normal">Ingrese credenciales de acceso</h1>
+            <partial name="_CardError" />
             <div class="form-floating">
                 <input type="text" name="Rut" class="form-control" id="floatingInput" value="@Model.Rut" placeholder="Ej: 12345678-9">
                 <label for="floatingInput">RUT</label>

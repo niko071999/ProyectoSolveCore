@@ -44,7 +44,7 @@
                 id_vehiculo: form.id_vehiculo.value
             },
             success: function (response) {
-                $.notify(response.mensaje, { type: response.type });
+                alert(response.mensaje);
                 location = location.href;
             },
             error: function (error) {

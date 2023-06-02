@@ -16,6 +16,12 @@
             <form asp-action="SolicitarVehiculo" method="post">
                 <div class="card">
                     <div class="card-body row fw-bold">
+                        @if (ViewBag.Mensaje != null)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                Error: @ViewBag.Mensaje
+                            </div>
+                        }
                         <div class="col col-lg-6">
                             <div class="row g-2">
                                 <h4>Informacion del cometido</h4>
@@ -76,7 +82,7 @@
                                     </select>
                                 </div>
                                 <div class="col col-md-12 mt-2">
-                                    <img id="imagen-prev" class="img-thumbnail" src="" alt="Aqui se vera la imagen del vehículo">
+                                    <img id="imagen-prev" class="img-thumbnail" src="" alt="Imagen del vehículo">
                                 </div>
                             </div>
                             <div class="mt-3">

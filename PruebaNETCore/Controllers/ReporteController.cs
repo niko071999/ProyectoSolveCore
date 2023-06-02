@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
+using ProyectoSolveCore.Models.ClasesReportes;
 using ProyectoSolveCore.Models.ViewModels;
+using System.Globalization;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -12,14 +15,68 @@ namespace ProyectoSolveCore.Controllers
         {
             _context = context;
         }
+        [Autorizar(4)]
+        public async Task<IActionResult> CantidadViajesFuncionario()
+        {
+            var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation.IdDepartamentoNavigation)
+                .Where(s => s.IdSolicitante > 2 && s.Estado == 1 || s.Estado == 3)
+                .ToListAsync();
+            Dictionary<string, CountViajesFuncionarios> cvf = new();
+            foreach (var s in solicitudes)
+            {
+                string nombre = $"{s.IdSolicitanteNavigation.Nombre} {s.IdSolicitanteNavigation.Apellido}";
+                if (!cvf.ContainsKey(nombre))
+                {
+                    cvf.Add(nombre, new CountViajesFuncionarios
+                    {
+                        Nombre = nombre,
+                        Departamento = s.IdSolicitanteNavigation.IdDepartamentoNavigation.Departamento1,
+                        NumeroViaje = solicitudes.Where(x => x.IdSolicitante == s.IdSolicitante).ToList().Count
+                    });
+                }
+            }
+            return View(cvf.Values.OrderBy(x => x.Nombre).ToList());
+        }
+        [Autorizar(4)]
+        public async Task<IActionResult> CantidadViajesConductores()
+        {
+            var solicitudes = await _context.Solicitudes.Include(s => s.IdConductorNavigation.IdUsuarioNavigation.IdDepartamentoNavigation)
+                .Where(s => s.IdSolicitante > 2 && s.Estado == 1 || s.Estado == 3)
+                .ToListAsync();
+            var kilometrajes = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.IdConductorNavigation)
+                .ToListAsync();
+
+            Dictionary<string, CountViajesConductores> cvc = new();
+            foreach (var s in solicitudes)
+            {
+                string nombre = $"{s.IdConductorNavigation.IdUsuarioNavigation.Nombre} {s.IdConductorNavigation.IdUsuarioNavigation.Apellido}";
+                if (!cvc.ContainsKey(nombre))
+                {
+                    var kmsUser = kilometrajes.Where(k => k.IdVehiculoNavigation.IdConductor.HasValue
+                            && k.IdVehiculoNavigation.IdConductor == s.IdConductor).ToList();
+                    var km = kmsUser.FirstOrDefault();
+                    cvc.Add(nombre, new CountViajesConductores
+                    {
+                        Nombre = nombre,
+                        Departamento = s.IdConductorNavigation.IdUsuarioNavigation.IdDepartamentoNavigation.Departamento1,
+                        NumeroViaje = solicitudes.Where(x => x.IdConductor == s.IdConductor).ToList().Count,
+                        KilometrajesTotales = kmsUser.Sum(k => km != null ? km.KilometrajeInicial - (k.KilometrajeFinal - k.KilometrajeInicial): 0)
+                    });
+                }
+            }
+            return View(cvc.Values.OrderBy(x => x.Nombre).ToList());
+        }
+        [Autorizar(4)]
         public IActionResult CantidadSolicitudesMensuales()
         {
             try
             {
                 //rcsDic = Reporte de cantidad de solicitudes Diccionario
                 Dictionary<DateTime, CountSolicitudes> rcsDic = new();
-                var FirsDayYear = new DateTime(DateTime.Now.Year, 1, 1);
-                var LastDayYear = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)
+                var hoy = GenerarFecha(DateTime.Now);
+
+                var FirsDayYear = new DateTime(hoy.Year, 1, 1);
+                var LastDayYear = new DateTime(hoy.Year, hoy.Month, 1)
                     .AddMonths(-1).AddDays(-1);
                 var solicitudes = _context.Solicitudes.OrderBy(s => s.FechaSolicitado)
                     .Where(s => s.FechaSolicitado >= FirsDayYear && s.FechaSolicitado <= LastDayYear)
@@ -85,6 +142,12 @@ namespace ProyectoSolveCore.Controllers
             {
                 return View();
             }
+        }
+
+        private DateTime GenerarFecha(DateTime now)
+        {
+            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
+            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
     }
 }

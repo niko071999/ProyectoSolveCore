@@ -10,12 +10,6 @@ namespace PruebaNETCore.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ModelData _db;
-
-        public HomeController(ModelData db)
-        {
-            _db = db;
-        }
         [TypeFilter(typeof(VerificarSolicitudes))]
         public IActionResult Agenda()
         {

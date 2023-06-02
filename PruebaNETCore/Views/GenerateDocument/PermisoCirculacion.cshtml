@@ -1,15 +1,18 @@
-﻿@model ProyectoSolveCore.Models.ViewModels.vmPermisoCirculacion
+﻿@using System.Globalization
+@model ProyectoSolveCore.Models.ViewModels.vmPermisoCirculacion
 @{
     Layout = null;
     DateTime fsalida = Model.FechaSalida;
     DateTime fllegada = Model.FechaLlegada;
-    string fsalidaformat = String.Format("{0:dddd d 'de' MMMM yyyy}", fsalida.Date);
+    CultureInfo idioma = new CultureInfo("es-CL");
+
+    string fsalidaformat = fsalida.Date.ToString("dddd d 'de' MMMM yyyy", idioma);
     fsalidaformat = char.ToUpper(fsalidaformat[0]) + fsalidaformat.Substring(1);
-    string fllegadaformat = String.Format("{0:dddd d 'de' MMMM yyyy}", fllegada.Date);
+    string fllegadaformat = fllegada.Date.ToString("dddd d 'de' MMMM yyyy", idioma);
     fllegadaformat = char.ToUpper(fllegadaformat[0]) + fllegadaformat.Substring(1);
     string horasalida = String.Format("{0:00}:{1:00}", fsalida.Hour, fsalida.Minute);
     string horallegada = String.Format("{0:00}:{1:00}", fllegada.Hour, fllegada.Minute);
-    string mensaje = "";
+    string mensaje = string.Empty;
 }
 <!DOCTYPE html>
 <html>
@@ -167,7 +170,7 @@
                     ALCALDE(S)
                 </span>
             </div>
-            <div class="pos" id="_193:1014" style="top:1120px;left:193px">
+            <div class="pos" id="_193:1014" style="top:1090px;left:193px">
                 <span id="_15.0" style=" font-family:Arial; font-size:15.0px; color:#000000">
                     SVP/jnc
                 </span>

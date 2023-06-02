@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
+using System.Globalization;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -13,6 +15,7 @@ namespace ProyectoSolveCore.Controllers
         {
             _context = context;
         }
+        [Autorizar(16)]
         public async Task<IActionResult> VisualizarMantenciones()
         {
             var mantenciones = await _context.Fichamantencions.Include(m => m.IdConductorNavigation.IdUsuarioNavigation).Include(m => m.IdVehiculoNavigation)
@@ -27,20 +30,41 @@ namespace ProyectoSolveCore.Controllers
             }
             try
             {
-                var vlist = await _context.Vehiculos.Include(v => v.IdCategoriaNavigation)
-                    .Where(v => !v.Eliminado)
-                    .Select(v => new SelectListWithGroups()
+                var vehiculos = await _context.Vehiculos.Include(v => v.IdCategoriaNavigation).Where(v => !v.Eliminado).ToListAsync();
+
+                var vlist = new List<SelectListWithGroups>();
+                //Verifica si el usuario es mantenedor de vehiculos normales para mostrar solo las categorias correspondiente para el rol
+                if (User.IsInRole("Mantenedor de vehículos no pesados") && User.IsInRole("Mantenedor de vehículos pesados") || User.IsInRole("Administrador"))
+                {
+                    vlist = vehiculos.Select(v => new SelectListWithGroups()
                     {
                         Value = v.Id.ToString(),
                         Text = $"{v.Patente} - {v.Marca} {v.Modelo}",
                         Group = v.IdCategoriaNavigation.Categoria1
-                }).ToListAsync();
-                //Verifica si el usuario es mantenedor de vehiculos normales para mostrar solo las categorias correspondiente para el rol
-                if (User.IsInRole("Mantenedor de vehículos no pesados"))  
+                    }).ToList();
+                }else if (User.IsInRole("Mantenedor de vehículos no pesados"))  
                 {
-                    vlist = vlist.Where(vl => vl.Group.Equals("SUV") || vl.Group.Equals("Camioneta") 
-                        || vl.Group.Equals("Auto") || vl.Group.Equals("Furgon"))
-                        .ToList();
+                    vlist = vehiculos.Select(v => new SelectListWithGroups()
+                    {
+                        Value = v.Id.ToString(),
+                        Text = $"{v.Patente} - {v.Marca} {v.Modelo}",
+                        Group = v.IdCategoriaNavigation.Categoria1
+                    })
+                    .Where(vl => vl.Group.Equals("SUV") || vl.Group.Equals("Camioneta")
+                    || vl.Group.Equals("Auto") || vl.Group.Equals("Furgon"))
+                    .ToList();
+                }
+                else
+                {
+                    vlist = vehiculos.Select(v => new SelectListWithGroups()
+                    {
+                        Value = v.Id.ToString(),
+                        Text = $"{v.Patente} - {v.Marca} {v.Modelo}",
+                        Group = v.IdCategoriaNavigation.Categoria1
+                    })
+                    .Where(v => v.Group.Equals("Camion") || v.Group.Equals("Retroexcavadora")
+                            || v.Group.Equals("Bus") || v.Group.Equals("Tractor"))
+                    .ToList();
                 }
 
                 var clist = await _context.Conductores.Include(c => c.IdUsuarioNavigation)
@@ -52,13 +76,33 @@ namespace ProyectoSolveCore.Controllers
                     }).ToListAsync();
                 if (id == 0)
                 {
+                    var v = vehiculos.FirstOrDefault(v => int.Parse(vlist.FirstOrDefault().Value) == v.Id);
                     ViewBag.IdVehiculo = new SelectList(vlist, "Value", "Text", null, "Group");
+                    ViewBag.IdConductor = new SelectList(clist, "Value", "Text", v.IdConductor??int.Parse(clist.FirstOrDefault().Value));
                 }
                 else
                 {
+                    var v = vehiculos.FirstOrDefault(v => v.Id == id);
+                    if (v.IdConductor.HasValue)
+                    {
+                        ViewBag.IdConductor = new SelectList(clist, "Value", "Text", v.IdConductor);
+                    }
+                    else
+                    {
+                        ViewBag.IdConductor = new SelectList(clist, "Value", "Text");
+
+                    }
                     ViewBag.IdVehiculo = new SelectList(vlist, "Value", "Text", id, "Group");
                 }
-                ViewBag.IdConductor = new SelectList(clist, "Value", "Text");
+                var veh = vehiculos.FirstOrDefault();
+                if (veh.IdConductor.HasValue)
+                {
+                    ViewBag.IdConductor = new SelectList(clist, "Value", "Text", veh.IdConductor);
+                }
+                else
+                {
+                    ViewBag.IdConductor = new SelectList(clist, "Value", "Text");
+                }
                 return View(new vmFichaMantencion());
             }
             catch (Exception ex)
@@ -66,7 +110,7 @@ namespace ProyectoSolveCore.Controllers
                 return RedirectToAction("VisualizarMantenciones");
             }
         }
-
+        [Autorizar(14)]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradaFM(vmFichaMantencion fm)
         {
@@ -79,7 +123,7 @@ namespace ProyectoSolveCore.Controllers
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 Fichamantencion ficha = new()
                 {
-                    FechaMantencion = DateTime.Now,
+                    FechaMantencion = GenerarFecha(DateTime.Now),
                     Kilometraje = fm.Kilometraje,
                     Descripcion = fm.Descripcion,
                     IdConductor = fm.IdConductor,
@@ -102,6 +146,12 @@ namespace ProyectoSolveCore.Controllers
             {
                 return RedirectToAction("VisualizarMantenciones");
             }
+        }
+
+        private DateTime GenerarFecha(DateTime now)
+        {
+            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
+            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
     }
 }

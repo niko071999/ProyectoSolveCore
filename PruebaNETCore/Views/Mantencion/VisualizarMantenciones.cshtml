@@ -24,7 +24,7 @@
                                     <th scope="col">Kilometraje</th>@*1*@
                                     <th scope="col">Conductor</th>@*3*@
                                     <th scope="col">Descripcion</th>@*2*@
-                                    <th scope="col"></th>@*10*@
+                                    @*<th scope="col"></th>@*10*@
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,16 +35,16 @@
                                     <tr>
                                         <td>@m.FechaMantencion</td>
                                         <td>@vehiculo</td>
-                                        <td>@m.Kilometraje</td>
+                                        <td>@m.Kilometraje.ToString("N0")</td>
                                         <td>@conductor</td>
                                         <td>@m.Descripcion</td>
-                                        <td class="text-center">
+                                        @*<td class="text-center">
                                             <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
                                             data-bs-title="Mostrar más información" data-id="@m.Id"
                                             class="btn btn-info">
                                                 <i class="fa-sharp fa-circle-info fa-lg"></i>
                                             </button>
-                                        </td>
+                                        </td>*@
                                     </tr>
                                 }
                             </tbody>
@@ -61,7 +61,7 @@
 @section CSS {
     <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
 }
-    @section Scripts {
+@section Scripts {
     <script src="~/lib/datatables/jquery.datatables.min.js"></script>
     <script src="~/lib/datatables/moment.min.js"></script>
     <script src="~/lib/datatables/datetime-moment.js"></script>

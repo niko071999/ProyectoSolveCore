@@ -1,6 +1,4 @@
-﻿using DinkToPdf;
-using DinkToPdf.Contracts;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;

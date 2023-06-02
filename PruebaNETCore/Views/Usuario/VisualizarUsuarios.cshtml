@@ -14,7 +14,9 @@
             </ol>
             <div class="card">
                 <div class="card-body">
-                    <a asp-action="AgregarUsuario" role="button" class="btn btn-primary mb-2">Agregar nuevo usuario</a>
+                    @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                        <a asp-action="AgregarUsuario" role="button" class="btn btn-primary mb-2">Agregar nuevo usuario</a>
+                    }
                     @if (Model != null)
                     {
                         <table id="tablaUsuarios" class="display table table-hover w-100">

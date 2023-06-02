@@ -63,7 +63,7 @@ const MostrarFichaSolicitud = (boton) => {
         },
         error: function (xhr, error) {
             if (xhr.status === 400) {
-                $.notify(xhr.responseText, { type: 'error' });
+                alert(xhr.responseText);
             } else {
                 console.log(error);
             }

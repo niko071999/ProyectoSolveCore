@@ -25,18 +25,9 @@ namespace ProyectoSolveCore.Controllers
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
-            var data = await _context.Departamentos.ToListAsync();
-            data = cambiarOrden(data);
+            var data = await _context.Departamentos.OrderBy(d => d.Departamento1).ToListAsync();
 
             return Content(JsonConvert.SerializeObject(new { data }, jsonSettings), "application/json");
-        }
-
-        private List<Departamento> cambiarOrden(List<Departamento> data)
-        {
-            var UltimoElemnto = data.Last();
-            data.RemoveAt(data.Count - 1);
-            data.Insert(0, UltimoElemnto);
-            return data;
         }
     }
 }

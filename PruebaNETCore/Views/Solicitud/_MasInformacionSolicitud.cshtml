@@ -1,9 +1,12 @@
-﻿@model ProyectoSolveCore.Models.ViewModels.vmMasInformacionSolicitud
+﻿@using System.Globalization
+@model ProyectoSolveCore.Models.ViewModels.vmMasInformacionSolicitud
 @{
     var s = Model.solicitud;
     string estado = string.Empty;
     string border = string.Empty;
     bool isNull = s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id) == null;
+    CultureInfo idioma = new CultureInfo("es-CL");
+
     switch (s.Estado)
     {
         case 0:
@@ -34,17 +37,17 @@
                 <div class="col col-lg-4 col-md-12">
                     <label for="inputFechaSolicitado" class="form-label">Fecha solicitada</label>
                     <input type="text" class="form-control" id="inputFechaSolicitado"
-                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm:ss}", s.FechaSolicitado))" disabled>
+                           value="@(s.FechaSolicitado.ToString("dddd d MMMM yyyy H:mm:ss", idioma))" disabled>
                 </div>
                 <div class="col col-lg-4 col-sm-12">
                     <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", s.FechaSalida)) Hrs" disabled>
+                           value="@(s.FechaSalida.ToString("dddd d MMMM yyyy H:mm", idioma)) Hrs" disabled>
                 </div>
                 <div class="col col-lg-4 col-sm-12">
                     <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", s.FechaLlegada)) Hrs" disabled>
+                           value="@(s.FechaLlegada.ToString("dddd d MMMM yyyy H:mm", idioma)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputSolicitante" class="form-label">Nombre del solicitante</label>

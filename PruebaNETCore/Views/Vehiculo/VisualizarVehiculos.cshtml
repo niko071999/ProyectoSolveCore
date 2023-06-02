@@ -33,9 +33,10 @@
                         <table id="tablaVehiculos" class="display table table-hover w-100">
                             <thead class="table-light">
                                 <tr>
-                                    <th scope="col" style="width:20%">Patente</th>
-                                    <th scope="col" style="width:25%">Marca</th>
+                                    <th scope="col" style="width:10%">Patente</th>
+                                    <th scope="col" style="width:10%">Marca</th>
                                     <th scope="col" style="width:25%">Modelo</th>
+                                    <th scope="col" style="width:20%">Conductor</th>
                                     <th scope="col" style="width:5%">Habilitado</th>
                                     <th scope="col">Km. recorridos</th>
                                     <th scope="col"></th>
@@ -48,6 +49,7 @@
                                         <td>@vehiculo.Patente</td>
                                         <td>@vehiculo.Marca</td>
                                         <td>@vehiculo.Modelo</td>
+                                        <td>@Html.Raw(vehiculo.NombreConductor)</td>
                                         <td class="text-center">
                                             <a role="button" class="btn btn-light" data-bs-placement="top" 
                                             data-bs-toggle="tooltip" data-bs-title="@vehiculo.MensajeEstado">

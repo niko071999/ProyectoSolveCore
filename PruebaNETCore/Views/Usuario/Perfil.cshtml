@@ -1,0 +1,229 @@
+﻿@model ProyectoSolveCore.Models.ViewModels.vmPerfil
+@{
+    ViewBag.Title = "Mi Perfil";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Mi Perfil</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Mi Perfil</li>
+            </ol>
+            <form id="form_AgregarUsuario" asp-action="EditarPerfil" method="post">
+                <div class="card mb-4">
+                    <div class="card-body row fw-bold">
+                        <div class="col col-lg-6 col-sm-12">
+                            <div class="row g-2">
+                                <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="Eliminado" />
+                                <input type="hidden" asp-for="DireccionImg" />
+                                <input id="idDepartamento" type="hidden" asp-for="IdDepartamento" />
+                                <h4>Datos del usuario</h4>
+                                <div class="col col-lg-6 col-sm-12">
+                                    <label for="inputNombre" class="form-label">Nombre</label>
+                                    <input type="text" asp-for="Nombre" class="form-control" id="inputNombre"
+                                           required>
+                                </div>
+                                <div class="col col-lg-6 col-sm-12">
+                                    <label for="inputApellido" class="form-label">Apellido</label>
+                                    <input type="text" asp-for="Apellido" class="form-control" id="inputApellido" required>
+                                </div>
+                                <div class="col col-lg-6 col-sm-12">
+                                    <label for="inputDepartamento" class="form-label">Departamento</label>
+                                    <div class="input-group">
+                                        <select id="inputDepartamento" class="form-select" asp-for="IdDepartamento" asp-items="ViewBag.IdDepartamento">
+                                        </select>
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a id="btn_newDepartamento" 
+                                                    class="dropdown-item" href="#">Agregar nuevo departamento</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col col-lg-6 col-sm-12">
+                                    @*<label for="formFile" class="form-label">Subir imagen</label>
+                                    <input class="form-control" type="file" id="formFile">*@
+                                </div>
+                                <hr />
+                                <h4>Datos de acceso</h4>
+                                <div class="col col-lg-4 col-sm-6">
+                                    <label for="inputRut" class="form-label">RUT</label>
+                                    <input type="text" class="form-control" asp-for="Rut" id="inputRut"
+                                           placeholder="Con guión y sin puntos" required>
+                                </div>
+                                <div class="col col-lg-4 col-sm-6">
+                                    <label for="inputClave" class="form-label">Clave de acceso</label>
+                                    <input type="password" asp-for="Clave" class="form-control" id="inputClave"
+                                           placeholder="Minimo 6 caracteres" required>
+                                </div>
+                                <div class="col col-lg-4 col-sm-6">
+                                    <label for="inputReClave" class="form-label">Reingrese la clave de acceso</label>
+                                    <input type="password" class="form-control" id="inputReClave" required>
+                                </div>
+                                <div class="col col-sm-12 mb-2">
+                                    <h4 class="mt-3">Roles</h4>
+                                    <ul class="row list-group list-group-horizontal list-group-flush">
+                                        @*Administrador*@
+                                        <li class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios"))
+                                            {
+                                                <input class="form-check-input" type="checkbox" asp-for="RolAdministrador" id="Administrador">
+                                            }else{
+                                                <input class="form-check-input" type="checkbox" asp-for="RolAdministrador" id="Administrador" disabled>
+                                            }
+                                            <label class="form-check-label" for="Administrador">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Administrador"
+                                                   data-bs-content="Tiene las facultades de realizar todas las funciones del sistema">
+                                                    Administrador
+                                                </a>
+                                            </label>
+                                        </li>
+                                        @*Jefe*@
+                                        <div class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios"))
+                                            {
+                                                <input class="form-check-input" type="checkbox" asp-for="RolJefe" id="Jefe">
+                                            }else
+                                            {
+                                                <input class="form-check-input" type="checkbox" asp-for="RolJefe" id="Jefe" disabled>
+                                            }
+                                            <label class="form-check-label" for="Jefe">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Jefe"
+                                                   data-bs-content="Tiene las facultades de realizar las funciones de Aprobar, Rechazar y visualizar solicitudes. Como también visualizar informes y descargarlos.">
+                                                    Jefe
+                                                </a>
+                                            </label>
+                                        </div>
+                                        @*Mant. Usuarios*@
+                                        <div class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                                                <input class="form-check-input" type="checkbox" id="Usuarios" asp-for="RolMantendorUsuarios">
+                                            }else{
+                                                <input class="form-check-input" type="checkbox" id="Usuarios" asp-for="RolMantendorUsuarios" disabled>
+                                            }
+                                            <label class="form-check-label" for="Usuarios">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de usuarios"
+                                                   data-bs-content="Tiene las facultades de mantener a los usuarios del sistema.">
+                                                    Mantenedor usuarios
+                                                </a>
+                                            </label>
+                                        </div>
+                                        @*Mant. Vehiculos*@
+                                        <div class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                                                <input class="form-check-input" type="checkbox" id="Vehiculos" asp-for="RolMantenedorVehiculos">
+                                            }else{
+                                                <input class="form-check-input" type="checkbox" id="Vehiculos" asp-for="RolMantenedorVehiculos" disabled>
+                                            }
+                                            <label class="form-check-label" for="Vehiculo">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos no pesados"
+                                                   data-bs-content="Tiene las facultades de mantener a los vehiculos no pesados del sistema.">
+                                                    Mantenedor vehículos no pesados
+                                                </a>
+                                            </label>
+                                        </div>
+                                        @*Mantenedor de maquinarias*@
+                                        <div class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                                                <input class="form-check-input" type="checkbox" id="Maquinaria" asp-for="RolMantenedorVehiculosMaq">
+                                            }else{
+                                                <input class="form-check-input" type="checkbox" id="Maquinaria" asp-for="RolMantenedorVehiculosMaq" disabled>
+                                            }
+                                            <label class="form-check-label" for="Maquinaria">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos pesados"
+                                                   data-bs-content="Tiene las facultades de mantener a los vehiculos pesados del sistema.">
+                                                    Mantenedor de vehículos pesados
+                                                </a>
+                                            </label>
+                                        </div>
+                                        @*Bitácora*@
+                                        <div class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                                                <input class="form-check-input" type="checkbox" id="Bitacora_c" asp-for="RolMantenedorBitacora">
+                                            }else{
+                                                <input class="form-check-input" type="checkbox" id="Bitacora_c" asp-for="RolMantenedorBitacora" disabled>
+                                            }
+                                            <label class="form-check-label" for="Bitacora_c">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de la bitácora"
+                                                   data-bs-content="Tiene las facultades de mantener a la bitacora de los vehículos.">
+                                                    Mantenedor de bitácora
+                                                </a>
+                                            </label>
+                                        </div>
+                                        @*Solicitador*@
+                                        <div class="list-group-item col col-lg-6">
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                                                <input class="form-check-input" type="checkbox" id="Solicitador" asp-for="RolSolicitador">
+                                            }else{
+                                                <input class="form-check-input" type="checkbox" id="Solicitador" asp-for="RolSolicitador" disabled>
+                                            }
+                                            <label class="form-check-label" for="Solicitador">
+                                                <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
+                                                   data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Solicitador"
+                                                   data-bs-content="Tiene las facultades de solicitar vehículos.">
+                                                    Solicitador
+                                                </a>
+                                            </label>
+                                        </div>
+                                    </ul>
+                                    <div class="col-sm-12 mt-2">
+                                        <button id="btn_form" type="button" class="btn btn-primary">Guardar cambios</button>
+                                    </div>
+                                </div>          
+                            </div>
+                        </div>
+                        <div class="col col-lg-6 col-sm-12">
+                            <h4>Datos de conductor</h4>
+                            <div class="mt-4 col-sm-12 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="check_poliza"
+                                           @(User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios") ? Model.FechaEmitida.HasValue?"checked":"":"disabled")>
+                                    <label class="form-check-label" for="check_poliza">
+                                        Tiene poliza de conductor
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row g-2" id="conductor" style="display: none;">
+                                <div class="col-sm-12">
+                                    <label for="inputNumPoliza" class="form-label">Numero de poliza</label>
+                                    <input type="text" class="form-control" id="inputNumPoliza" asp-for="NumeroPoliza">
+                                </div>
+                                <div class="col-sm-12">
+                                    <label class="form-label">Periodo de la poliza</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Desde</span>
+                                        <input type="date" class="form-control" id="inputFechaInicio" asp-for="FechaEmitida"
+                                               aria-label="Sizing example input" aria-describedby="inputFechaInicio">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">Hasta</span>
+                                        <input type="date" class="form-control" id="inputFechaFin" asp-for="FecheVencimiento"
+                                               aria-label="Sizing example input" aria-describedby="inputFechaFin">
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="inputVehiculo" class="form-label">Asignar vehículo</label>
+                                    <select id="inputVehiculo" class="form-select" asp-for="IdVehiculo" asp-items="ViewBag.IdVehiculo">
+                                        <option value="">Seleccione un vehiculo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+
+@section Scripts{
+    <script src="~/js/editarperfil.js"></script>
+}

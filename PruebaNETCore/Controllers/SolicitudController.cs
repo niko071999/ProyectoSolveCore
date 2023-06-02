@@ -8,10 +8,8 @@ using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 using ProyectoSolveCore.Models.ViewModelsFilter;
+using System.Globalization;
 using System.Security.Claims;
-using DinkToPdf;
-using DinkToPdf.Contracts;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -19,15 +17,18 @@ namespace ProyectoSolveCore.Controllers
     public class SolicitudController : Controller
     {
         private readonly ModelData _context;
+        private readonly ILogger<SolicitudController> _logger;
         private readonly IMemoryCache _cache;
         private const string FormatLong = "dd/MMMM/yy HH:mm";
         private const string FormatShort = "MMMM/dd/yyyy";
 
-        public SolicitudController(ModelData context, IMemoryCache cache)
+        public SolicitudController(ModelData context, IMemoryCache cache, ILogger<SolicitudController> logger)
         {
             _context = context;
             _cache = cache;
+            _logger = logger;
         }
+        [Autorizar(10)]
         [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> VisualizarSolicitudes()
         {
@@ -45,19 +46,26 @@ namespace ProyectoSolveCore.Controllers
             ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
             ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
             ViewBag.FechaDesde = await _context.Solicitudes.AnyAsync() ? await _context.Solicitudes.MinAsync(s => s.FechaSolicitado)
-                    : DateTime.Now;
+                    : GenerarFecha(DateTime.Now);
             ViewBag.FechaHasta = await _context.Solicitudes.MaxAsync(s => s.FechaSolicitado);
             ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
             return View(solicitudes);
         }
+
+        private DateTime GenerarFecha(DateTime now)
+        {
+            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
+            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        [Autorizar(10)]
         [HttpPost]
         public async Task<IActionResult> VisualizarSolicitudes(vmFiltrosSolicitudes fs)
         {
             try
             {
-                var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
-                        .ToListAsync();
+                List<Solicitude> NewList = await FiltrarSolicitudes(fs);
 
                 List<Solicitude> NewList = new();
 
@@ -123,9 +131,9 @@ namespace ProyectoSolveCore.Controllers
                 }
 
                 ViewBag.Estado = new SelectList(ObtenerEstados(), "Value", "Text");
-                ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
-                ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", fs.Vehiculo, "Group");
-                ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+                ViewBag.Destino = new SelectList(ObtenerDestinos(NewList), "Value", "Text");
+                ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(NewList), "Value", "Text", fs.Vehiculo, "Group");
+                ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(NewList), "Value", "Text");
                 ViewBag.FechaDesde = fs.FechaDesde;
                 ViewBag.FechaHasta = fs.FechaHasta;
                 ViewBag.Opcion = fs.Opcion;

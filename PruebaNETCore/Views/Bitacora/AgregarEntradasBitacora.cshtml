@@ -1,5 +1,6 @@
 ﻿@model ProyectoSolveCore.Models.ViewModels.vmBitacora
 @using Microsoft.Extensions.Caching.Memory
+@using System.Globalization
 @inject IMemoryCache Cache
 
 @{
@@ -22,6 +23,11 @@
             <form id="form_AgregarBitacora" asp-action="AgregarEntradasBitacora" method="post">
                 <div class="card">
                     <div class="card-body row fw-bold">
+                        @if (ViewBag.Mensaje != null){
+                            <div class="alert alert-danger" role="alert">
+                                Error: @ViewBag.Mensaje
+                            </div>
+                        }
                         <div class="col col-lg-6">
                             <div class="row g-2">
                                 <h4>Informacion solicitud</h4>
@@ -33,7 +39,7 @@
                                 <div class="col col-lg-4 col-sm-12">
                                     <label for="inputFecha" class="form-label">Fecha</label>
                                     <input type="text" class="form-control" id="inputFecha"
-                                           value="@DateTime.Now" disabled>
+                                           value="@DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)" disabled>
                                 </div>
                                 <div class="col col-lg-4 col-sm-12">
                                     <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
@@ -92,7 +98,7 @@
                                         {
                                             <button type="submit" class="btn btn-primary">
                                                 Agregar y cargar otra solicitud
-                                                <span class="badge text-bg-secondary">@count</span>
+                                                <span class="badge text-bg-secondary">@(count-1)</span>
                                             </button>
                                         }
                                         @if (count == 1)

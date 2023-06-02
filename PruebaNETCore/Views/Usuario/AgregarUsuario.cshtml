@@ -42,8 +42,17 @@
                                 </div>
                                 <div class="col col-lg-6 col-sm-12">
                                     <label for="inputDepartamento" class="form-label">Departamento</label>
-                                    <select id="inputDepartamento" class="form-select" asp-for="id_departamento" asp-items="ViewBag.id_departamento">
-                                    </select>
+                                    <div class="input-group">
+                                        <select id="inputDepartamento" class="form-select" asp-for="id_departamento" asp-items="ViewBag.id_departamento">
+                                        </select>
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li><a id="btn_newDepartamento" 
+                                                    class="dropdown-item" href="#">Agregar nuevo departamento</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="col col-lg-6 col-sm-12">
                                     @*<label for="formFile" class="form-label">Subir imagen</label>
@@ -131,7 +140,7 @@
                                         </div>
                                         @*Bitácora*@
                                         <div class="list-group-item col col-lg-6">
-                                            <input class="form-check-input" type="checkbox" id="Bitacora_c" @(Model.RolSolicitador?"checked":"")>
+                                            <input class="form-check-input" type="checkbox" id="Bitacora_c" @(Model.RolMantenedorBitacora?"checked":"")>
                                             <label class="form-check-label" for="Bitacora_c">
                                                 <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                                    data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de la bitácora"
@@ -187,7 +196,7 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <label for="inputVehiculo" class="form-label">Asignar vehículo</label>
-                                    <select id="inputDepartamento" class="form-select" asp-for="id_vehiculo" asp-items="ViewBag.id_vehiculo">
+                                    <select id="inputVehiculo" class="form-select" asp-for="id_vehiculo" asp-items="ViewBag.id_vehiculo">
                                         <option value="">Seleccione un vehiculo</option>
                                     </select>
                                 </div>

@@ -1,4 +1,4 @@
-﻿namespace ProyectoSolveCore.Models
+﻿namespace ProyectoSolveCore.Models.ClasesReportes
 {
     public class CountSolicitudes
     {

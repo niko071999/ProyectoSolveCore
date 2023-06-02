@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     $.fn.dataTable.moment('DD-MM-YYYY H:mm:ss');
     $('#tableSolicitudes').DataTable({
+        order: [0, 'desc'],
         pageLength: 8,
         lengthChange: false,
         language: {

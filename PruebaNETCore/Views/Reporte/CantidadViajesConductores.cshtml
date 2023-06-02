@@ -1,0 +1,59 @@
+﻿@model List<ProyectoSolveCore.Models.ClasesReportes.CountViajesConductores>
+@{
+    ViewBag.Title = "Reporte cantidad viajes de conductores";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Reporte cantidad viajes de conductores</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
+                <li class="breadcrumb-item active">Reporte cantidad viajes de conductores</li>
+            </ol>
+            <div class="card">
+                <div class="card-body">
+                    @if (Model != null)
+                    {
+                        <table id="tablaCVC" class="table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Departamento</th>
+                                    <th scope="col">Empleado</th>
+                                    <th scope="col">Cantidad</th>
+                                    <th scope="col">Kilometrajes realizados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cvc in Model)
+                                {
+                                    <tr>
+                                        <td>@cvc.Departamento</td>
+                                        <td>@cvc.Nombre</td>
+                                        <td>@cvc.NumeroViaje</td>
+                                        <td>@cvc.KilometrajesTotales.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+@section CSS{
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables/buttons/buttons.datatables.min.css" rel="stylesheet" />
+}
+    @section Scripts{
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/buttons/datatables.buttons.min.js"></script>
+    <script src="~/lib/datatables/buttons/jszip.min.js"></script>
+    <script src="~/lib/datatables/buttons/pdfmake.min.js"></script>
+    <script src="~/lib/datatables/buttons/vfs_fonts.js"></script>
+    <script src="~/lib/datatables/buttons/buttons.html5.min.js"></script>
+    <script src="~/lib/datatables/buttons/buttons.print.min.js"></script>
+    <script src="~/lib/datatables/buttons/buttons.colvis.min.js"></script>
+    <script src="~/js/reportes.js"></script>
+}

@@ -20,11 +20,13 @@ const rolAdmin = document.querySelector("#RolAdministrador"),
     rolMaquinaria = document.querySelector("#RolMantenedorVehiculosMaq"),
     rolBitacora = document.querySelector("#RolMantenedorBitacora"),
     inp_login = document.querySelector("#Login");
+var inputDepartamento = document.getElementById('inputDepartamento');
 const form = document.querySelector("#form_AgregarUsuario");
-const btn_form = document.getElementById('btn_form');
+const btn_form = document.getElementById('btn_form'),
+    btn_newDepartamento = document.getElementById('btn_newDepartamento');
 btn_form.addEventListener('click', () => {
     if (document.getElementById('inputClave').value.lenght < 6) {
-        alert("La contraseña debe tener como minimo 6 caracteres");
+        alert("La clave de acceso debe tener como minimo 6 caracteres");
         return;
     }
     if (document.getElementById('inputClave').value !== document.getElementById('inputReClave').value) {
@@ -40,6 +42,32 @@ btn_form.addEventListener('click', () => {
         }
     }
     form.submit();
+});
+btn_newDepartamento.addEventListener('click', function () {
+    const departamento = prompt('Ingrese el departamento');
+    $.ajax({
+        url: '/Usuario/SelectAgregarDepartamento?departamento=' + departamento,
+        type: 'GET',
+        success: function (result) {
+            if (result.type === "void") {
+                alert(result.mensaje);
+            }
+            if (result.type === "error") {
+                alert(result.mensaje);
+            }
+            if (result.type === "success") {
+                var option = document.createElement('option');
+                option.value = result.data.Id;
+                option.text = result.data.Departamento1;
+                inputDepartamento.appendChild(option);
+
+                alert(result.mensaje);
+            }
+        },
+        error: function (xhr, error) {
+            console.log(error);
+        }
+    });
 });
 
 iniciarlizarCheckInputs();
@@ -59,8 +87,8 @@ solicitador.addEventListener("click", () => {
     if (!admin.checked || !jefe.checked && !vehiculos.checked && !usuarios.checked
         && !bitacora.checked && !maquinaria.checked) {
         solicitador.checked = true;
-    }   
-})
+    }
+});
 
 jefe.addEventListener("change", updateInputs);
 vehiculos.addEventListener("change", updateInputs);
@@ -97,15 +125,17 @@ function updateInputs() {
 
 //Verificar si el check de la poliza esta activado
 
-if (check_poliza) {
-    check_poliza.addEventListener('change', () => {
-        if (check_poliza.checked) {
-            contenedores_conductores.style.display = "block";
-        } else {
-            contenedores_conductores.style.display = "none";
-        }
-    });
+if (check_poliza.checked) {
+    contenedores_conductores.style.display = "block";
 }
+
+check_poliza.addEventListener('change', () => {
+    if (check_poliza.checked) {
+        contenedores_conductores.style.display = "block";
+    } else {
+        contenedores_conductores.style.display = "none";
+    }
+});
 
 let dropDown = document.getElementById('inputDepartamento');
 obtenerDepartamentos();

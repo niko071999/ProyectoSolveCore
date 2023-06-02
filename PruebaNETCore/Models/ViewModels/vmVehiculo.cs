@@ -12,6 +12,7 @@ namespace ProyectoSolveCore.Models.ViewModels
         public string Marca { get; set; }
         public string Modelo { get; set; }
         public string Year { get; set; }
+        public string NombreConductor { get; set; }
         public int IdCategoria { get; set; }
         public int Estado { get; set; }
         public string MensajeEstado { get; set; }

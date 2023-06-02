@@ -6,6 +6,7 @@ using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 using ProyectoSolveCore.Models.ViewModelsFilter;
 using System.Collections;
+using System.Globalization;
 using System.Linq;
 
 namespace ProyectoSolveCore.Controllers
@@ -29,7 +30,8 @@ namespace ProyectoSolveCore.Controllers
                 }
 
                 // Obtiene la lista de vehículos con sus respectivos kilometrajes
-                var vehiculos = await _context.Vehiculos.Include(v => v.IdPeriodoKilometrajeNavigation).Include(v => v.Kilometrajes).Include(v => v.IdCategoriaNavigation)
+                var vehiculos = await _context.Vehiculos.Include(v => v.IdPeriodoKilometrajeNavigation).Include(v => v.Kilometrajes)
+                    .Include(v => v.IdCategoriaNavigation).Include(v => v.IdConductorNavigation.IdUsuarioNavigation)
                     .Where(v => !v.Eliminado).ToListAsync();
                 var viewVehiculos = vehiculos.Select(v => new vmVehiculo()
                 {
@@ -39,6 +41,8 @@ namespace ProyectoSolveCore.Controllers
                     Modelo = v.Modelo,
                     IdCategoria = (int)v.IdCategoria,
                     Year = v.Year,
+                    NombreConductor =  v.IdConductorNavigation != null 
+                    ? $"<b>{v.IdConductorNavigation.IdUsuarioNavigation.Nombre} {v.IdConductorNavigation.IdUsuarioNavigation.Apellido}</b>" : "Sin conductor asignado",
                     Estado = v.Estado ? 1:0,
                     Km_Recorrido = !v.Kilometrajes.Any() ? 0 : v.Kilometrajes.FirstOrDefault().KilometrajeInicial + 
                     v.Kilometrajes.Max(k => k.KilometrajeFinal) - v.Kilometrajes.Min(k => k.KilometrajeInicial)
@@ -80,6 +84,7 @@ namespace ProyectoSolveCore.Controllers
                     Marca = v.Marca,
                     Modelo = v.Modelo,
                     Year = v.Year,
+                    NombreConductor = $"{v.IdConductorNavigation.IdUsuarioNavigation.Nombre} {v.IdConductorNavigation.IdUsuarioNavigation.Apellido}",
                     IdCategoria = (int)v.IdCategoria,
                     Estado = v.Estado ? 1 : 0,
                     Km_Recorrido = !v.Kilometrajes.Any() ? 0 : v.Kilometrajes.FirstOrDefault().KilometrajeInicial +
@@ -87,7 +92,6 @@ namespace ProyectoSolveCore.Controllers
                 }).ToList();
 
                 viewVehiculos = await VerificarKmVehiculo(viewVehiculos);
-
                 
                 if (fv.IdCategoria == 0 && string.IsNullOrEmpty(fv.Marca) && string.IsNullOrEmpty(fv.Modelo)
                     && string.IsNullOrEmpty(fv.Patente) && fv.OpcionEstado == 0)
@@ -281,7 +285,7 @@ namespace ProyectoSolveCore.Controllers
                 var k = new Kilometraje()
                 {
                     IdVehiculo = vehiculo.Id,
-                    FechaCreacion = DateTime.Now,
+                    FechaCreacion = GenerarFecha(DateTime.Now),
                     KilometrajeInicial = v.KilometrajeInicial,
                     KilometrajeFinal = v.KilometrajeInicial,
                 };
@@ -303,6 +307,13 @@ namespace ProyectoSolveCore.Controllers
                 return View(v);
             }
         }
+
+        private DateTime GenerarFecha(DateTime now)
+        {
+            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
+            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
         public async Task<PartialViewResult> EditarVehiculo(int id = 0)
         {
             try
@@ -452,6 +463,98 @@ namespace ProyectoSolveCore.Controllers
                 });
             }
         }
+        public async Task<JsonResult> SelectAgregarPeriodo(int periodo = 0)
+        {
+            if (periodo == 0)
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "void",
+                    mensaje = "Ocurrio un error al recibir los datos"
+                });
+            }
+            if (await _context.Periodosmantenimientos.AnyAsync(x => x.PeriodoKilometraje == periodo))
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "error",
+                    mensaje = "Ocurrio un error al verificar los periodos, ya existe un registro con este valor"
+                });
+            }
+
+            var p = new Periodosmantenimiento()
+            {
+                PeriodoKilometraje = periodo,
+            };
+            await _context.Periodosmantenimientos.AddAsync(p);
+            int n = await _context.SaveChangesAsync();
+            if (n == 0)
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "error",
+                    mensaje = "Ocurrio un error al guardar los cambios en la base de datos"
+                });
+            }
+
+            return Json(new
+            {
+                data = new
+                {
+                    Id = p.Id,
+                    Periodo = "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km"
+                },
+                type = "success",
+                mensaje = "Se a agregado el periodo existosamente"
+            });
+        }
+        public async Task<JsonResult> SelectAgregarCategoria(string categoria)
+        {
+            if (string.IsNullOrEmpty(categoria))
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "void",
+                    mensaje = "Ocurrio un error al recibir los datos"
+                });
+            }
+            if (await _context.Categorias.AnyAsync(x => x.Categoria1.Equals(categoria)))
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "error",
+                    mensaje = "Ocurrio un error al verificar las categorias, ya existe un registro con este valor"
+                });
+            }
+
+            var c= new Categoria()
+            {
+                Categoria1 = categoria,
+            };
+            await _context.Categorias.AddAsync(c);
+            int n = await _context.SaveChangesAsync();
+            if (n == 0)
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "error",
+                    mensaje = "Ocurrio un error al guardar los cambios en la base de datos"
+                });
+            }
+
+            return Json(new
+            {
+                data = c,
+                type = "success",
+                mensaje = "Se a agregado la categoría existosamente"
+            });
+        }
         private List<SelectListItem> GetPeriodosMantencion()
         {
             var periodos = _context.Periodosmantenimientos.OrderBy(p => p.PeriodoKilometraje).Select(p => new SelectListItem
@@ -543,31 +646,58 @@ namespace ProyectoSolveCore.Controllers
         {
             var categorias = _context.Categorias.OrderBy(c => c.Categoria1).ToList();
 
-            if (User.IsInRole("Mantenedor de vehículos pesados"))
+            if (User.IsInRole("Mantenedor de vehículos pesados") && User.IsInRole("Mantenedor de vehículos no pesados"))
             {
                 return categorias.Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = c.Categoria1
                 });
-            }
-
-            return categorias.Where(c => c.Categoria1.Equals("SUV") || c.Categoria1.Equals("Camioneta") 
+            }else if (User.IsInRole("Mantenedor de vehículos no pesados"))
+            {
+                return categorias.Where(c => c.Categoria1.Equals("SUV") || c.Categoria1.Equals("Camioneta")
                 || c.Categoria1.Equals("Auto") || c.Categoria1.Equals("Furgon"))
                 .Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = c.Categoria1
                 });
+            }
+            else
+            {
+                return categorias.Where(c => c.Categoria1.Equals("Camion") || c.Categoria1.Equals("Retroexcavadora")
+                || c.Categoria1.Equals("Bus") || c.Categoria1.Equals("Tractor"))
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Categoria1
+                });
+            }
         }
         private List<SelectListItem> GetConductores()
         {
-            return _context.Conductores.OrderBy(c => c.IdUsuarioNavigation.Nombre).Where(c => c.FechaVencimiento >= DateTime.Now)
+            DateTime hoy = GenerarFecha(DateTime.Now);
+            return _context.Conductores.OrderBy(c => c.IdUsuarioNavigation.Nombre).Where(c => c.FechaVencimiento >= hoy)
                 .Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = $"{c.IdUsuarioNavigation.Nombre} {c.IdUsuarioNavigation.Apellido}"
                 }).ToList();
+        }
+        public async Task<JsonResult> GetConductorVehiculo(int id = 0)
+        {
+            int idconductor = 0;
+            if (id == 0)
+            {
+                return Json(idconductor);
+            }
+            var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == id);
+            if (vehiculo.IdConductor.HasValue)
+            {
+                idconductor = (int)vehiculo.IdConductor;
+                return Json(idconductor);
+            }
+            return Json(idconductor);
         }
     }
 }

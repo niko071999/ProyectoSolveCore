@@ -1,4 +1,5 @@
-﻿@model ProyectoSolveCore.Models.ViewModels.vmFichaMantencion
+﻿@using System.Globalization
+@model ProyectoSolveCore.Models.ViewModels.vmFichaMantencion
 @{
     ViewBag.Title = "Agregar entrada a ficha de mantención";
 }
@@ -22,16 +23,18 @@
                                 <div class="col col-lg-6 col-sm-12">
                                     <label for="inputFecha" class="form-label">Fecha</label>
                                     <input type="text" class="form-control" id="inputFecha"
-                                           value="@DateTime.Now" disabled>
+                                           value="@DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)" disabled>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="inputConductor" class="form-label">Conductor</label>
-                                    <select id="inputConductor" class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor">
+                                    <select id="inputConductor" class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor" placeholder>
+                                        <option value="0">Sin Asingar</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="inputVehiculo" class="form-label">Vehiculo</label>
                                     <select id="inputVehiculo" class="form-select" asp-for="IdVehiculo" asp-items="ViewBag.IdVehiculo">
+                                        <option value="0">Sin Asingar</option>
                                     </select>
                                 </div>
                                 <div class="col col-md-6">

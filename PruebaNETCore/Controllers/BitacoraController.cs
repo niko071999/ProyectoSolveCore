@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
+using System.Globalization;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -27,7 +28,7 @@ namespace ProyectoSolveCore.Controllers
                 .ToListAsync();
             return View(bitacoras);
         }
-        [Authorize(Roles = "Adminstrador, Conductor, Solicitador, Mantenedor de bitácora")]
+        [Autorizar(1)]
         public async Task<IActionResult> AgregarEntradasBitacora(int id = 0)
         {
             try
@@ -61,7 +62,7 @@ namespace ProyectoSolveCore.Controllers
                 return RedirectToAction("MisSolicitudes", "Solicitud");
             }
         }
-        [Authorize(Roles = "Adminstrador, Conductor, Solicitador, Mantenedor de bitácora")]
+        [Autorizar(1)]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradasBitacora(vmBitacora bitacora) //Esta accion permite la insercion de varias entradas a la bitacora.
         {
@@ -89,7 +90,7 @@ namespace ProyectoSolveCore.Controllers
                 return View(bitacora);
             }
         }
-        [Authorize(Roles = "Adminstrador, Conductor, Solicitador, Mantenedor de bitácora")]
+        [Autorizar(1)]
         [HttpPost]
         public async Task<IActionResult> AgregarEntradaBitacora(vmBitacora bitacora)
         {
@@ -138,7 +139,7 @@ namespace ProyectoSolveCore.Controllers
                     IdVehiculo = bitacora.IdVehiculo,
                     KilometrajeInicial = bitacora.KmInicialEntero,
                     KilometrajeFinal = bitacora.KmFinalEntero,
-                    FechaCreacion = DateTime.Now
+                    FechaCreacion = GenerarFecha(DateTime.Now)
                 };
 
                 await _context.Kilometrajes.AddAsync(km);
@@ -159,7 +160,7 @@ namespace ProyectoSolveCore.Controllers
                 var b = new Bitacora()
                 {
                     Folio = _context.Bitacoras.LongCount() + 1,
-                    Fecha = DateTime.Now,
+                    Fecha = GenerarFecha(DateTime.Now),
                     LitrosCombustible = bitacora.Combustible,
                     IdConductor = bitacora.IdConductor,
                     IdKilometraje = km.Id,
@@ -185,6 +186,11 @@ namespace ProyectoSolveCore.Controllers
             {
                 return false;
             }
+        }
+        private DateTime GenerarFecha(DateTime now)
+        {
+            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
+            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public async Task<PartialViewResult> MasInformacionBitacora(int id = 0)

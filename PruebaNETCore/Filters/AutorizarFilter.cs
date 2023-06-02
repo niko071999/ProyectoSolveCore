@@ -16,10 +16,9 @@ namespace ProyectoSolveCore.Filters
         }
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var roles = _context.RolesPermisos.Include(rp => rp.IdRolNavigation)
-                    .Where(rp => rp.IdPermiso == _permisoRequerimiento.PermisoId)
+            var roles = await _context.RolesPermisos.Where(rp => rp.IdPermiso == _permisoRequerimiento.PermisoId)
                     .Select(rp => rp.IdRolNavigation.Rol)
-                    .ToList();
+                    .ToListAsync();
 
             if (roles.Any(r => context.HttpContext.User.IsInRole(r)))
             {

@@ -1,9 +1,11 @@
 ﻿@using ProyectoSolveCore.Models.ViewModels
+@using System.Globalization
 @model Solicitude
 
 @{
     string NombreSolicitante = ViewBag.NombreSolicitante;
     string Vehiculo = Model.IdVehiculoNavigation.Patente +" - "+ Model.IdVehiculoNavigation.Marca +" "+ Model.IdVehiculoNavigation.Modelo;
+    CultureInfo idioma = new CultureInfo("es-CL");
 }
 
 <div class="modal-dialog modal-lg">
@@ -18,12 +20,12 @@
                 <div class="col col-md-6">
                     <label for="inputFechaSalida" class="form-label">Fecha de salida</label>
                     <input type="text" class="form-control" id="inputFechaSalida"
-                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaSalida)) Hrs" disabled>
+                           value="@(Model.FechaSalida.ToString("dddd d MMMM yyyy H:mm", idioma)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                           value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaLlegada)) Hrs" disabled>
+                           value="@(Model.FechaLlegada.ToString("dddd d MMMM yyyy H:mm", idioma)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputNombreSolicitante" class="form-label">Nombre del solicitante</label>
@@ -73,7 +75,7 @@
             dataType: 'json',
             contentType: 'application/json',
             success: function (response) {
-                $.notify(response.mensaje, { type: response.type });
+                alert(response.mensaje);
                 location = location.href;
             },
             error: function (error) {

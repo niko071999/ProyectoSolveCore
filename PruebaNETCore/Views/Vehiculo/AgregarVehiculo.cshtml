@@ -46,13 +46,36 @@
                                 </div>
                                 <div class="col col-md-6">
                                     <label for="inputCategoria" class="form-label">Periodos de mantenimiento</label>
-                                    <select id="inputCategoria" class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
-                                    </select>
+                                    <div class="input-group">
+                                        <select id="inputPeriodo" class="form-select" asp-for="IdPeriodoKilometraje" asp-items="ViewBag.IdPeriodoKilometraje">
+                                        </select>
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a id="btn_newPeriodo"
+                                                   class="dropdown-item" href="#">Agregar nuevo periodo</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
                                 </div>
                                 <div class="col col-md-6">
-                                    <label for="inputMantenimiento" class="form-label">Categoria</label>
-                                    <select id="inputPeriodos" class="form-select" asp-for="IdCategoria" asp-items="ViewBag.IdCategoria">
-                                    </select>
+                                    <label for="inputCategoria" class="form-label">Categoria</label>
+                                    <div class="input-group">
+                                        <select id="inputCategoria" class="form-select" asp-for="IdCategoria" asp-items="ViewBag.IdCategoria">
+                                        </select>
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a id="btn_newCategoria"
+                                                   class="dropdown-item" href="#">Agregar nuevo categoría</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="col col-md-6">
                                     <label for="inputConductor" class="form-label">Asignar conductor</label>
@@ -66,7 +89,7 @@
                                 </div>*@
                                 <div class="col-12 mt-4 mb-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="gridCheck" @(Model.Estado ? "checked" : "" )/>
+                                        <input class="form-check-input" type="checkbox" id="gridCheck" @(Model.Estado ? "checked" : "" ) />
                                         <label class="form-check-label" for="gridCheck">
                                             Admitir solicitudes de vehiculo
                                         </label>

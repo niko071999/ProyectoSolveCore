@@ -37,20 +37,23 @@
     var form = document.getElementById('form_BorrarUsuario'),
         btn_delete = document.getElementById('btn_delete');
     btn_delete.addEventListener('click', () => {
-        $.ajax({
-            url: '/Usuario/BorrarUsuario',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                id: form.id_usuario.value
-            },
-            success: function (response) {
-                $.notify(response.mensaje, { type: response.type });
-                location = location.href;
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
+        var resp = confirm("¿Seguro quiere eliminar este usuario?")
+        if(resp){
+            $.ajax({
+                url: '/Usuario/BorrarUsuario',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: form.id_usuario.value
+                },
+                success: function (response) {
+                    alert(response.mensaje);
+                    location = location.href;
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
     });
 </script>

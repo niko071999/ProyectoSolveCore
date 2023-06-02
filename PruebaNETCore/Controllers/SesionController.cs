@@ -5,7 +5,6 @@ using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ProyectoSolveCore.Controllers
@@ -13,17 +12,22 @@ namespace ProyectoSolveCore.Controllers
     public class SesionController : Controller
     {
         private readonly ModelData _context;
+        private readonly ILogger<SesionController> _ilogger;
 
-        public SesionController(ModelData context)
+        public SesionController(ModelData context, ILogger<SesionController> ilogger)
         {
             _context = context;
+            _ilogger = ilogger;
         }
         public IActionResult Login()
         {
             if (!User.Identity.IsAuthenticated)
             {
-                //u => u.Id != 1
-                return _context.Usuarios.Any() ? View(new vmLoginUser()) : RedirectToAction("CrearUsuarioAdmin");
+                if (ViewBag.MensajeLogout != null)
+                {
+                    TempData["Mensaje"] = ViewBag.MensajeLogout;
+            }
+                return View(new vmLoginUser());
             }
             return RedirectToAction("Agenda","Home");
         }

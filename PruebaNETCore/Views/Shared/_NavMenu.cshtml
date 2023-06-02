@@ -26,7 +26,7 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
                     Agenda general
                 </a>
-                @if (User.IsInRole("Administrador") || User.IsInRole("Conductor"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("Conductor") || User.IsInRole("Mantenedor de bitácora"))
                 {
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Bitacora"
                    aria-expanded="false" aria-controls="collapseLayouts">
@@ -68,21 +68,22 @@
                 @if (User.IsInRole("Administrador") || User.IsInRole("Jefe")){
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Reporte" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                        Informes
+                        Reportes
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
                     <div class="collapse" id="Reporte" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" asp-controller="Informe" asp-action="CantidadSolicitudesMensuales">Solicitudes aprobadas y rechazadas</a>
-                            <a class="nav-link" asp-controller="Informe" asp-action="UsoVehiculoTrabajador">Uso de vehículos por empleado</a>
-                            <a class="nav-link" asp-controller="Informe" asp-action="MantencionVehiculos">Mantenimiento de vehiculos</a>
-                            <a class="nav-link" asp-controller="Informe" asp-action="KilometrosVehiculos">Kilómetros recorridos por vehículo</a>
-                            <a class="nav-link" asp-controller="Informe" asp-action="BitacorasViaje">Bitácoras de viaje</a>
+                            @*<a class="nav-link" asp-controller="Reporte" asp-action="CantidadSolicitudesMensuales">Solicitudes aprobadas y rechazadas</a>*@
+                            <a class="nav-link" asp-controller="Reporte" asp-action="CantidadViajesFuncionario">Cantidad de viajes por funcionario</a>
+                            <a class="nav-link" asp-controller="Reporte" asp-action="CantidadViajesConductores">Cantidad de viajes por conductores</a>
+                            @*<a class="nav-link" asp-controller="Reporte" asp-action="MantencionVehiculos">Mantenimiento de vehiculos</a>*@
+                            @*<a class="nav-link" asp-controller="Reporte" asp-action="KilometrosVehiculos">Kilómetros recorridos por vehículo</a>*@
+                            @*<a class="nav-link" asp-controller="Reporte" asp-action="BitacorasViaje">Bitácoras de viaje</a>*@
 
                         </nav>
                     </div>
                 }
-                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor usuarios") || User.IsInRole("Jefe"))
+                @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios") || User.IsInRole("Jefe"))
                 {
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Usuario" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
@@ -92,12 +93,14 @@
                     <div class="collapse" id="Usuario" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" asp-controller="Usuario" asp-action="VisualizarUsuarios">Visualizar usuarios</a>
-                            <a class="nav-link" asp-controller="Usuario" asp-action="AgregarUsuario">Agregar nuevo usuario</a>
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
+                                <a class="nav-link" asp-controller="Usuario" asp-action="AgregarUsuario">Agregar nuevo usuario</a>
+                            }
                         </nav>
                     </div>
                 }
                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados")
-               || User.IsInRole("Mantenedor de vehículos pesados") || User.IsInRole("Jefe"))
+                    || User.IsInRole("Mantenedor de vehículos pesados") || User.IsInRole("Jefe"))
                 {
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Vehiculo" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-car-side"></i></div>

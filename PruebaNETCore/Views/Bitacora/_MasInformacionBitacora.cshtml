@@ -1,6 +1,7 @@
-﻿@model ProyectoSolveCore.Models.ViewModels.vmBitacoraInfo;
+﻿@using System.Globalization
+@model ProyectoSolveCore.Models.ViewModels.vmBitacoraInfo;
 @{
-    
+    CultureInfo idioma = new CultureInfo("es-CL");
 }
 <div class="modal-dialog modal-lg">
     <div class="modal-content fw-bold">
@@ -14,7 +15,7 @@
                 <div class="col col-lg-6 col-md-12">
                     <label for="inputFechaBitacora" class="form-label">Fecha</label>
                     <input type="text" class="form-control" id="inputFechaBitacora"
-                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm:ss}", Model.FechaBitacora))" disabled>
+                           value="@(Model.FechaBitacora.ToString("dddd d MMMM yyyy H:mm:ss", idioma))" disabled>
                 </div>
                 <div class="col col-lg-6 col-sm-12">
                     <label for="inputLitros" class="form-label">Litros cargados</label>
@@ -32,17 +33,17 @@
                 <div class="col col-lg-4 col-md-12">
                     <label for="inputFechaSolicitado" class="form-label">Fecha solicitada</label>
                     <input type="text" class="form-control" id="inputFechaSolicitado"
-                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm:ss}", Model.FechaSolicitado))" disabled>
+                            value="@(Model.FechaSolicitado.ToString("dddd d MMMM yyyy H:mm:ss", idioma))" disabled>
                 </div>
                 <div class="col col-lg-4 col-sm-12">
                     <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaSalida)) Hrs" disabled>
+                           value="@(Model.FechaSalida.ToString("dddd d MMMM yyyy H:mm", idioma)) Hrs" disabled>
                 </div>
                 <div class="col col-lg-4 col-sm-12">
                     <label for="inputFechaLlegada" class="form-label">Fecha de llegada</label>
                     <input type="text" class="form-control" id="inputFechaLlegada"
-                            value="@(String.Format("{0:dddd d MMMM yyyy H:mm}", Model.FechaLlegada)) Hrs" disabled>
+                           value="@(Model.FechaLlegada.ToString("dddd d MMMM yyyy H:mm", idioma)) Hrs" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputSolicitante" class="form-label">Nombre del solicitante</label>

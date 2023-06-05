@@ -33,7 +33,7 @@
                                     string vehiculo = $"{m.IdVehiculoNavigation.Patente} {m.IdVehiculoNavigation.Marca} {m.IdVehiculoNavigation.Modelo}";
                                     string conductor = $"{m.IdConductorNavigation.IdUsuarioNavigation.Nombre} {m.IdConductorNavigation.IdUsuarioNavigation.Apellido}";
                                     <tr>
-                                        <td>@m.FechaMantencion</td>
+                                        <td>@m.FechaMantencion.ToString("dd/MM/yyyy HH:ss")</td>
                                         <td>@vehiculo</td>
                                         <td>@m.Kilometraje.ToString("N0")</td>
                                         <td>@conductor</td>

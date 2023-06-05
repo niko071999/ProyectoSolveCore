@@ -42,8 +42,8 @@
                                 <tr>
                                     <td>@s.Id</td>
                                     <td>@s.IdSolicitanteNavigation.Nombre @s.IdSolicitanteNavigation.Apellido</td>
-                                    <td>@s.FechaSalida</td>
-                                    <td>@s.FechaLlegada</td>
+                                    <td>@s.FechaSalida.ToString("dd/MM/yyyy HH:ss")</td>
+                                    <td>@s.FechaLlegada.ToString("dd/MM/yyyy HH:ss")</td>
                                     <td>@s.IdVehiculoNavigation.Patente - @s.IdVehiculoNavigation.Marca @s.IdVehiculoNavigation.Modelo</td>
                                     <td>@s.Destino</td>
                                     <td>@s.Motivo</td>

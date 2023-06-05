@@ -20,7 +20,7 @@ namespace ProyectoSolveCore.Controllers
         private readonly ILogger<SolicitudController> _logger;
         private readonly IMemoryCache _cache;
         private const string FormatLong = "dd/MMMM/yy HH:mm";
-        private const string FormatShort = "MMMM/dd/yyyy";
+        private const string FormatShort = "dd/MMMM/yyyy";
 
         public SolicitudController(ModelData context, IMemoryCache cache, ILogger<SolicitudController> logger)
         {
@@ -47,8 +47,8 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado).ToString();
-                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada).ToString();
+                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
+                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
                 ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
                 return View(solicitudes);
@@ -164,8 +164,8 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado).ToString();
-                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada).ToString();
+                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
+                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
                 ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
                 //listSolicitudes = await VerificarSolicitudesAtrasadas(listSolicitudes); 
@@ -217,11 +217,12 @@ namespace ProyectoSolveCore.Controllers
         //METODO EL CUAL OBTIENE TODAS LAS SOLICITUDES PARA MOSTRARLAS EN EL CALENDAR
         public async Task<JsonResult> GetSolicitudes() 
         {
+            CultureInfo.CurrentCulture = new CultureInfo("es-CL");
             try
             {
-                DateTime fechaActual = DateTime.Now;
-                DateTime primerDiaDelAnio = new(fechaActual.Year, 1, 1);
-                DateTime ultimoDiaDelAnio = new(fechaActual.Year, 12, 31);
+                int year = DateTime.Now.Year;
+                DateTime primerDiaDelAnio = new(year, 1, 1);
+                DateTime ultimoDiaDelAnio = new(year, 12, 31);
 
                 var solicitudes = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation)
                     .Where(s => s.Estado == 1 || s.Estado == 3).Where(s => s.FechaSalida >= primerDiaDelAnio && s.FechaSalida <= ultimoDiaDelAnio)
@@ -317,29 +318,15 @@ namespace ProyectoSolveCore.Controllers
                     return View(new Solicitude());
                 }
                 //var hoy = DateTime.Now;
-                var hoy = solicitud.FechaSolicitado;
-                _logger.LogInformation($"Fecha solicitado: {hoy}");
-                if (solicitud.FechaSalida <= hoy || solicitud.FechaSalida >= solicitud.FechaLlegada)
-                {
-                    int idUser = int.Parse(User.FindFirst("Id").Value);
-                    ViewBag.Usuario = await _context.Usuarios
-                        .Where(u => u.Id == idUser)
-                        .Select(u => new vmUsuarioDepartamento()
-                        {
-                            Id = idUser,
-                            NombreCompleto = User.Identity.Name,
-                            Departamento = User.FindFirst("Departamento").Value
-                        })
-                        .FirstOrDefaultAsync();
-                    return View(solicitud);
-                }
+                
+                _logger.LogInformation($"Fecha solicitado: {solicitud.FechaSolicitado}");
 
                 var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == solicitud.IdVehiculo);
                 // Convertir el JSON a una lista de objetos
                 List<PasajerosAux> valueList = JsonConvert.DeserializeObject<List<PasajerosAux>>(solicitud.Pasajeros);
                 //Unir todo a cadena de texto
                 solicitud.Pasajeros = string.Join(", ", valueList.ConvertAll(x => x.value));
-                //solicitud.FechaSolicitado = hoy;
+                solicitud.FechaSolicitado = DateTime.Now;
                 if (vehiculo.IdConductor.HasValue)
                 {
                     solicitud.IdConductor = vehiculo.IdConductor;
@@ -441,8 +428,8 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado).ToString();
-                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada).ToString();
+                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
+                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
                 ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
                 return View(solicitudes);

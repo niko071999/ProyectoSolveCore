@@ -34,6 +34,13 @@ namespace ProyectoSolveCore.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(vmLoginUser user)
         {
+            string mensaje = "Los datos de acceso ingresados no son correctos";
+            if (string.IsNullOrEmpty(user.Rut.Trim()) || string.IsNullOrEmpty(user.Clave.Trim()))
+            {
+                TempData["Mensaje"] = mensaje;
+                return View(new vmLoginUser());
+            }
+
             try 
             {
                 var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.Usuariosroles)
@@ -41,14 +48,17 @@ namespace ProyectoSolveCore.Controllers
 
                 if (usuario == null)
                 {
+                    TempData["Mensaje"] = mensaje;
                     return View(user);
                 }
                 if (!usuario.Login)
                 {
+                    TempData["Mensaje"] = "El usuario no tiene permisos para acceder al sistema. Contacte con el administrador del sistema o intentelo nuevamente.";
                     return View(user);
                 }
                 if (!Encrypt.VerifyPassword(user.Clave, usuario.Clave))
                 {
+                    TempData["Mensaje"] = mensaje;
                     return View(user);
                 }
                 //Usuario verificado correctamente
@@ -60,6 +70,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception ex)
             {
+                TempData["Mensaje"] = "Ocurrio un error inesperado en el sistema. Pongase en contacto con el administrador o intentelo mas tarde.";
                 if (user == null)
                 {
                     return View(new vmLoginUser());

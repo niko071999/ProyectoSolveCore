@@ -45,29 +45,33 @@ btn_form.addEventListener('click', () => {
 });
 btn_newDepartamento.addEventListener('click', function () {
     const departamento = prompt('Ingrese el departamento');
-    $.ajax({
-        url: '/Usuario/SelectAgregarDepartamento?departamento=' + departamento,
-        type: 'GET',
-        success: function (result) {
-            if (result.type === "void") {
-                alert(result.mensaje);
-            }
-            if (result.type === "error") {
-                alert(result.mensaje);
-            }
-            if (result.type === "success") {
-                var option = document.createElement('option');
-                option.value = result.data.Id;
-                option.text = result.data.Departamento1;
-                inputDepartamento.appendChild(option);
+    if (departamento !== null) {
+        if (departamento.trim() !== "") {
+            $.ajax({
+                url: '/Usuario/SelectAgregarDepartamento?departamento=' + departamento,
+                type: 'GET',
+                success: function (result) {
+                    if (result.type === "void") {
+                        alert(result.mensaje);
+                    }
+                    if (result.type === "error") {
+                        alert(result.mensaje);
+                    }
+                    if (result.type === "success") {
+                        var option = document.createElement('option');
+                        option.value = result.data.Id;
+                        option.text = result.data.Departamento1;
+                        inputDepartamento.appendChild(option);
 
-                alert(result.mensaje);
-            }
-        },
-        error: function (xhr, error) {
-            console.log(error);
+                        alert(result.mensaje);
+                    }
+                },
+                error: function (xhr, error) {
+                    console.log(error);
+                }
+            });
         }
-    });
+    }
 });
 
 iniciarlizarCheckInputs();

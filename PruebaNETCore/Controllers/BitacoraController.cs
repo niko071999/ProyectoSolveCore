@@ -139,7 +139,7 @@ namespace ProyectoSolveCore.Controllers
                     IdVehiculo = bitacora.IdVehiculo,
                     KilometrajeInicial = bitacora.KmInicialEntero,
                     KilometrajeFinal = bitacora.KmFinalEntero,
-                    FechaCreacion = GenerarFecha(DateTime.Now)
+                    FechaCreacion = DateTime.Now
                 };
 
                 await _context.Kilometrajes.AddAsync(km);
@@ -160,7 +160,7 @@ namespace ProyectoSolveCore.Controllers
                 var b = new Bitacora()
                 {
                     Folio = _context.Bitacoras.LongCount() + 1,
-                    Fecha = GenerarFecha(DateTime.Now),
+                    Fecha = DateTime.Now,
                     LitrosCombustible = bitacora.Combustible,
                     IdConductor = bitacora.IdConductor,
                     IdKilometraje = km.Id,
@@ -187,7 +187,7 @@ namespace ProyectoSolveCore.Controllers
                 return false;
             }
         }
-        private DateTime GenerarFecha(DateTime now)
+        private static DateTime GenerarFecha(DateTime now)
         {
             var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
             return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);

@@ -97,18 +97,42 @@
             objeto[key] = value
         }
 
-        //console.log(objeto);
+        console.log(objeto.Id);
 
         $.ajax({
-            url: '/Vehiculo/EditarVehiculo',
-            type: 'POST',
-            data: objeto,
+            url: '/Vehiculo/VerificarConductor?id='+objeto.IdConductor,
+            type: 'GET',
             success: function (result) {
-                location = location.href;
+                if (!result){
+                    Edit(objeto);
+                    return;
+                }
+                if (confirm("El conductor ya esta ocupado. ¿Desea reemplazarlo?")){
+                    Edit(objeto);
+                    return;
+                }
             },
             error: function (xhr, error) {
                 console.log(error);
             }
         });
     });
+    function Edit(obj){
+        $.ajax({
+            url: '/Vehiculo/EditarVehiculo',
+            type: 'POST',
+            data: obj,
+            success: function (result) {
+                if (result.type === "success"){
+                    alert(result.mensaje);
+                    location = location.href;
+                    return;
+                }
+                alert(result.mensaje);
+            },
+            error: function (xhr, error) {
+                console.log(error);
+            }
+        });
+    }
 </script>

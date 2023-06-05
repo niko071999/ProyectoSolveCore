@@ -22,9 +22,11 @@ btn_newCategoria.addEventListener('click', function () {
         success: function (result) {
             if (result.type === "void") {
                 alert(result.mensaje);
+                return;
             }
             if (result.type === "error") {
                 alert(result.mensaje);
+                return;
             }
             if (result.type === "success") {
                 var option = document.createElement('option');
@@ -33,6 +35,7 @@ btn_newCategoria.addEventListener('click', function () {
                 inputCategoria.appendChild(option);
 
                 alert(result.mensaje);
+                return;
             }
         },
         error: function (xhr, error) {

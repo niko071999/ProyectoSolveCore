@@ -39,7 +39,7 @@
                                 <div class="col col-lg-4 col-sm-12">
                                     <label for="inputFecha" class="form-label">Fecha</label>
                                     <input type="text" class="form-control" id="inputFecha"
-                                           value="@DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)" disabled>
+                                           value="@DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss", new CultureInfo("es-CL"))" disabled>
                                 </div>
                                 <div class="col col-lg-4 col-sm-12">
                                     <label for="inputFechaLlegada" class="form-label">Fecha de salida</label>

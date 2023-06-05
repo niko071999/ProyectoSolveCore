@@ -41,7 +41,7 @@
                                     string marca = k.IdVehiculoNavigation.Marca;
                                     string modelo = k.IdVehiculoNavigation.Modelo;
                                     <tr>
-                                        <td>@k.FechaCreacion</td>
+                                        <td>@k.FechaCreacion.ToString("dd/MM/yyyy HH:ss")</td>
                                         <td>@k.KilometrajeInicial</td>
                                         <td>@k.KilometrajeFinal</td>
                                         <td>@patente - @marca @modelo</td>

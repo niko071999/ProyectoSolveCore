@@ -1,4 +1,9 @@
 ﻿@model Accion
+@{
+    DateTime fechadesde = (DateTime)ViewBag.FechaDesde;
+    DateTime fechahasta = (DateTime)ViewBag.FechaHasta;
+}
+
 <form id="FormFilter" asp-action="@Model.accion" method="post">
     <div class="row fw-bold">
         <label class="form-label">Tipos</label>
@@ -24,10 +29,10 @@
             <div id="inputGroup" class="input-group">
                 <span class="input-group-text" id="Desde">Desde</span>
                 <input id="FechaDesde" type="datetime-local" class="form-control" name="FechaDesde"
-                       value="@ViewBag.FechaDesde" aria-describedby="Desde" />
+                       value="@fechadesde.ToString("yyyy-MM-ddThh:mm")" aria-describedby="Desde" />
                 <span class="input-group-text" id="Hasta">Hasta</span>
                 <input id="FechaHasta" type="datetime-local" class="form-control" name="FechaHasta"
-                       value="@ViewBag.FechaHasta" aria-describedby="Hasta" />
+                       value="@fechahasta.ToString("yyyy-MM-ddThh:mm")" aria-describedby="Hasta" />
             </div>
         </div>
         <div class="col col-12">

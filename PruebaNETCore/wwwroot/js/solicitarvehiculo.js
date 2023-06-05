@@ -30,14 +30,38 @@
     document.getElementById('inputFechaLlegada')._flatpickr.set("minDate", fecha_salida_input.value);
 })
 
-const btn_getVehiculo = document.getElementById('btn_getVehiculo');
-const fecha_salida_input = document.getElementById('inputFechaSalida');
-const fecha_llegada_input = document.getElementById('inputFechaLlegada');
+const btn_getVehiculo = document.getElementById('btn_getVehiculo'),
+    btn_solicitar = document.getElementById('btn_solicitar');
+const fecha_salida_input = document.getElementById('inputFechaSalida'),
+    fecha_llegada_input = document.getElementById('inputFechaLlegada'),
+    FechaSolicitado = document.getElementById('FechaSolicitado');
 const dropDown = document.getElementById('inputVehiculos');
 
 dropDown.addEventListener('mousedown', getVehiculos);
 
 btn_getVehiculo.addEventListener('click', getVehiculos);
+btn_solicitar.addEventListener('click', function () {
+    ObtenerFechaHoy();
+})
+
+
+function ObtenerFechaHoy() {
+    var fechaHoraActual = new Date();
+    // Obtener los componentes de fecha y hora
+    var year = fechaHoraActual.getFullYear();
+    var mes = ("0" + (fechaHoraActual.getMonth() + 1)).slice(-2);
+    var dia = ("0" + fechaHoraActual.getDate()).slice(-2);
+    var horas = ("0" + fechaHoraActual.getHours()).slice(-2);
+    var minutos = ("0" + fechaHoraActual.getMinutes()).slice(-2);
+    // Construir el valor del input datetime-local
+    var valorInput = year + "-" + mes + "-" + dia + "T" + horas + ":" + minutos;
+    // Establecer el valor en el input
+    FechaSolicitado.value = valorInput;
+
+    console.log(valorInput);
+
+    //document.getElementById('form_solicitar').submit();
+}
 
 //Inicializacion de los pasajeros
 $('[name=Pasajeros]').tagify({

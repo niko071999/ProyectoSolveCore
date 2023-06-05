@@ -123,7 +123,7 @@ namespace ProyectoSolveCore.Controllers
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 Fichamantencion ficha = new()
                 {
-                    FechaMantencion = GenerarFecha(DateTime.Now),
+                    FechaMantencion = DateTime.Now,
                     Kilometraje = fm.Kilometraje,
                     Descripcion = fm.Descripcion,
                     IdConductor = fm.IdConductor,

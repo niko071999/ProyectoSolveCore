@@ -13,7 +13,7 @@
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
                 <li class="breadcrumb-item active">Solicitar vehiculo</li>
             </ol>
-            <form asp-action="SolicitarVehiculo" method="post">
+            <form id="form_solicitar" asp-action="SolicitarVehiculo" method="post">
                 <div class="card">
                     <div class="card-body row fw-bold">
                         @if (ViewBag.Mensaje != null)
@@ -25,8 +25,8 @@
                         <div class="col col-lg-6">
                             <div class="row g-2">
                                 <h4>Informacion del cometido</h4>
-                                <input data-val="true" data-val-required="El campo ID es obligatorio." 
-                                name="IdSolicitante" type="hidden" value="@usuario.Id">
+                                <input type="hidden" asp-for="IdSolicitante" value="@usuario.Id" />
+                                <input type="hidden" asp-for="FechaSolicitado" />
                                 <div class="col-md-6">
                                     <label for="inputNombre" class="form-label">Nombre del solicitante</label>
                                     <input type="text" class="form-control" id="inputNombre"
@@ -90,7 +90,7 @@
                                         class="btn btn-success">
                                     Actualizar lista vehículos disponibles
                                 </button>
-                                <button type="submit" class="btn btn-primary float-end">Solicitar Vehículo</button>
+                                <button id="btn_solicitar" type="button" class="btn btn-primary float-end">Solicitar Vehículo</button>
                             </div>
                         </div>
                     </div>

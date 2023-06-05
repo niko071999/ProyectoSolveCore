@@ -84,7 +84,9 @@ namespace ProyectoSolveCore.Controllers
                     Marca = v.Marca,
                     Modelo = v.Modelo,
                     Year = v.Year,
-                    NombreConductor = $"{v.IdConductorNavigation.IdUsuarioNavigation.Nombre} {v.IdConductorNavigation.IdUsuarioNavigation.Apellido}",
+                    NombreConductor = v.IdConductorNavigation != null
+                        ? $"<b>{v.IdConductorNavigation.IdUsuarioNavigation.Nombre} {v.IdConductorNavigation.IdUsuarioNavigation.Apellido}</b>" 
+                        : "Sin conductor asignado",
                     IdCategoria = (int)v.IdCategoria,
                     Estado = v.Estado ? 1 : 0,
                     Km_Recorrido = !v.Kilometrajes.Any() ? 0 : v.Kilometrajes.FirstOrDefault().KilometrajeInicial +
@@ -229,11 +231,11 @@ namespace ProyectoSolveCore.Controllers
             }
         }
 
-        public IActionResult AgregarVehiculo()
+        public async Task<IActionResult> AgregarVehiculo()
         {
-            ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-            ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text");
-            ViewBag.IdConductor = new SelectList(GetConductores(), "Value", "Text");
+            ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text");
+            ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text");
+            ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text");
             return View(new vmVehiculoKm());
         }
         [HttpPost]
@@ -244,9 +246,9 @@ namespace ProyectoSolveCore.Controllers
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 if (v == null)
                 {
-                    ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-                    ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text");
-                    ViewBag.IdConductor = new SelectList(GetConductores(), "Value", "Text");
+                    ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text", v.IdPeriodoKilometraje);
+                    ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text", v.IdCategoria);
+                    ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text", v.IdConductor);
                     return View(new vmVehiculo());
                 }
 
@@ -255,8 +257,9 @@ namespace ProyectoSolveCore.Controllers
 
                 if (exist)
                 {
-                    ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text", v.IdPeriodoKilometraje);
-                    ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text", v.IdCategoria);
+                    ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text", v.IdPeriodoKilometraje);
+                    ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text", v.IdCategoria);
+                    ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text", v.IdConductor);
                     return View(v);
                 }
 
@@ -277,15 +280,16 @@ namespace ProyectoSolveCore.Controllers
                 int n = await _context.SaveChangesAsync();
                 if (n == 0)
                 {
-                    ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-                    ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text");
+                    ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text", v.IdPeriodoKilometraje);
+                    ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text", v.IdCategoria);
+                    ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text", v.IdConductor);
                     return View(v);
                 }
 
                 var k = new Kilometraje()
                 {
                     IdVehiculo = vehiculo.Id,
-                    FechaCreacion = GenerarFecha(DateTime.Now),
+                    FechaCreacion = DateTime.Now,
                     KilometrajeInicial = v.KilometrajeInicial,
                     KilometrajeFinal = v.KilometrajeInicial,
                 };
@@ -293,8 +297,9 @@ namespace ProyectoSolveCore.Controllers
                 n = await _context.SaveChangesAsync();
                 if (n == 0)
                 {
-                    ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-                    ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text");
+                    ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text", v.IdPeriodoKilometraje);
+                    ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text", v.IdCategoria);
+                    ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text", v.IdConductor);
                     return View(v);
                 }
                 await transaction.CommitAsync();
@@ -302,8 +307,9 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text");
-                ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text");
+                ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text", v.IdPeriodoKilometraje);
+                    ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text", v.IdCategoria);
+                    ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text", v.IdConductor);
                 return View(v);
             }
         }
@@ -330,9 +336,9 @@ namespace ProyectoSolveCore.Controllers
                     mensaje = "Hubo un error al recibir los datos.";
                     return PartialView("_PartialModalError", mensaje);
                 }
-                ViewBag.IdPeriodoKilometraje = new SelectList(GetPeriodosMantencion(), "Value", "Text", vehiculo.IdPeriodoKilometraje);
-                ViewBag.IdCategoria = new SelectList(GetCategorias(), "Value", "Text", vehiculo.IdCategoria);
-                ViewBag.IdConductor = new SelectList(GetConductores(), "Value", "Text", vehiculo.IdConductor??null);
+                ViewBag.IdPeriodoKilometraje = new SelectList(await GetPeriodosMantencion(), "Value", "Text", vehiculo.IdPeriodoKilometraje);
+                ViewBag.IdCategoria = new SelectList(await GetCategorias(), "Value", "Text", vehiculo.IdCategoria);
+                ViewBag.IdConductor = new SelectList(await GetConductores(), "Value", "Text", vehiculo.IdConductor);
                 return PartialView("_EditarVehiculo", vehiculo);
             }
             catch (Exception)
@@ -341,6 +347,12 @@ namespace ProyectoSolveCore.Controllers
                 return PartialView("_PartialModalError", mensaje);
             }
         }
+        public async Task<JsonResult> VerificarConductor(int? id)
+        {
+            bool ocupado = await _context.Vehiculos.AnyAsync(x => x.IdConductor == id && id != null);
+            return Json(ocupado);
+        }
+
         [HttpPost]
         public async Task<JsonResult> EditarVehiculo(Vehiculo v)
         {
@@ -351,15 +363,6 @@ namespace ProyectoSolveCore.Controllers
                     return Json(new
                     {
                         mensaje = "Ocurrio un error al recibir los datos",
-                        type = "error"
-                    });
-                }
-
-                if (await _context.Vehiculos.AnyAsync(x => x.IdConductor == v.IdConductor))
-                {
-                    return Json(new
-                    {
-                        mensaje = "El conductor ya fue asignado a otro vehiculo",
                         type = "error"
                     });
                 }
@@ -465,6 +468,16 @@ namespace ProyectoSolveCore.Controllers
         }
         public async Task<JsonResult> SelectAgregarPeriodo(int periodo = 0)
         {
+            if (double.IsNaN(periodo))
+            {
+                return Json(new
+                {
+                    data = "",
+                    type = "error",
+                    mensaje = "El periodo debe ser un numero"
+                });
+            }
+
             if (periodo == 0)
             {
                 return Json(new
@@ -513,7 +526,7 @@ namespace ProyectoSolveCore.Controllers
         }
         public async Task<JsonResult> SelectAgregarCategoria(string categoria)
         {
-            if (string.IsNullOrEmpty(categoria))
+            if (string.IsNullOrEmpty(categoria.Trim()))
             {
                 return Json(new
                 {
@@ -522,7 +535,8 @@ namespace ProyectoSolveCore.Controllers
                     mensaje = "Ocurrio un error al recibir los datos"
                 });
             }
-            if (await _context.Categorias.AnyAsync(x => x.Categoria1.Equals(categoria)))
+            var categorias = await _context.Categorias.ToListAsync();
+            if (categorias.Any(x => x.Categoria1.Equals(categoria, StringComparison.OrdinalIgnoreCase)))
             {
                 return Json(new
                 {
@@ -555,13 +569,13 @@ namespace ProyectoSolveCore.Controllers
                 mensaje = "Se a agregado la categoría existosamente"
             });
         }
-        private List<SelectListItem> GetPeriodosMantencion()
+        private async Task<List<SelectListItem>> GetPeriodosMantencion()
         {
-            var periodos = _context.Periodosmantenimientos.OrderBy(p => p.PeriodoKilometraje).Select(p => new SelectListItem
+            var periodos =await _context.Periodosmantenimientos.OrderBy(p => p.PeriodoKilometraje).Select(p => new SelectListItem
             {
                 Value = p.Id.ToString(),
                 Text = "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km"
-            }).ToList();
+            }).ToListAsync();
             return periodos;
         }
         private static List<SelectListItem> GetCategorias(List<Vehiculo> vehiculos)
@@ -642,9 +656,9 @@ namespace ProyectoSolveCore.Controllers
 
             return list.OrderBy(p => p.Text).ToList();
         }
-        private IEnumerable GetCategorias()
+        private async Task<IEnumerable> GetCategorias()
         {
-            var categorias = _context.Categorias.OrderBy(c => c.Categoria1).ToList();
+            var categorias = await _context.Categorias.OrderBy(c => c.Categoria1).ToListAsync();
 
             if (User.IsInRole("Mantenedor de vehículos pesados") && User.IsInRole("Mantenedor de vehículos no pesados"))
             {
@@ -674,15 +688,16 @@ namespace ProyectoSolveCore.Controllers
                 });
             }
         }
-        private List<SelectListItem> GetConductores()
+        private async Task<List<SelectListItem>> GetConductores()
         {
-            DateTime hoy = GenerarFecha(DateTime.Now);
-            return _context.Conductores.OrderBy(c => c.IdUsuarioNavigation.Nombre).Where(c => c.FechaVencimiento >= hoy)
+            DateTime hoy = DateTime.Now;
+            return await _context.Conductores.OrderBy(c => c.IdUsuarioNavigation.Nombre)
+                .Where(c => c.FechaVencimiento >= hoy && !c.IdUsuarioNavigation.Eliminado)
                 .Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = $"{c.IdUsuarioNavigation.Nombre} {c.IdUsuarioNavigation.Apellido}"
-                }).ToList();
+                }).ToListAsync();
         }
         public async Task<JsonResult> GetConductorVehiculo(int id = 0)
         {

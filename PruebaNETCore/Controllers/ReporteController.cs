@@ -73,7 +73,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 //rcsDic = Reporte de cantidad de solicitudes Diccionario
                 Dictionary<DateTime, CountSolicitudes> rcsDic = new();
-                var hoy = GenerarFecha(DateTime.Now);
+                var hoy = DateTime.Now;
 
                 var FirsDayYear = new DateTime(hoy.Year, 1, 1);
                 var LastDayYear = new DateTime(hoy.Year, hoy.Month, 1)

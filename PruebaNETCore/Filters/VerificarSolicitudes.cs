@@ -11,7 +11,7 @@ namespace ProyectoSolveCore.Filters
         public async void OnActionExecuted(ActionExecutedContext context)
         {
             
-            var hoy = GenerarFecha(DateTime.Now);
+            var hoy = DateTime.Now;
             var s = await db.Solicitudes.Where(s => s.Estado == 0 && s.FechaSalida < hoy).ToListAsync();
             if (s.Any())
             {

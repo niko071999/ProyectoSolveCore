@@ -529,7 +529,9 @@ namespace ProyectoSolveCore.Controllers
                     mensaje = "El nombre departamento está vacio"
                 });
             }
-            if (await _context.Departamentos.AnyAsync(x => x.Departamento1.Equals(departamento)))
+            var departamentos = await _context.Departamentos.ToListAsync();
+
+            if (departamentos.Any(x => x.Departamento1.Equals(departamento, StringComparison.OrdinalIgnoreCase)))
             {
                 return Json(new
                 {

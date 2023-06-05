@@ -14,6 +14,15 @@
             </ol>
             <div class="card mb-4">
                 <div class="card-body">
+                    <div class="btn-group dropend">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                data-bs-auto-close="inside" aria-expanded="false">
+                            Filtros
+                        </button>
+                        <div class="dropdown-menu p-4 fw-bold" style="width: 550px; max-height: 700px">
+                            <partial name="_FiltersSolicitud" model='new Accion{accion = "SolicitudesPendientes"}' />
+                        </div>
+                    </div>
                     <table id="tableSolPendiente" class="display table  table-hover">
                         <thead class="table-light">
                             <tr>
@@ -74,7 +83,12 @@
     <script src="~/lib/datatables/jquery.datatables.min.js"></script>
     <script src="~/lib/datatables/moment.min.js"></script>
     <script src="~/lib/datatables/datetime-moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/lib/datatables/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     @*<script src="~/Content/js/Datatable/dataTables.select.min.js"></script>
     <script src="~/Content/js/Datatable/dataTables.buttons.min.js"></script>*@
     <script src="~/js/solicitudespendientes.js"></script>
+    <script src="~/js/filtersolicitudes.js"></script>
 }

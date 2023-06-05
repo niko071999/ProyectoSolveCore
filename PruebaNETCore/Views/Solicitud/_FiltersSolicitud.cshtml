@@ -24,10 +24,10 @@
             <div id="inputGroup" class="input-group">
                 <span class="input-group-text" id="Desde">Desde</span>
                 <input id="FechaDesde" type="datetime-local" class="form-control" name="FechaDesde"
-                       value="ViewBag.FechaDesde" aria-describedby="Desde" />
+                       value="@ViewBag.FechaDesde" aria-describedby="Desde" />
                 <span class="input-group-text" id="Hasta">Hasta</span>
                 <input id="FechaHasta" type="datetime-local" class="form-control" name="FechaHasta"
-                       value="ViewBag.FechaHasta" aria-describedby="Hasta" />
+                       value="@ViewBag.FechaHasta" aria-describedby="Hasta" />
             </div>
         </div>
         <div class="col col-12">
@@ -54,8 +54,11 @@
                 <option value="">Todos los destinos</option>
             </select>
         </div>
-        <div class="col col-12 d-grid gap-2 mt-2">
-            <button type="submit" class="btn btn-primary">Filtrar</button>
+        <div class="col col-6 d-grid gap-2 mt-2">
+            <button type="submit" class="btn btn-primary">Filtrar solicitudes</button>
+        </div>
+        <div class="col col-6 d-grid gap-2 mt-2">
+            <a role="button" class="btn btn-secondary" asp-action="@Model.accion">Quitar filtro</a>
         </div>
     </div>
 </form>

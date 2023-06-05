@@ -1,4 +1,7 @@
 ﻿$(document).ready(() => {
+    const FechaDesde = document.getElementById('FechaDesde'),
+        FechaHasta = document.getElementById('FechaHasta');
+
     //CONFIGURACION INPUT DATETIME
     flatpickr(FechaDesde, {
         enableTime: true,
@@ -9,7 +12,7 @@
         onChange: function (selectedDates) {
             if (selectedDates.length > 0) {
                 const minDate = selectedDates[0];
-                FechaDesde._flatpickr.set("minDate", minDate);
+                FechaHasta._flatpickr.set("minDate", minDate);
             }
         }
     });
@@ -19,11 +22,7 @@
         locale: "es",
         firstDayOfWeek: 1,
     });
-    document.getElementById('FechaHasta')._flatpickr.set("minDate", FechaDesde.value);
 });
-const FechaDesde = document.getElementById('FechaDesde'),
-    FechaHasta = document.getElementById('FechaHasta');
-
 //const btn_filtrar = document.getElementById('btn_filtrar');
 const FormFilter = document.getElementById('FormFilter');
 

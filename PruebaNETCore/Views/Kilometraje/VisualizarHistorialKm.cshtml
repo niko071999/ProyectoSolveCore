@@ -1,4 +1,5 @@
-﻿@model List<Kilometraje>
+﻿@using System.Globalization
+@model List<Kilometraje>
 
 @{
     ViewBag.Title = "Visualizar historial de kilometraje";
@@ -31,7 +32,7 @@
                                     <th scope="col">Kilometraje inicial</th>@*0*@
                                     <th scope="col">Kilometraje final</th>@*0*@
                                     <th scope="col">Vehiculo</th>@*0*@
-                                    <th scope="col"></th>@*10*@
+                                    @*<th scope="col"></th>10*@
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,16 +43,16 @@
                                     string modelo = k.IdVehiculoNavigation.Modelo;
                                     <tr>
                                         <td>@k.FechaCreacion.ToString("dd/MM/yyyy HH:ss")</td>
-                                        <td>@k.KilometrajeInicial</td>
-                                        <td>@k.KilometrajeFinal</td>
+                                        <td>@k.KilometrajeInicial.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))</td>
+                                        <td>@k.KilometrajeFinal.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))</td>
                                         <td>@patente - @marca @modelo</td>
-                                        <td class="text-center">
+                                        @*<td class="text-center">
                                             <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"
                                             data-bs-title="Mostrar mas información" data-id="@k.Id"
                                             class="btn btn-info">
                                                 <i class="fa-sharp fa-circle-info fa-lg"></i>
                                             </button>
-                                        </td>
+                                        </td>*@
                                     </tr>
                                 }
                             </tbody>
@@ -64,7 +65,7 @@
                                     <th scope="col">Kilometraje inicial</th>@*0*@
                                     <th scope="col">Kilometraje final</th>@*0*@
                                     <th scope="col">Vehiculo</th>@*0*@
-                                    <th scope="col"></th>@*10*@
+                                    @*<th scope="col"></th>@*10*@
                                 </tr>
                             </thead>
                         </table>

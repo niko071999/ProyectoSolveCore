@@ -14,15 +14,18 @@
             </ol>
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="btn-group dropend">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    @if (!ViewBag.notfilter)
+                    {
+                        <div class="btn-group dropend">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                 data-bs-auto-close="inside" aria-expanded="false">
-                            Filtros
-                        </button>
-                        <div class="dropdown-menu p-4 fw-bold" style="width: 550px; max-height: 700px">
-                            <partial name="_FiltersSolicitud" model='new Accion{accion = "SolicitudesPendientes"}' />
+                                Filtros
+                            </button>
+                            <div class="dropdown-menu p-4 fw-bold" style="width: 550px; max-height: 700px">
+                                <partial name="_FiltersSolicitud" model='new Accion{accion = "SolicitudesPendientes"}' />
+                            </div>
                         </div>
-                    </div>
+                    }
                     <table id="tableSolPendiente" class="display table  table-hover">
                         <thead class="table-light">
                             <tr>

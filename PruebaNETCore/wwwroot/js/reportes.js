@@ -5,10 +5,6 @@
             dom: 'Bfrtip',
             buttons: [
                 {
-                    extend: 'excel',
-                    text: '<i class="fa-solid fa-file-excel"></i> <b>EXCEL</b>'
-                },
-                {
                     extend: 'pdf',
                     text: '<i class="fa-solid fa-file-pdf"></i> <b>PDF</b>'
                 },

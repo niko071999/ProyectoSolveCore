@@ -220,6 +220,7 @@ namespace ProyectoSolveCore.Controllers
                     }
                     else
                     {
+                        v.MensajeEstado = "El vehiculo necesita obligatoriamente mantencion";
                         newList.Add(v);
                     }
                 }

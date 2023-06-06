@@ -678,7 +678,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     Fecha = DateTime.Now,
                     Estado = false,
-                    Motivo = null,
+                    Motivo = datos.motivo,
                     IdJefe = id,
                     IdSolicitud = datos.id_solicitud
                 };

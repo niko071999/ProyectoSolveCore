@@ -11,16 +11,20 @@
     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
         <div class="card sb-sidenav-dark">
             <div class="justify-content-center row d-flex align-items-center g-1">
-                <div class="col col-md-12 col-lg-6 align-self-center">
-                    <img src="@Html.Raw(direccionImg)" class="rounded p-2 img-fluid"
+                <div class="col col-12 align-self-center mb-2">
+                    <img src="@Html.Raw(direccionImg)" class="rounded pe-4 ps-4 img-fluid"
                          alt="foto perfil">
                 </div>
-                <div class="col col-md-12 col-lg-6 align-self-center">
-                    <p class="text-break fw-bold">@nombre</p>
+                <div class="col col-12 align-self-center ps-3">
+                    <a role="button" class="btn btn-link text-decoration-none text-light text-start p-0" 
+                        asp-controller="Usuario" asp-action="Perfil">
+                        <span class="text-break fw-bold">@nombre</span>
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="sb-sidenav-menu mt-4" id="style-4">
+        <hr />
+        <div class="sb-sidenav-menu" id="style-4">
             <div class="nav">
                 <a class="nav-link" asp-controller="Home" asp-action="Agenda">
                     <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
@@ -162,6 +166,10 @@
         </div>
         <div class="sb-sidenav-footer">
             <div class="nav d-grid gap-2">
+                <a role="button" class="btn btn-primary" asp-controller="Usuario" asp-action="Perfil">
+                    <i class="fa-solid fa-id-badge"></i>
+                    Ir a mi perfil
+                </a>
                 <a role="button" class="btn btn-outline-danger" asp-controller="Sesion" asp-action="Logout">
                     <i class="fa fa-right-from-bracket"></i>
                     Cerrar sesión

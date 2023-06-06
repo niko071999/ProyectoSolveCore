@@ -208,6 +208,8 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return View(new Usuario());
                 }
+                var departamentos = await _context.Departamentos.ToListAsync();
+                ViewBag.id_departamento = new SelectList(departamentos, "Id", "Departamento1", perfil.id_departamento);
                 ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", null, "Group");
                 return View(perfil);
             }
@@ -280,169 +282,54 @@ namespace ProyectoSolveCore.Controllers
             }
             try
             {
-                var u = await _context.Usuarios.FirstOrDefaultAsync(u => !u.Eliminado && u.Rut == uc.rut);
-                if (u != null)
-                {
-                    if (uc.rut != uc.rutold)
-                    {
-                        //Verifico si hay mas de 1 elemento con el rut del usuario
-                        return Json(new
-                        {
-                            mensaje = "El rut pertenece a otro usuario registrado",
-                            type = "error"
-                        });
-                    }
-                }
-                using var transaction = await _context.Database.BeginTransactionAsync();
+                JsonMensaje jm = await ModificarUsuario(uc);
 
-                var usuario = await _context.Usuarios.FindAsync(uc.ID);
-                usuario.Rut = uc.rut;
-                usuario.Nombre = uc.nombre;
-                usuario.Apellido = uc.apellido;
-                usuario.Login = uc.login;
-                if (!string.IsNullOrEmpty(uc.clave))
-                {
-                    usuario.Clave = Encrypt.EncryptPassword(uc.clave);
-                }
-                usuario.IdDepartamento = uc.id_departamento;
-                usuario.DireccionImg = uc.direccion_img;
-                usuario.Eliminado = false;
-                _context.Entry(usuario).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                var UsuarioRole = ObtenerRoles(uc);
-                var RolesUsuario = await _context.Usuariosroles.Where(ur => ur.Idusuario == uc.ID).ToListAsync();
-                int contains = 0;//Cuenta si hubieron roles que se ingresaron a la base de datos para verificar
-                foreach (var ur in UsuarioRole)
-                {
-                    var usuarioRol = await _context.Usuariosroles.FirstOrDefaultAsync(x =>
-                        x.Idrol == UsuarioRole[contains].IdRol
-                        && x.Idusuario == UsuarioRole[contains].IdUsuario);
-
-                    if (usuarioRol != null)
-                    {
-                        if (!UsuarioRole[contains].check)
-                        {
-                            _context.Usuariosroles.Remove(usuarioRol); // Eliminar el registro
-                            await _context.SaveChangesAsync();
-                        }
-                        // No hacer nada si el rol existe y está seleccionado
-                    }
-                    else if (UsuarioRole[contains].check)
-                    {
-                        var nuevoUsuarioRol = new Usuariosrole()
-                        {
-                            Idusuario = UsuarioRole[contains].IdUsuario,
-                            Idrol = UsuarioRole[contains].IdRol
-                        };
-                        await _context.Usuariosroles.AddAsync(nuevoUsuarioRol); // Agregar el nuevo registro
-                        await _context.SaveChangesAsync();
-                    }
-                    contains++;
-                }
-
-                // VERIFICA SI EXISTEN DATOS DEL CONDUCTOR, SI ESTÁN NULOS GUARDA EN BASE DE DATOS LOS DATOS DE USUARIO
-                var rolConductor = await _context.Usuariosroles.FirstOrDefaultAsync(ur => 
-                    ur.Idrol == 6 
-                    && ur.Idusuario == uc.ID);
-                if (uc.FechaEmitida == null || uc.FecheVencimiento == null || uc.NumeroPoliza == null)
-                {
-                    //Quitar el id del conductor del vehiculo asignado
-                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.ID);
-                    if (vehiculo.IdConductor.HasValue)
-                    {
-                        vehiculo.IdConductor = null;
-                        _context.Vehiculos.Update(vehiculo);
-                        await _context.SaveChangesAsync();
-                    }
-
-                    //Borrar rol conductor
-                    if (rolConductor != null)
-                    {
-                        _context.Remove(rolConductor);
-                        await _context.SaveChangesAsync();
-                    }
-                    //Borrar conductor
-                    var c = _context.Conductores.Find(uc.id_conductor);
-                    if (c != null)
-                    {
-                        _context.Conductores.Remove(c);
-                        await _context.SaveChangesAsync();
-                    }
-
-                    if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                    return Json(new
-                    {
-                        mensaje = "Usuario editado correctamente",
-                        type = "success"
-                    });
-                }
-
-                if (rolConductor == null)
-                {
-                    await _context.Usuariosroles.AddAsync(new Usuariosrole()
-                    {
-                        Idrol = 6,
-                        Idusuario = uc.ID,
-                    });
-                }
-
-                //Actualizar el conductor
-                var conductor = await _context.Conductores.FindAsync(uc.id_conductor);
-                if (conductor != null)
-                {
-                    conductor.Estado = true;
-                    conductor.FechaEmision = (DateTime)uc.FechaEmitida;
-                    conductor.FechaVencimiento = (DateTime)uc.FecheVencimiento;
-                    conductor.IdUsuario = usuario.Id;
-                    conductor.NumeroPoliza = (int)uc.NumeroPoliza;
-                    _context.Conductores.Update(conductor);
-                }
-                else
-                {
-                    conductor = new Conductore()
-                    {
-                        Estado = true,
-                        FechaEmision = (DateTime)uc.FechaEmitida,
-                        FechaVencimiento = (DateTime)uc.FecheVencimiento,
-                        IdUsuario = usuario.Id,
-                        NumeroPoliza = (int)uc.NumeroPoliza,
-                    };
-                    await _context.Conductores.AddAsync(conductor);
-                }
-
-                if (uc.id_vehiculo.HasValue)
-                {
-                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.id_vehiculo);
-                    if (uc.id_conductor != vehiculo.IdConductor)
-                    {
-                        vehiculo.IdConductor = conductor.Id;
-                        _context.Update(vehiculo);
-                    }
-                }
-                if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
                 return Json(new
                 {
-                    mensaje = "Usuario editado correctamente",
-                    type = "success"
+                    mensaje = jm.Mensaje,
+                    type = jm.Type
                 });
             }
             catch (Exception ex)
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error al recibir los datos",
+                    mensaje = "Ocurrio un error innesperado, avise al administrador o intentelo más tarde",
                     type = "error"
                 });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> EditarPerfil(vmUsuarioConductorRoles perfil)
+        {
+            if (perfil == null)
+            {
+                TempData["Mensaje"] = "Ocurrio un error al recibir los datos";
+                return RedirectToAction("Perfil");
+            }
+            try
+            {
+                JsonMensaje jm = await ModificarUsuario(perfil);
+                if (jm.Type.Equals("success"))
+                {
+                    TempData["MensajeSuccess"] = jm.Mensaje;
+                    return RedirectToAction("Perfil");
+                }
+                TempData["Mensaje"] = jm.Mensaje;
+                return View("Perfil", perfil);
+            }
+            catch (Exception ex)
+            {
+                TempData["Mensaje"] = "Ocurrio un error innesperado, avise al administrador o intentelo más tarde";
+                return RedirectToAction("Perfil");
+            }
+        }
+
         [Autorizar(18)]
         public async Task<PartialViewResult> EliminarUsuario(int id = 0)
         {
-            string mensaje = string.Empty;
-            if (id == null)
+            string mensaje;
+            if (id == 0)
             {
                 mensaje = "Hubo un error al recibir los datos, intentelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
@@ -470,7 +357,6 @@ namespace ProyectoSolveCore.Controllers
             }
         }
         [Autorizar(18)]
-
         [HttpPost]
         public async Task<JsonResult> BorrarUsuario(int id = 0)
         {
@@ -583,7 +469,168 @@ namespace ProyectoSolveCore.Controllers
             }
             return Json(idvehiculo);
         }
+        private async Task<JsonMensaje> ModificarUsuario(vmUsuarioConductorRoles uc)
+        {
+            try
+            {
+                var u = await _context.Usuarios.FirstOrDefaultAsync(u => !u.Eliminado && u.Rut == uc.rut);
+                if (u != null)
+                {
+                    if (uc.rut != uc.rutold)
+                    {
+                        //Verifico si hay mas de 1 elemento con el rut del usuario
+                        return new JsonMensaje()
+                        {
+                            Mensaje = "El rut pertenece a otro usuario registrado",
+                            Type = "error"
+                        };
+                    }
+                }
+                using var transaction = await _context.Database.BeginTransactionAsync();
 
+                var usuario = await _context.Usuarios.FindAsync(uc.ID);
+                usuario.Rut = uc.rut;
+                usuario.Nombre = uc.nombre;
+                usuario.Apellido = uc.apellido;
+                usuario.Login = uc.login;
+                if (!string.IsNullOrEmpty(uc.clave))
+                {
+                    usuario.Clave = Encrypt.EncryptPassword(uc.clave);
+                }
+                usuario.IdDepartamento = uc.id_departamento;
+                usuario.DireccionImg = uc.direccion_img;
+                usuario.Eliminado = false;
+                _context.Entry(usuario).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                var UsuarioRole = ObtenerRoles(uc);
+                var RolesUsuario = await _context.Usuariosroles.Where(ur => ur.Idusuario == uc.ID).ToListAsync();
+                int contains = 0;//Cuenta si hubieron roles que se ingresaron a la base de datos para verificar
+                foreach (var ur in UsuarioRole)
+                {
+                    var usuarioRol = await _context.Usuariosroles.FirstOrDefaultAsync(x =>
+                        x.Idrol == UsuarioRole[contains].IdRol
+                        && x.Idusuario == UsuarioRole[contains].IdUsuario);
+
+                    if (usuarioRol != null)
+                    {
+                        if (!UsuarioRole[contains].check)
+                        {
+                            _context.Usuariosroles.Remove(usuarioRol); // Eliminar el registro
+                            await _context.SaveChangesAsync();
+                        }
+                        // No hacer nada si el rol existe y está seleccionado
+                    }
+                    else if (UsuarioRole[contains].check)
+                    {
+                        var nuevoUsuarioRol = new Usuariosrole()
+                        {
+                            Idusuario = UsuarioRole[contains].IdUsuario,
+                            Idrol = UsuarioRole[contains].IdRol
+                        };
+                        await _context.Usuariosroles.AddAsync(nuevoUsuarioRol); // Agregar el nuevo registro
+                        await _context.SaveChangesAsync();
+                    }
+                    contains++;
+                }
+
+                // VERIFICA SI EXISTEN DATOS DEL CONDUCTOR, SI ESTÁN NULOS GUARDA EN BASE DE DATOS LOS DATOS DE USUARIO
+                var rolConductor = await _context.Usuariosroles.FirstOrDefaultAsync(ur =>
+                    ur.Idrol == 6
+                    && ur.Idusuario == uc.ID);
+                if (uc.FechaEmitida == null || uc.FecheVencimiento == null || uc.NumeroPoliza == null)
+                {
+                    //Quitar el id del conductor del vehiculo asignado
+                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.ID);
+                    if (vehiculo.IdConductor.HasValue)
+                    {
+                        vehiculo.IdConductor = null;
+                        _context.Vehiculos.Update(vehiculo);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    //Borrar rol conductor
+                    if (rolConductor != null)
+                    {
+                        _context.Remove(rolConductor);
+                        await _context.SaveChangesAsync();
+                    }
+                    //Borrar conductor
+                    var c = _context.Conductores.Find(uc.id_conductor);
+                    if (c != null)
+                    {
+                        _context.Conductores.Remove(c);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return new JsonMensaje()
+                    {
+                        Mensaje = "Usuario editado correctamente",
+                        Type = "success"
+                    };
+                }
+
+                if (rolConductor == null)
+                {
+                    await _context.Usuariosroles.AddAsync(new Usuariosrole()
+                    {
+                        Idrol = 6,
+                        Idusuario = uc.ID,
+                    });
+                }
+
+                //Actualizar el conductor
+                var conductor = await _context.Conductores.FindAsync(uc.id_conductor);
+                if (conductor != null)
+                {
+                    conductor.Estado = true;
+                    conductor.FechaEmision = (DateTime)uc.FechaEmitida;
+                    conductor.FechaVencimiento = (DateTime)uc.FecheVencimiento;
+                    conductor.IdUsuario = usuario.Id;
+                    conductor.NumeroPoliza = (int)uc.NumeroPoliza;
+                    _context.Conductores.Update(conductor);
+                }
+                else
+                {
+                    conductor = new Conductore()
+                    {
+                        Estado = true,
+                        FechaEmision = (DateTime)uc.FechaEmitida,
+                        FechaVencimiento = (DateTime)uc.FecheVencimiento,
+                        IdUsuario = usuario.Id,
+                        NumeroPoliza = (int)uc.NumeroPoliza,
+                    };
+                    await _context.Conductores.AddAsync(conductor);
+                }
+
+                if (uc.id_vehiculo.HasValue)
+                {
+                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.id_vehiculo);
+                    if (uc.id_conductor != vehiculo.IdConductor)
+                    {
+                        vehiculo.IdConductor = conductor.Id;
+                        _context.Update(vehiculo);
+                    }
+                }
+                if (_context.ChangeTracker.HasChanges()) await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return new JsonMensaje()
+                {
+                    Mensaje = "Usuario editado correctamente",
+                    Type = "success"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new JsonMensaje()
+                {
+                    Mensaje = "Ocurrio un error innesperado, avise al administrador del sistema o intente mas tarde",
+                    Type = "error"
+                };
+            }
+        }
         private static List<vmRolCheck> ObtenerRoles(vmUsuarioConductorRoles uc)
         {
             List<vmRolCheck> lur = new();

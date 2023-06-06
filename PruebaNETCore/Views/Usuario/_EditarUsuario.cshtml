@@ -77,8 +77,8 @@
                         <div class="col col-sm-12 mb-2">
                             <h4 class="mt-3">Roles</h4>
                             <ul class="row list-group list-group-horizontal list-group-flush">
-                                @*Administrador*@
-                                <li class="list-group-item col col-lg-6">
+                                @if (User.IsInRole("Administrador")){
+                                    <li class="list-group-item col col-lg-6">
                                     <input class="form-check-input" type="checkbox" id="Administrador" @(Model.RolAdministrador?"checked":"")>
                                     <label class="form-check-label" for="Administrador">
                                         <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
@@ -88,6 +88,11 @@
                                         </a>
                                     </label>
                                 </li>
+                                }else{
+                                    <input class="form-check-input visually-hidden" type="checkbox" id="Administrador" @(Model.RolAdministrador?"checked":"")>
+                                }
+                                @*Administrador*@
+                                
                                 @*Jefe*@
                                 <div class="list-group-item col col-lg-6">
                                     <input class="form-check-input" type="checkbox" id="Jefe" @(Model.RolJefe?"checked":"")>

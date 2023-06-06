@@ -26,6 +26,7 @@ namespace ProyectoSolveCore.Controllers
         {
             if (id == -1)//Esto quiere decir que viene nulo el id
             {
+                ViewBag.MensajeError = "Valor nulo";
                 return RedirectToAction("VisualizarMantenciones");
             }
             try
@@ -74,11 +75,12 @@ namespace ProyectoSolveCore.Controllers
                         Value = c.Id.ToString(),
                         Text = $"{c.IdUsuarioNavigation.Nombre} {c.IdUsuarioNavigation.Apellido}"
                     }).ToListAsync();
+
                 if (id == 0)
                 {
                     var v = vehiculos.FirstOrDefault(v => int.Parse(vlist.FirstOrDefault().Value) == v.Id);
                     ViewBag.IdVehiculo = new SelectList(vlist, "Value", "Text", null, "Group");
-                    ViewBag.IdConductor = new SelectList(clist, "Value", "Text", v.IdConductor??int.Parse(clist.FirstOrDefault().Value));
+                    ViewBag.IdConductor = new SelectList(clist, "Value", "Text", v.IdConductor);
                 }
                 else
                 {
@@ -107,6 +109,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.MensajeError = "Error: " + ex.Message;
                 return RedirectToAction("VisualizarMantenciones");
             }
         }

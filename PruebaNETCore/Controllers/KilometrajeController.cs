@@ -77,10 +77,17 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.IdVehiculo = new SelectList(vehiculos, "Value", "Text", k.IdVehiculo, "Group");
                 return View(k);
             }
+            bool check = await VerficairKmVehiculos(k.IdVehiculo);
+
             return RedirectToAction("VisualizarHistorialKm");
         }
 
-        private DateTime GenerateFecha(DateTime now)
+        private Task<bool> VerficairKmVehiculos(int idVehiculo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static DateTime GenerateFecha(DateTime now)
         {
             var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
             return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);

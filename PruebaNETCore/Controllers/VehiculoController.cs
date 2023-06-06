@@ -368,6 +368,8 @@ namespace ProyectoSolveCore.Controllers
                     });
                 }
 
+
+
                 _context.Update(v).State = EntityState.Modified;
                 int n = await _context.SaveChangesAsync();
                 if (n == 0)

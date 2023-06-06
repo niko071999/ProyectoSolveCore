@@ -133,6 +133,8 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
+                if (bitacora.KmInicialEntero > bitacora.KmFinalEntero) return false;
+
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 var km = new Kilometraje()
                 {

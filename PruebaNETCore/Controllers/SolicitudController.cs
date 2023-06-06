@@ -8,6 +8,7 @@ using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 using ProyectoSolveCore.Models.ViewModelsFilter;
+using System.Collections;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -32,8 +33,10 @@ namespace ProyectoSolveCore.Controllers
         [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> VisualizarSolicitudes()
         {
+            ViewBag.notfilter = false;
             if (!await _context.Solicitudes.AnyAsync())
             {
+                ViewBag.notfilter = true;
                 return View(new List<Solicitude>());
             }
             try
@@ -47,17 +50,34 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
-                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
-                ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
+                //ViewBag.OpcionFiltroFecha = new SelectList(ObtenerOpcionesFiltrosFecha(), "Value", "Text");
+                //ViewBag.TipoFecha = 1; //Se selecciona por defecto al fecha solicitado
 
                 return View(solicitudes);
             }
             catch (Exception ex)
             {
+                ViewBag.notfilter = true;
                 return View(new List<Solicitude>());
             }
         }
+
+        private List<SelectListItem> ObtenerOpcionesFiltrosFecha()
+        {
+            List<SelectListItem> sli = new List<SelectListItem>()
+            {
+                new SelectListItem(){ Value = "1", Text = "Filtrar solicitudes creadas hoy" },
+                new SelectListItem(){ Value = "2", Text = "Filtrar solicitudes creadas hace 24 horas" },
+                new SelectListItem(){ Value = "3", Text = "Filtrar solicitudes creadas esta semana" },
+                new SelectListItem(){ Value = "4", Text = "Filtrar solicitudes creadas hace 7 dias" },
+                new SelectListItem(){ Value = "5", Text = "Filtrar solicitudes creadas este mes" },
+                new SelectListItem(){ Value = "6", Text = "Filtrar solicitudes creadas hace un mes"},
+                new SelectListItem(){ Value = "7", Text = "Filtrar solicitudes creadas este año" },
+                new SelectListItem(){ Value = "8", Text = "Filtrar solicitudes creadas hace 1 año" }
+            };
+            return sli;
+        }
+
         [Autorizar(10)]
         [HttpPost]
         public async Task<IActionResult> VisualizarSolicitudes(vmFiltrosSolicitudes fs)
@@ -70,9 +90,9 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(NewList), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(NewList), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(NewList), "Value", "Text", fs.IdSolicitado);
-                ViewBag.FechaDesde = fs.FechaDesde;
-                ViewBag.FechaHasta = fs.FechaHasta;
-                ViewBag.Opcion = fs.Opcion;
+                //ViewBag.FechaDesde = fs.FechaDesde;
+                //ViewBag.FechaHasta = fs.FechaHasta;
+                //ViewBag.Opcion = fs.Opcion;
 
                 return View(NewList);
             }
@@ -84,9 +104,9 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text", fs.IdSolicitado);
-                ViewBag.FechaDesde = fs.FechaDesde;
-                ViewBag.FechaHasta = fs.FechaHasta;
-                ViewBag.Opcion = fs.Opcion;
+                //ViewBag.FechaDesde = fs.FechaDesde;
+                //ViewBag.FechaHasta = fs.FechaHasta;
+                //ViewBag.Opcion = fs.Opcion;
                 return View(solicitudes);
             }
         }
@@ -136,6 +156,7 @@ namespace ProyectoSolveCore.Controllers
         [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> MisSolicitudes()
         {
+            ViewBag.notfilter = false;
             try
             {
                 int Id = int.Parse(User.FindFirst("Id").Value);
@@ -144,6 +165,12 @@ namespace ProyectoSolveCore.Controllers
                     .Include(s => s.IdVehiculoNavigation.IdCategoriaNavigation)
                     .OrderByDescending(s => s.FechaSolicitado)
                     .ToListAsync();
+
+                if (!solicitudes.Any(s => s.IdSolicitante == Id))
+                {
+                    ViewBag.notfilter = true;
+                    return View(new List<vmSolicitud>());
+                }
 
                 var listSolicitudes = solicitudes.Where(s => s.IdSolicitante == Id)
                         .Select(s => new vmSolicitud()
@@ -164,21 +191,23 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
-                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
-                ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
+                //ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
+                //ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
+                //ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
                 //listSolicitudes = await VerificarSolicitudesAtrasadas(listSolicitudes); 
                 return View(listSolicitudes);
             }
             catch (Exception ex)
             {
-                return View(new vmSolicitud());
+                ViewBag.notfilter = true;
+                return View(new List<vmSolicitud>());
             }
         }
         [HttpPost]
         public async Task<IActionResult> MisSolicitudes(vmFiltrosSolicitudes fs)
         {
+            ViewBag.notfilter = false;
             int id = int.Parse(User.FindFirst("Id").Value);
             try
             {
@@ -202,15 +231,16 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(NewList), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(NewList), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(NewList), "Value", "Text", fs.IdSolicitado);
-                ViewBag.FechaDesde = fs.FechaDesde;
-                ViewBag.FechaHasta = fs.FechaHasta;
-                ViewBag.Opcion = fs.Opcion;
+                //ViewBag.FechaDesde = fs.FechaDesde;
+                //ViewBag.FechaHasta = fs.FechaHasta;
+                //ViewBag.Opcion = fs.Opcion;
 
                 return View(misolicitudes);
             }
             catch (Exception)
             {
-                return View();
+                ViewBag.notfilter = true;
+                return View(new List<vmSolicitud>());
             }
         }
 
@@ -415,8 +445,11 @@ namespace ProyectoSolveCore.Controllers
         [TypeFilter(typeof(VerificarSolicitudes))]
         public async Task<IActionResult> SolicitudesPendientes()
         {
+            ViewBag.notfilter = false;
             try
             {
+
+
                 int id = int.Parse(User.FindFirst("Id").Value);
                 var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation)
                         .Include(s => s.IdVehiculoNavigation.IdCategoriaNavigation).Include(s => s.Aprobaciones)
@@ -424,18 +457,25 @@ namespace ProyectoSolveCore.Controllers
                         .OrderByDescending(s => s.FechaSolicitado)
                         .ToListAsync();
 
+                if (!solicitudes.Any())
+                {
+                    ViewBag.notfilter = true;
+                    return View(new List<Solicitude>());
+                }
+
                 ViewBag.Estado = new SelectList(ObtenerEstados(), "Value", "Text");
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
-                ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
-                ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
+                //ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
+                //ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
+                //ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
                 return View(solicitudes);
             }
             catch (Exception ex)
             {
+                ViewBag.notfilter = true;
                 return View(new List<Solicitude>());
             }
         }
@@ -452,9 +492,9 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text", fs.IdSolicitado);
-                ViewBag.FechaDesde = fs.FechaDesde;
-                ViewBag.FechaHasta = fs.FechaHasta;
-                ViewBag.Opcion = fs.Opcion; //Se selecciona por defecto al fecha solicitado
+                //ViewBag.FechaDesde = fs.FechaDesde;
+                //ViewBag.FechaHasta = fs.FechaHasta;
+                //ViewBag.Opcion = fs.Opcion;
 
                 return View(solicitudes);
             }
@@ -468,9 +508,9 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
-                ViewBag.FechaDesde = fs.FechaDesde;
-                ViewBag.FechaHasta = fs.FechaHasta;
-                ViewBag.Opcion = fs.Opcion; //Se selecciona por defecto al fecha solicitado
+                //ViewBag.FechaDesde = fs.FechaDesde;
+                //ViewBag.FechaHasta = fs.FechaHasta;
+                //ViewBag.Opcion = fs.Opcion;
 
                 return View(solicitudes);
             }
@@ -789,8 +829,7 @@ namespace ProyectoSolveCore.Controllers
                         .ToListAsync();
 
             if (fs == null
-                || (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo)
-                    && fs.FechaDesde == DateTime.MinValue))
+                || (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo)))//&& fs.FechaDesde == DateTime.MinValue
             {
                 return solicitudes;
             }
@@ -808,101 +847,37 @@ namespace ProyectoSolveCore.Controllers
                     string.Equals($"{s.IdVehiculoNavigation.Patente} - {s.IdVehiculoNavigation.Marca} {s.IdVehiculoNavigation.Modelo}",
                         fs.Vehiculo)).ToList();
             }
-            if (fs.FechaDesde != DateTime.MinValue)
-            {
-                switch (fs.Opcion)
-                {
-                    case 1:
-                        solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde).ToList();
-                        break;
-                    case 2:
-                        solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde).ToList();
-                        break;
-                    case 3:
-                        solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde).ToList();
-                        break;
-                }
-            }
-            if (fs.FechaHasta != DateTime.MinValue)
-            {
-                switch (fs.Opcion)
-                {
-                    case 1:
-                        solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde && s.FechaSolicitado <= fs.FechaHasta).ToList();
-                        break;
-                    case 2:
-                        solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde && s.FechaSalida <= fs.FechaHasta).ToList();
-                        break;
-                    case 3:
-                        solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde && s.FechaLlegada <= fs.FechaHasta).ToList();
-                        break;
-                }
-            }
+            //if (fs.FechaDesde != DateTime.MinValue)
+            //{
+            //    switch (fs.Opcion)
+            //    {
+            //        case 1:
+            //            solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde).ToList();
+            //            break;
+            //        case 2:
+            //            solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde).ToList();
+            //            break;
+            //        case 3:
+            //            solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde).ToList();
+            //            break;
+            //    }
+            //}
+            //if (fs.FechaHasta != DateTime.MinValue)
+            //{
+            //    switch (fs.Opcion)
+            //    {
+            //        case 1:
+            //            solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde && s.FechaSolicitado <= fs.FechaHasta).ToList();
+            //            break;
+            //        case 2:
+            //            solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde && s.FechaSalida <= fs.FechaHasta).ToList();
+            //            break;
+            //        case 3:
+            //            solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde && s.FechaLlegada <= fs.FechaHasta).ToList();
+            //            break;
+            //    }
+            //}
             return solicitudes;
-            
-            //var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
-            //            .ToListAsync();
-            //if (fs == null)
-            //{
-            //    return solicitudes;
-            //}
-            ////Verificar si seleciono algun estado, destino o vehiculo
-            //if (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo)
-            //    && fs.FechaDesde == DateTime.MinValue)
-            //{
-            //    return solicitudes;
-            //}
-            //if (fs.Estado > -1)
-            //{
-            //    solicitudes = solicitudes.Where(s => s.Estado == fs.Estado).ToList();
-            //}
-            //if (string.IsNullOrEmpty(fs.Destino))
-            //{
-            //    solicitudes = solicitudes.Where(s => s.Destino.Equals(fs.Destino)).ToList();
-            //}
-            //if (string.IsNullOrEmpty(fs.Vehiculo))
-            //{
-            //    solicitudes = solicitudes.Where(s =>
-            //        string.Equals($"{s.IdVehiculoNavigation.Patente} - {s.IdVehiculoNavigation.Marca} {s.IdVehiculoNavigation.Modelo}"
-            //            , fs.Vehiculo)).ToList();
-            //}
-            //if (fs.FechaHasta == DateTime.MinValue)
-            //{
-            //    if (fs.Opcion == 1)
-            //    {
-            //        solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde).ToList();
-            //    }
-            //    if (fs.Opcion == 2)
-            //    {
-            //        solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde).ToList();
-            //    }
-            //    if (fs.Opcion == 3)
-            //    {
-            //        solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde).ToList();
-            //    }
-            //}
-            //else
-            //{
-            //    if (fs.Opcion == 1)
-            //    {
-            //        solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde
-            //            && s.FechaSolicitado <= fs.FechaHasta)
-            //            .ToList();
-            //    }
-            //    if (fs.Opcion == 2)
-            //    {
-            //        solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde
-            //            && s.FechaSalida <= fs.FechaHasta)
-            //            .ToList();
-            //    }
-            //    if (fs.Opcion == 3)
-            //    {
-            //        solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde
-            //            && s.FechaLlegada <= fs.FechaHasta)
-            //            .ToList();
-            //    }
-            //}
-            //return solicitudes;
         }
         private void EliminarMemoriaCache()
         {

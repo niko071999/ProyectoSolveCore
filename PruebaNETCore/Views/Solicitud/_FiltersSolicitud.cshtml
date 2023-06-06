@@ -1,12 +1,8 @@
 ﻿@model Accion
-@{
-    DateTime fechadesde = (DateTime)ViewBag.FechaDesde;
-    DateTime fechahasta = (DateTime)ViewBag.FechaHasta;
-}
 
 <form id="FormFilter" asp-action="@Model.accion" method="post">
     <div class="row fw-bold">
-        <label class="form-label">Tipos</label>
+        @*<label class="form-label">Tipos</label>
         <div class="col col-12">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio1"
@@ -25,16 +21,8 @@
             </div>
         </div>
         <div class="col col-12">
-            <label for="inputGroup" class="form-label">Fechas</label>
-            <div id="inputGroup" class="input-group">
-                <span class="input-group-text" id="Desde">Desde</span>
-                <input id="FechaDesde" type="datetime-local" class="form-control" name="FechaDesde"
-                       value="@fechadesde.ToString("yyyy-MM-ddThh:mm")" aria-describedby="Desde" />
-                <span class="input-group-text" id="Hasta">Hasta</span>
-                <input id="FechaHasta" type="datetime-local" class="form-control" name="FechaHasta"
-                       value="@fechahasta.ToString("yyyy-MM-ddThh:mm")" aria-describedby="Hasta" />
-            </div>
-        </div>
+            
+        </div>*@
         <div class="col col-12">
             <label for="inputSolicitado" class="form-label">Solicitado por</label>
             <select id="inputSolicitado" class="form-select" name="IdSolicitado" asp-items="ViewBag.IdSolicitado">

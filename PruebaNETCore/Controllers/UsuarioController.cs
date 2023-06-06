@@ -182,20 +182,20 @@ namespace ProyectoSolveCore.Controllers
             try
             {
                 int id = int.Parse(User.FindFirst("Id").Value);
-                var perfil = await _context.Usuarios.Select(u => new vmPerfil
+                var perfil = await _context.Usuarios.Select(u => new vmUsuarioConductorRoles
                 {
-                    Id = u.Id,
-                    Rut = u.Rut,
-                    RutOld = u.Rut,//Sirve para verificar si cambio rut
-                    Nombre = u.Nombre,
-                    Apellido = u.Apellido,
-                    DireccionImg = u.DireccionImg,
+                    ID = u.Id,
+                    rut = u.Rut,
+                    rutold = u.Rut,//Sirve para verificar si cambio rut
+                    nombre = u.Nombre,
+                    apellido = u.Apellido,
+                    direccion_img = u.DireccionImg,
                     FechaEmitida = u.Conductores.Where(u => u.Id == id).FirstOrDefault().FechaEmision,
                     FecheVencimiento = u.Conductores.Where(u => u.Id == id).FirstOrDefault().FechaVencimiento,
-                    IdConductor = u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).Id,
-                    IdDepartamento = u.IdDepartamento,
+                    id_conductor = u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).Id,
+                    id_departamento = u.IdDepartamento,
                     NumeroPoliza = u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).NumeroPoliza,
-                    IdVehiculo = u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).Vehiculos.FirstOrDefault().Id,
+                    id_vehiculo = u.Conductores.FirstOrDefault(c => c.IdUsuario == u.Id).Vehiculos.FirstOrDefault().Id,
                     RolAdministrador = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 1),
                     RolJefe = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 2),
                     RolMantenedorVehiculos = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 3),
@@ -203,7 +203,7 @@ namespace ProyectoSolveCore.Controllers
                     RolSolicitador = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 5),
                     RolMantenedorVehiculosMaq = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 7),
                     RolMantenedorBitacora = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 8),
-                }).FirstOrDefaultAsync(u => u.Id == id);
+                }).FirstOrDefaultAsync(u => u.ID == id);
                 if (perfil == null)
                 {
                     return View(new Usuario());

@@ -1,4 +1,5 @@
 ﻿@using ProyectoSolveCore.Models.ViewModels
+@using System.Globalization
 @model List<vmVehiculo>
 @{
     ViewBag.Title = "Visualizar Vehiculos";
@@ -51,8 +52,8 @@
                                         <td>@vehiculo.Modelo</td>
                                         <td>@Html.Raw(vehiculo.NombreConductor)</td>
                                         <td class="text-center">
-                                            <a role="button" class="btn btn-light" data-bs-placement="top" 
-                                            data-bs-toggle="tooltip" data-bs-title="@vehiculo.MensajeEstado">
+                                            <a role="button" class="btn btn-light" data-bs-placement="top"
+                                       data-bs-toggle="tooltip" data-bs-title="@Html.Raw(vehiculo.MensajeEstado)">
                                             @if (vehiculo.Estado == 1)
                                             {
                                                 <i class="fa-sharp fa-circle-check fa-lg text-success"></i>
@@ -63,9 +64,7 @@
                                             }
                                             </a>
                                         </td>
-                                        <td>@vehiculo.Km_Recorrido?.ToString("N", new System.Globalization.NumberFormatInfo{
-                                                NumberGroupSeparator = "."
-                                        })</td>
+                                        <td>@vehiculo.Km_Recorrido?.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))</td>
                                         <td class="text-center">
                                             <button type="button" class="btn btn-warning" data-id="@vehiculo.Id">
                                                 <i class="fa-sharp fa-pen fa-lg"></i>

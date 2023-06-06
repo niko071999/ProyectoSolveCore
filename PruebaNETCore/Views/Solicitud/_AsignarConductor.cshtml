@@ -41,7 +41,7 @@
                     <label for="IdConductor" class="form-label">@(!Model.IdConductor.HasValue ? Html.Raw("Asignar Conductor") : Html.Raw("Conductor Asigado"))</label>
                     @if (Model.IdConductor.HasValue)
                     {
-                        <select class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor" asp-selected="@Model.IdConductor" disabled>
+                        <select class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor" asp-selected="@Model.IdConductor">
                         </select>
                     }else{
                         <select class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor">

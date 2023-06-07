@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
+using System.Collections;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -20,21 +22,46 @@ namespace ProyectoSolveCore.Controllers
                 string mensaje = "Hubo un error al enviar los datos";
                 return PartialView("_PartialModalError", mensaje);
             }
-            int solicitudId = await _context.Solicitudes.Select(s => s.Id).Where(s => s == id).FirstOrDefaultAsync();
+            var conductores = await _context.Conductores.Include(c => c.IdUsuarioNavigation)
+                .Where(c => !c.Eliminado).ToListAsync();
+
+            var solicitud = await _context.Solicitudes.Where(s => s.Id == id)
+                .FirstOrDefaultAsync();
+            var conductor = conductores.FirstOrDefault(c => c.Id == solicitud.IdConductor);
+
+            ViewBag.IdConductor = new SelectList(GetSelectListItemConductores(conductores), "Value", "Text", solicitud.IdConductor.HasValue 
+                    ? solicitud.IdConductor : null);
+            int solicitudId = solicitud.Id;
+            
             return PartialView("_SeleccionarFirmador", solicitudId);
 
         }
-        public async Task<IActionResult> PermisoCirculacion(string nombre, int id = 0)
+
+        private static List<SelectListItem> GetSelectListItemConductores(List<Conductore> conductores)
+        {
+
+            return conductores.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = $"{c.IdUsuarioNavigation.Nombre} {c.IdUsuarioNavigation.Apellido}"
+            }).ToList();
+        }
+
+        public async Task<IActionResult> PermisoCirculacion(string nombre, int idconductor, int id = 0)
         {
             if (id == 0)
             {
                 return RedirectToAction("MisSolicitudes");
             }
+            var conductor = await _context.Conductores.Include(c => c.IdUsuarioNavigation)
+                    .Where(c => c.Id == idconductor).FirstOrDefaultAsync();
+            string NombreConductor = $"{conductor.IdUsuarioNavigation.Nombre} {conductor.IdUsuarioNavigation.Apellido}";
+
             var solicitud = await _context.Solicitudes.Where(s => s.Id == id)
                 .Select(s => new vmPermisoCirculacion()
                 {
                     vehiculo = s.IdVehiculoNavigation.Patente,
-                    nombreConductor = $"{s.IdConductorNavigation.IdUsuarioNavigation.Nombre} {s.IdConductorNavigation.IdUsuarioNavigation.Apellido}",
+                    nombreConductor = NombreConductor,
                     pasajeros = ModificarTextoPasajeros(s.Pasajeros),
                     motivo = s.Motivo,
                     destino = s.Destino,
@@ -46,6 +73,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return View(new vmPermisoCirculacion());
             }
+
             return View(solicitud);
         }
 

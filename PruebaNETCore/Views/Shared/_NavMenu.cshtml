@@ -65,6 +65,10 @@
                             @if (User.IsInRole("Administrador") || User.IsInRole("Jefe")){
                                 <a class="nav-link" asp-controller="Solicitud" asp-action="SolicitudesPendientes">Solicitudes por aprobar</a>
                             }
+                            @if (User.IsInRole("Administrador") || User.IsInRole("Jefe"))
+                            {
+                                <a class="nav-link" asp-controller="Solicitud" asp-action="MisAprobaciones">Visualizar mis aprobaciones</a>
+                            }
                             <a class="nav-link" asp-controller="Solicitud" asp-action="MisSolicitudes">Mis solicitudes</a>
                         </nav>
                     </div>

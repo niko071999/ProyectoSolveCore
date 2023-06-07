@@ -25,6 +25,12 @@
                         </label>
                     </div>
                 </div>
+                <div class="col col-12">
+                    <label for="inputConductor" class="form-label">Conductor</label>
+                    <select id="inputConductor" class="form-select" asp-items="ViewBag.IdConductor">
+                        <option value="">Sin asignar conductor</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="modal-footer d-flex justify-content-center">
@@ -48,9 +54,10 @@
 
         var objeto = {
             IdSolicitud: document.getElementById('idsolicitud').value,
+            IdConductor: document.getElementById('inputConductor').value,
             Nombre: nombre
         }
-        window.open('/GenerateDocument/PermisoCirculacion?nombre=' + objeto.Nombre + '&id=' + objeto.IdSolicitud, '_blank');
+        window.open('/GenerateDocument/PermisoCirculacion?nombre=' + objeto.Nombre + '&idconductor=' + objeto.IdConductor + '&id=' + objeto.IdSolicitud, '_blank');
 
         //$.ajax({
         //    url: '/GenerateDocument/MostrarPermisoCirculacionModal',

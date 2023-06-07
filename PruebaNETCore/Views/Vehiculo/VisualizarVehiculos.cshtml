@@ -3,11 +3,14 @@
 @model List<vmVehiculo>
 @{
     ViewBag.Title = "Visualizar Vehiculos";
+    int habilitados = ViewBag.Habilitados ?? 0;
+    int advertencias = ViewBag.Advertencias ?? 0;
+    int deshabilitados = ViewBag.Deshabilitados ?? 0;
 }
 <partial name="_NavMenu"/>
 <div id="layoutSidenav_content">
     <main>
-        <div class="container-fluid px-4">
+        <div class="container-fluid px-4">            
             <h1 class="mt-4">Visualizar vehiculos</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
@@ -19,7 +22,7 @@
                         <a asp-action="AgregarVehiculo" role="button" class="btn btn-primary mb-2 me-md-2">
                             Agregar nuevo vehículo
                         </a>
-                        <div class="btn-group dropend">
+                        <div class="btn-group dropend mb-2">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" 
                                 data-bs-auto-close="inside" aria-expanded="false">
                                 Filtros
@@ -28,10 +31,57 @@
                                 <partial name="_FiltersVehiculo" />
                             </div>
                         </div>
+                        <div class="mb-2">
+                            @if ((int)ViewBag.Habilitados > 0)
+                            {
+                                <a role="button" class="btn btn-light p-0" data-bs-placement="top"
+                                    data-bs-toggle="tooltip" data-bs-title="Filtrar todos los habilitados">
+                                    @if ((int)ViewBag.Habilitados == Model.Count)
+                                    {
+                                        <span class="badge bg-success p-2">Habilitados: Todo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success p-2">Habilitados: @(ViewBag.Habilitados)</span>
+                                    }
+                                </a>
+                            }
+
+                            @if ((int)ViewBag.Advertencias > 0)
+                            {
+                                <a role="button" class="btn btn-light p-0" data-bs-placement="top"
+                                    data-bs-toggle="tooltip" data-bs-title="Filtrar todos con advertencia">
+                                    >
+                                    @if ((int)ViewBag.Advertencias == Model.Count)
+                                    {
+                                        <span class="badge bg-warning p-2">Advertencias: Todo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning p-2">Advertencias: @(ViewBag.Advertencias)</span>
+                                    }
+                                </a>
+                            }
+
+                            @if ((int)ViewBag.Deshabilitados > 0)
+                            {
+                                <a role="button" class="btn btn-light p-0" data-bs-placement="top"
+                                    data-bs-toggle="tooltip" data-bs-title="Filtrar todos los deshabilitados">
+                                    @if ((int)ViewBag.Deshabilitados == Model.Count)
+                                    {
+                                        <span class="badge bg-danger p-2">Deshabilitados: Todo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger p-2">Deshabilitados: @(ViewBag.Deshabilitados)</span>
+                                    }
+                                </a>
+                            }
+                        </div>
                     </div>
                     @if (Model != null)
                     {
-                        <table id="tablaVehiculos" class="display table table-hover w-100">
+                        <table id="tablaVehiculos" class="display table table-hover table-responsive-md w-100">
                             <thead class="table-light">
                                 <tr>
                                     <th scope="col" style="width:10%">Patente</th>
@@ -66,10 +116,12 @@
                                         </td>
                                         <td>@vehiculo.Km_Recorrido?.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))</td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-warning" data-id="@vehiculo.Id">
+                                            <button type="button" class="btn btn-warning" data-id="@vehiculo.Id" 
+                                                data-bs-placement="top" data-bs-toggle="tooltip" data-bs-title="Editar vehículo">
                                                 <i class="fa-sharp fa-pen fa-lg"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger" data-id="@vehiculo.Id">
+                                            <button type="button" class="btn btn-danger" data-id="@vehiculo.Id"
+                                            data-bs-placement="top" data-bs-toggle="tooltip" data-bs-title="Borrar vehículo">
                                                 <i class="fa-sharp fa-trash-can fa-lg"></i>
                                             </button>
                                         </td>

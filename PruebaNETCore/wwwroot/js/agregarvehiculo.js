@@ -6,14 +6,6 @@ let inputCheck = document.getElementById('inputCheck');
 let inputPeriodo = document.getElementById('inputPeriodo'),
     inputCategoria = document.getElementById('inputCategoria');
 inputCheck.value = 1;
-
-check.addEventListener('change', () => {
-    if (check.checked) {
-        inputCheck.value = 1;
-    } else {
-        inputCheck.vale = 0;
-    }
-});
 btn_newCategoria.addEventListener('click', function () {
     const c = prompt("Ingrese la nueva categoría");
     $.ajax({

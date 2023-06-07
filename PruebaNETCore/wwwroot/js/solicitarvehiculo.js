@@ -1,12 +1,28 @@
 ﻿$(document).ready(() => {
     const fecha_salida_input = document.getElementById('inputFechaSalida'),
-        fecha_llegada_input = document.getElementById('inputFechaLlegada'),
-        FechaSolicitado = document.getElementById('FechaSolicitado');
+        fecha_llegada_input = document.getElementById('inputFechaLlegada');
 
     const formato1 = "d-m-Y H:i:S";
     const btn_getVehiculo = document.getElementById('btn_getVehiculo'),
         btn_solicitar = document.getElementById('btn_solicitar');
     const dropDown = document.getElementById('inputVehiculos');
+    const inputUsuario = document.getElementById('inputNombre'),
+        inputDepartamento = document.getElementById('inputDepartamento');
+
+    $(".js-example-basic-single").select2({
+        language: "es",
+        width: 'resolve'
+    });
+
+    inputUsuario.addEventListener('change', function () {
+        $.ajax({
+            url: '/Solicitud/SelectGetDepartamento?id=' + inputUsuario.value,
+            type: 'GET',
+            success: function (response) {
+                inputDepartamento.value = response.Departamento;
+            }
+        });
+    });
 
     //CONFIGURACION INPUT DATETIME
     flatpickr(fecha_salida_input, {
@@ -69,11 +85,6 @@
         const opcionSeleccionada = dropDown.value;
         document.getElementById('idVehiculo').value = opcionSeleccionada;
     });
-
-    function obtenerPasajeros() {
-        JSON.parse(document.getElementById('inputPasajeros').value);
-        console.log(arreglo.length);
-    }
 
     function getVehiculos() {
         if (fecha_salida_input.value !== '' || fecha_llegada_input.value !== '') {

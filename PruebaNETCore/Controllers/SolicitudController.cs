@@ -46,6 +46,7 @@ namespace ProyectoSolveCore.Controllers
                         .OrderByDescending(s => s.FechaSolicitado)
                         .ToListAsync();
 
+                ViewBag.Motivo = string.Empty;
                 ViewBag.Estado = new SelectList(ObtenerEstados(), "Value", "Text");
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
@@ -61,27 +62,11 @@ namespace ProyectoSolveCore.Controllers
                 return View(new List<Solicitude>());
             }
         }
-
-        private List<SelectListItem> ObtenerOpcionesFiltrosFecha()
-        {
-            List<SelectListItem> sli = new List<SelectListItem>()
-            {
-                new SelectListItem(){ Value = "1", Text = "Filtrar solicitudes creadas hoy" },
-                new SelectListItem(){ Value = "2", Text = "Filtrar solicitudes creadas hace 24 horas" },
-                new SelectListItem(){ Value = "3", Text = "Filtrar solicitudes creadas esta semana" },
-                new SelectListItem(){ Value = "4", Text = "Filtrar solicitudes creadas hace 7 dias" },
-                new SelectListItem(){ Value = "5", Text = "Filtrar solicitudes creadas este mes" },
-                new SelectListItem(){ Value = "6", Text = "Filtrar solicitudes creadas hace un mes"},
-                new SelectListItem(){ Value = "7", Text = "Filtrar solicitudes creadas este año" },
-                new SelectListItem(){ Value = "8", Text = "Filtrar solicitudes creadas hace 1 año" }
-            };
-            return sli;
-        }
-
         [Autorizar(10)]
         [HttpPost]
         public async Task<IActionResult> VisualizarSolicitudes(vmFiltrosSolicitudes fs)
         {
+            ViewBag.notfilter = false;
             try
             {
                 var NewList = await FiltrarSolicitudes(fs);
@@ -90,6 +75,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(NewList), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(NewList), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(NewList), "Value", "Text", fs.IdSolicitado);
+                ViewBag.Motivo = fs.Motivo;
                 //ViewBag.FechaDesde = fs.FechaDesde;
                 //ViewBag.FechaHasta = fs.FechaHasta;
                 //ViewBag.Opcion = fs.Opcion;
@@ -98,12 +84,14 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.notfilter = true;
                 var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdVehiculoNavigation)
                         .ToListAsync();
                 ViewBag.Estado = new SelectList(ObtenerEstados(), "Value", "Text", fs.Estado);
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text", fs.IdSolicitado);
+                ViewBag.Motivo = fs.Motivo;
                 //ViewBag.FechaDesde = fs.FechaDesde;
                 //ViewBag.FechaHasta = fs.FechaHasta;
                 //ViewBag.Opcion = fs.Opcion;
@@ -191,11 +179,11 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+                ViewBag.Motivo = string.Empty;
                 //ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
                 //ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
                 //ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
 
-                //listSolicitudes = await VerificarSolicitudesAtrasadas(listSolicitudes); 
                 return View(listSolicitudes);
             }
             catch (Exception ex)
@@ -231,6 +219,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(NewList), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(NewList), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(NewList), "Value", "Text", fs.IdSolicitado);
+                ViewBag.Motivo = fs.Motivo;
                 //ViewBag.FechaDesde = fs.FechaDesde;
                 //ViewBag.FechaHasta = fs.FechaHasta;
                 //ViewBag.Opcion = fs.Opcion;
@@ -293,7 +282,7 @@ namespace ProyectoSolveCore.Controllers
                 var solicitud = await _context.Solicitudes
                     .Include(s => s.IdVehiculoNavigation).Include(s => s.IdSolicitanteNavigation)
                     .Include(s => s.IdConductorNavigation.IdUsuarioNavigation).Include(s => s.Aprobaciones)
-                    .FirstOrDefaultAsync(s => s.Id == id);
+                    .Where(s => s.Id == id).FirstOrDefaultAsync();
 
                 if (solicitud == null)
                 {
@@ -320,7 +309,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 int idUser = int.Parse(User.FindFirst("Id").Value);
                 var departamentos = await _context.Departamentos.ToListAsync();
-                var usuarios = await _context.Usuarios.Where(u => !u.Eliminado && u.Id != 1 && u.Id != 2)
+                var usuarios = await _context.Usuarios.Where(u => !u.Eliminado && u.Id != 1)
                 .Select(u => new vmUsuarioDepartamento()
                 {
                     Id = u.Id,
@@ -328,9 +317,14 @@ namespace ProyectoSolveCore.Controllers
                     IdDepartamento = u.IdDepartamento
                 })
                 .ToListAsync();
+                if (idUser != 2)
+                {
+                    usuarios = usuarios.Where(u => u.Id != 2).ToList();
+                }
+
                 var usuario = usuarios.FirstOrDefault(u => u.Id == idUser);
                 ViewBag.IdSolicitante = new SelectList(usuarios, "Id", "NombreCompleto", idUser);
-                ViewBag.Departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == usuario.IdDepartamento);
+                ViewBag.Departamento = await _context.Departamentos.Where(d => d.Id == usuario.IdDepartamento).FirstOrDefaultAsync();
                 return View(new Solicitude()
                 {
                     IdSolicitante = idUser
@@ -353,8 +347,8 @@ namespace ProyectoSolveCore.Controllers
                         Departamento = string.Empty,
                     });
                 }
-                var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation)
-                    .FirstOrDefaultAsync(u => u.Id == id);
+                var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Where(u => u.Id == id)
+                    .FirstOrDefaultAsync();
                 if (usuario == null)
                 {
                     return Json(new
@@ -394,7 +388,7 @@ namespace ProyectoSolveCore.Controllers
                 
                 _logger.LogInformation($"Fecha solicitado: {solicitud.FechaSolicitado}");
 
-                var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == solicitud.IdVehiculo);
+                var vehiculo = await _context.Vehiculos.Where(v => v.Id == solicitud.IdVehiculo).FirstOrDefaultAsync();
                 // Convertir el JSON a una lista de objetos
                 List<PasajerosAux> valueList = JsonConvert.DeserializeObject<List<PasajerosAux>>(solicitud.Pasajeros);
                 //Unir todo a cadena de texto
@@ -510,6 +504,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+                ViewBag.Motivo = string.Empty;
                 //ViewBag.FechaDesde = solicitudes.Min(s => s.FechaSolicitado);
                 //ViewBag.FechaHasta = solicitudes.Max(s => s.FechaLlegada);
                 //ViewBag.Opcion = 1; //Se selecciona por defecto al fecha solicitado
@@ -526,6 +521,7 @@ namespace ProyectoSolveCore.Controllers
         [HttpPost]
         public async Task<IActionResult> SolicitudesPendientes(vmFiltrosSolicitudes fs)
         {
+            ViewBag.notfilter = false;
             try
             {
                 var solicitudes = await FiltrarSolicitudes(fs);
@@ -535,6 +531,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text", fs.Destino);
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", fs.Vehiculo, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text", fs.IdSolicitado);
+                ViewBag.Motivo = fs.Motivo;
                 //ViewBag.FechaDesde = fs.FechaDesde;
                 //ViewBag.FechaHasta = fs.FechaHasta;
                 //ViewBag.Opcion = fs.Opcion;
@@ -551,6 +548,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+                ViewBag.Motivo = fs.Motivo;
                 //ViewBag.FechaDesde = fs.FechaDesde;
                 //ViewBag.FechaHasta = fs.FechaHasta;
                 //ViewBag.Opcion = fs.Opcion;
@@ -564,7 +562,7 @@ namespace ProyectoSolveCore.Controllers
             try
             {
                 var solicitud = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation).Include(s => s.IdSolicitanteNavigation)
-                    .FirstOrDefaultAsync(s => s.Id == id);
+                    .Where(s => s.Id == id).FirstOrDefaultAsync();
                 Usuario usuario = solicitud.IdSolicitanteNavigation;
                 List<vmConductoresList> conductores = new();
                 int ConductorAsignado = solicitud.IdVehiculoNavigation.IdConductor??0;
@@ -677,8 +675,8 @@ namespace ProyectoSolveCore.Controllers
                     return PartialView("_PartialModalError", mensaje);
                 }
                 var solicitud = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation)
-                    .FirstOrDefaultAsync(s => s.Id == id);
-                var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == solicitud.IdSolicitante);
+                    .Where(s => s.Id == id).FirstOrDefaultAsync();
+                var usuario = await _context.Usuarios.Where(u => u.Id == solicitud.IdSolicitante).FirstOrDefaultAsync();
                 ViewBag.NombreSolicitante = usuario.Nombre + " " + usuario.Apellido;
 
                 return PartialView("_ConfirmarRechazar", solicitud);
@@ -872,13 +870,17 @@ namespace ProyectoSolveCore.Controllers
                         .ToListAsync();
 
             if (fs == null
-                || (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo)))//&& fs.FechaDesde == DateTime.MinValue
-            {
+                || (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo) && string.IsNullOrEmpty(fs.Motivo)))
+            {//&& fs.FechaDesde == DateTime.MinValue
                 return solicitudes;
             }
             if (fs.Estado > -1)
             {
                 solicitudes = solicitudes.Where(s => s.Estado == fs.Estado).ToList();
+            }
+            if (!string.IsNullOrEmpty(fs.Motivo))
+            {
+                solicitudes = solicitudes.Where(s => s.Motivo.Contains(fs.Motivo, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             if (!string.IsNullOrEmpty(fs.Destino))
             {
@@ -921,6 +923,21 @@ namespace ProyectoSolveCore.Controllers
             //    }
             //}
             return solicitudes;
+        }
+        private static List<SelectListItem> ObtenerOpcionesFiltrosFecha()
+        {
+            List<SelectListItem> sli = new List<SelectListItem>()
+            {
+                new SelectListItem(){ Value = "1", Text = "Filtrar solicitudes creadas hoy" },
+                new SelectListItem(){ Value = "2", Text = "Filtrar solicitudes creadas hace 24 horas" },
+                new SelectListItem(){ Value = "3", Text = "Filtrar solicitudes creadas esta semana" },
+                new SelectListItem(){ Value = "4", Text = "Filtrar solicitudes creadas hace 7 dias" },
+                new SelectListItem(){ Value = "5", Text = "Filtrar solicitudes creadas este mes" },
+                new SelectListItem(){ Value = "6", Text = "Filtrar solicitudes creadas hace un mes"},
+                new SelectListItem(){ Value = "7", Text = "Filtrar solicitudes creadas este año" },
+                new SelectListItem(){ Value = "8", Text = "Filtrar solicitudes creadas hace 1 año" }
+            };
+            return sli;
         }
         private void EliminarMemoriaCache()
         {

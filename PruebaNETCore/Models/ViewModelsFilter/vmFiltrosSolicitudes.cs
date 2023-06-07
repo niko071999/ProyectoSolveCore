@@ -3,6 +3,7 @@
     public class vmFiltrosSolicitudes
     {
         public int Estado { get; set; }
+        public string Motivo { get; set; }
         //public int Opcion { get; set; }
         public string Destino { get; set; }
         public string Vehiculo { get; set; }

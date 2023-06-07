@@ -76,20 +76,8 @@ btn_newDepartamento.addEventListener('click', function () {
 
 iniciarlizarCheckInputs();
 
-admin.addEventListener("click", function () {
-    jefe.checked = admin.checked;
-    vehiculos.checked = admin.checked;
-    usuarios.checked = admin.checked;
-    maquinaria.checked = admin.checked;
-    bitacora.checked = admin.checked;
-    if (admin.checked) {
-        solicitador.checked = admin.checked;
-    }
-    updateInputs();
-});
 solicitador.addEventListener("click", () => {
-    if (!admin.checked || !jefe.checked && !vehiculos.checked && !usuarios.checked
-        && !bitacora.checked && !maquinaria.checked) {
+    if (!solicitador.checked) {
         solicitador.checked = true;
     }
 });
@@ -113,11 +101,6 @@ function iniciarlizarCheckInputs() {
 }
 
 function updateInputs() {
-    if (jefe.checked && vehiculos.checked && usuarios.checked && solicitador.checked && maquinaria.checked && bitacora.checked) {
-        admin.checked = true;
-    } else {
-        admin.checked = false;
-    }
     rolAdmin.value = admin.checked;
     rolJefe.value = jefe.checked;
     rolMantenedorVehiculos.value = vehiculos.checked;

@@ -216,7 +216,7 @@ namespace ProyectoSolveCore.Controllers
                 Vehiculo = b.IdVehiculoNavigation.Patente +" - "+ b.IdVehiculoNavigation.Marca + " " + b.IdVehiculoNavigation.Modelo,
                 KmInicial = b.IdKilometrajeNavigation.KilometrajeInicial,
                 KmFinal = b.IdKilometrajeNavigation.KilometrajeFinal
-            }).FirstOrDefaultAsync(b => b.Id == id);
+            }).Where(b => b.Id == id).FirstOrDefaultAsync();
             if (bitacora == null)
             {
                 string mensaje = "Ocurrio un error al obtener los datos, intentelo nuevamente o avise al administrador del sistema.";

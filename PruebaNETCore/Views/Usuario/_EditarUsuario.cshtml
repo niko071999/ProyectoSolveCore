@@ -150,7 +150,7 @@
                                 </div>
                                 @*Solicitador*@
                                 <div class="list-group-item col col-lg-6">
-                                    <input class="form-check-input" type="checkbox" id="Solicitador" @(Model.RolSolicitador?"checked":"")>
+                                    <input class="form-check-input" type="checkbox" id="Solicitador" @(Model.RolSolicitador?"checked":"") disabled>
                                     <label class="form-check-label" for="Solicitador">
                                         <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                            data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Solicitador"
@@ -309,20 +309,8 @@
         });
     });
 
-    admin.addEventListener("click", function () {
-        jefe.checked = admin.checked;
-        vehiculos.checked = admin.checked;
-        usuarios.checked = admin.checked;
-        maquinaria.checked = admin.checked;
-        bitacora.checked = admin.checked;
-        if (admin.checked) {
-            solicitador.checked = admin.checked;
-        }
-        updateInputs();
-    });
     solicitador.addEventListener("click", () => {
-        if (!admin.checked || !jefe.checked && !vehiculos.checked && !usuarios.checked
-            && !bitacora.checked && !maquinaria.checked) {
+        if (!solicitador.checked){
             solicitador.checked = true;
         }
     })
@@ -338,11 +326,6 @@
     });
 
     function updateInputs() {
-        if (jefe.checked && vehiculos.checked && usuarios.checked && solicitador.checked && maquinaria.checked && bitacora.checked) {
-            admin.checked = true;
-        } else {
-            admin.checked = false;
-        }
         rolAdmin.value = admin.checked;
         rolJefe.value = jefe.checked;
         rolMantenedorVehiculos.value = vehiculos.checked;

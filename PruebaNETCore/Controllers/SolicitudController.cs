@@ -314,25 +314,69 @@ namespace ProyectoSolveCore.Controllers
             }
         }
         [Authorize(Roles = "Adminstrador, Solicitador")]
-        public IActionResult SolicitarVehiculo()
+        public async Task<IActionResult> SolicitarVehiculo()
         {
             try
             {
                 int idUser = int.Parse(User.FindFirst("Id").Value);
-                ViewBag.Usuario = _context.Usuarios
-                .Where(u => u.Id == idUser)
+                var departamentos = await _context.Departamentos.ToListAsync();
+                var usuarios = await _context.Usuarios.Where(u => !u.Eliminado && u.Id != 1 && u.Id != 2)
                 .Select(u => new vmUsuarioDepartamento()
                 {
-                    Id = idUser,
-                    NombreCompleto = User.Identity.Name,
-                    Departamento = User.FindFirst("Departamento").Value
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}",
+                    IdDepartamento = u.IdDepartamento
                 })
-                .FirstOrDefault();
-                return View(new Solicitude());
+                .ToListAsync();
+                var usuario = usuarios.FirstOrDefault(u => u.Id == idUser);
+                ViewBag.IdSolicitante = new SelectList(usuarios, "Id", "NombreCompleto", idUser);
+                ViewBag.Departamento = await _context.Departamentos.FirstOrDefaultAsync(d => d.Id == usuario.IdDepartamento);
+                return View(new Solicitude()
+                {
+                    IdSolicitante = idUser
+                });
             }
             catch (Exception ex)
             {
                 return RedirectToAction("MisSolicitudes");
+            }
+        }
+        public async Task<JsonResult> SelectGetDepartamento(int id = 0)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return Json(new
+                    {
+                        Mensaje = "Ocurrio un error al recibir los datos",
+                        Departamento = string.Empty,
+                    });
+                }
+                var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation)
+                    .FirstOrDefaultAsync(u => u.Id == id);
+                if (usuario == null)
+                {
+                    return Json(new
+                    {
+                        mensaje = "Ocurrio un error al obtener los datos",
+                        Departamento = string.Empty
+                    });
+                }
+                string departamento = usuario.IdDepartamentoNavigation.Departamento1;
+                return Json(new
+                {
+                    Mensaje = "Departamento obtenido exitosamento",
+                    Departamento = departamento
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    Mensaje = "Ocurrio un error innesperado. Avise al administrador del sistema o intentelo nuevamente",
+                    Departamento = string.Empty
+                });
             }
         }
         [Authorize(Roles = "Adminstrador, Solicitador")]
@@ -347,7 +391,6 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return View(new Solicitude());
                 }
-                //var hoy = DateTime.Now;
                 
                 _logger.LogInformation($"Fecha solicitado: {solicitud.FechaSolicitado}");
 

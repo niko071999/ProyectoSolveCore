@@ -14,6 +14,18 @@
             <form id="form_AgregarUsuario" asp-action="EditarPerfil" method="post">
                 <div class="card mb-4">
                     <div class="card-body row fw-bold">
+                        @if (TempData["MensajeSuccess"] != null)
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @TempData["MensajeSuccess"]
+                            </div>
+                        }
+                        @if (TempData["Mensaje"] != null)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                TempData["Mensaje"]
+                            </div>
+                        }
                         <div class="col col-lg-6 col-sm-12">
                             <div class="row g-2">
                                 <input type="hidden" asp-for="ID" />
@@ -85,7 +97,8 @@
                                             <input class="form-check-input visually-hidden" type="checkbox" asp-for="RolAdministrador" id="Administrador">
                                         }
                                         @*Jefe*@
-                                        @if (User.IsInRole("Jefe"))
+                                        @if (User.IsInRole("Jefe") || User.IsInRole("Administrador") 
+                                            || User.IsInRole("Mantenedor de usuarios"))
                                         {
                                             <div class="list-group-item col col-lg-6">
                                                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios"))
@@ -108,7 +121,8 @@
                                             <input class="form-check-input visually-hidden" type="checkbox" asp-for="RolJefe" id="Jefe">
                                         }                                       
                                         @*Mant. Usuarios*@
-                                        @if (User.IsInRole("Mantenedor de usuarios"))
+                                        @if (User.IsInRole("Mantenedor de usuarios") || User.IsInRole("Administrador") 
+                                            || User.IsInRole("Mantenedor de usuarios"))
                                         {
                                             <div class="list-group-item col col-lg-6">
                                                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){
@@ -128,7 +142,8 @@
                                             <input class="form-check-input visually-hidden" type="checkbox" id="Usuarios" asp-for="RolMantendorUsuarios">
                                         }
                                         @*Mant. Vehiculos*@
-                                        @if (User.IsInRole("Mantenedor de vehículos no pesados"))
+                                        @if (User.IsInRole("Mantenedor de vehículos no pesados") || User.IsInRole("Administrador") 
+                                            || User.IsInRole("Mantenedor de usuarios"))
                                         {
                                             <div class="list-group-item col col-lg-6">
                                                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios"))
@@ -151,7 +166,8 @@
                                             <input class="form-check-input visually-hidden" type="checkbox" id="Vehiculos" asp-for="RolMantenedorVehiculos">
                                         }
                                         @*Mantenedor de maquinarias*@
-                                        @if (User.IsInRole("Mantenedor de vehículos pesados"))
+                                        @if (User.IsInRole("Mantenedor de vehículos pesados") || User.IsInRole("Administrador") 
+                                            || User.IsInRole("Mantenedor de usuarios"))
                                         {
                                             <div class="list-group-item col col-lg-6">
                                                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios"))
@@ -174,7 +190,8 @@
                                             <input class="form-check-input visually-hidden" type="checkbox" id="Maquinaria" asp-for="RolMantenedorVehiculosMaq">
                                         }
                                         @*Bitácora*@
-                                        @if (User.IsInRole("Mantenedor de la bitácora"))
+                                        @if (User.IsInRole("Mantenedor de la bitácora") || User.IsInRole("Administrador") 
+                                            || User.IsInRole("Mantenedor de usuarios"))
                                         {
                                             <div class="list-group-item col col-lg-6">
                                                 @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de usuarios")){

@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     /*$.fn.dataTable.moment('DD-MM-YYYY H:mm:ss');*/
     $('#tablaVehiculos').DataTable({
+        responsive: true,
         pageLength: 8,
         lengthChange: false,
         language: {

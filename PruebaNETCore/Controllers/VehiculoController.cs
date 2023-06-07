@@ -50,10 +50,17 @@ namespace ProyectoSolveCore.Controllers
 
                 viewVehiculos = await VerificarKmVehiculo(viewVehiculos);
 
+                int habilitados = viewVehiculos.Where(v => v.Estado == 1).Count();
+                int deshabilitados = viewVehiculos.Where(v => v.Estado == 0).Count();
+                int advertencias = (habilitados + deshabilitados) - viewVehiculos.Count;
+
                 ViewBag.Patente = new SelectList(GetPatentes(viewVehiculos), "Value", "Text");
                 ViewBag.Marca = new SelectList(GetMarcas(viewVehiculos), "Value", "Text");
                 ViewBag.Modelo = new SelectList(GetModelo(viewVehiculos), "Value", "Text");
                 ViewBag.IdCategoria = new SelectList(GetCategorias(vehiculos), "Value", "Text");
+                ViewBag.Habilitados = habilitados;
+                ViewBag.Deshabilitados = deshabilitados;
+                ViewBag.Advertencias = advertencias;
                 ViewBag.OpcionEstado = 0;
 
                 // Retorna la vista con la lista de vehículos
@@ -122,11 +129,18 @@ namespace ProyectoSolveCore.Controllers
                     NewList = NewList.Where(v => v.Estado == fv.OpcionEstado).ToList();
                 }
 
+                int habilitados = NewList.Where(v => v.Estado == 1).Count();
+                int deshabilitados = NewList.Where(v => v.Estado == 0).Count();
+                int advertencias = (habilitados + deshabilitados) - NewList.Count;
+
                 ViewBag.Patente = new SelectList(GetPatentes(NewList), "Value", "Text", fv.Patente);
                 ViewBag.Marca = new SelectList(GetMarcas(NewList), "Value", "Text", fv.Marca);
                 ViewBag.Modelo = new SelectList(GetModelo(NewList), "Value", "Text", fv.Modelo);
                 ViewBag.IdCategoria = new SelectList(GetCategorias(vehiculos), "Value", "Text", fv.IdCategoria);
                 ViewBag.OpcionEstado = fv.OpcionEstado;
+                ViewBag.Habilitados = habilitados;
+                ViewBag.Deshabilitados = deshabilitados;
+                ViewBag.Advertencias = advertencias;
                 return View(NewList);
             }
             catch (Exception ex)

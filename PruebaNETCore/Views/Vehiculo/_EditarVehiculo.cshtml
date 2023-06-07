@@ -53,14 +53,6 @@
                         <input class="form-control" type="file" id="formFile">
                         </div>
                         action="@Url.Action("EditarVehiculo")" method="post" id="gridCheck"*@
-                        <div class="col-12 mt-4 mb-2">
-                            <div class="form-check">
-                                <input id="gridCheck" class="form-check-input" type="checkbox" @(Model.Estado?"checked":"")/>
-                                <label class="form-check-label" for="gridCheck">
-                                    Admitir solicitudes de vehiculo
-                                </label>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -78,13 +70,6 @@
     var check = document.getElementById('gridCheck');
     var inputCheck = document.getElementById('Estado');
     var form = document.getElementById('form_EditarVehiculo');
-    check.addEventListener('change', () => {
-        if (check.checked) {
-            inputCheck.value = "True";
-        } else {
-            inputCheck.value = "False";
-        }
-    });
 
     $('#form_EditarVehiculo').submit(function (e) {
         e.preventDefault();

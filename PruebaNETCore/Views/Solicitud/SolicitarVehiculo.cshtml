@@ -1,6 +1,6 @@
 ﻿@model Solicitude
 @{
-    var usuario = ViewBag.Usuario;
+    Departamento departamento = ViewBag.Departamento;
     ViewBag.Title = "Solicitar Vehiculo";
 }
 
@@ -25,17 +25,16 @@
                         <div class="col col-lg-6">
                             <div class="row g-2">
                                 <h4>Informacion del cometido</h4>
-                                <input type="hidden" asp-for="IdSolicitante" value="@usuario.Id" />
-                                @*<input type="datetime-local" id="FechaSolicitado" name="FechaSolicitado" class="visually-hidden" />*@
                                 <div class="col-md-6">
                                     <label for="inputNombre" class="form-label">Nombre del solicitante</label>
-                                    <input type="text" class="form-control" id="inputNombre"
-                                           value="@usuario.NombreCompleto" disabled>
+                                    <select id="inputNombre" class="form-select js-example-basic-single" asp-for="IdSolicitante"
+                                            asp-items="ViewBag.IdSolicitante">
+                                    </select>
                                 </div>
                                 <div class="col col-md-6">
                                     <label for="inputDepartamento" class="form-label">Departamento</label>
-                                    <input type="text" class="form-control" id="inputDepartamento"
-                                           value="@usuario.Departamento" disabled>
+                                    <input id="inputDepartamento" type="text" value="@departamento.Departamento1" readonly
+                                           class="form-control-plaintext bg-light pe-3 ps-3 rounded">
                                 </div>
                                 <div class="col-md-10">
                                     <label for="inputModelo" class="form-label">Nombres de los pasajeros</label>
@@ -101,13 +100,16 @@
 </div>
 @section CSS{
     <link href="~/lib/taginput/tagify.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="~/lib/flatpicker/flatpickr.min.css" rel="stylesheet" />
+    <link href="~/lib/select-searcheable/select2.min.css" rel="stylesheet" />
 }
 @section Scripts {
     @*<script src="~/lib/datatables/moment.min.js"></script>*@
+    <script src="~/lib/select-searcheable/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="~/lib/datatables/moment-timezone-with-data.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>*@
+    <script src="~/lib/flatpicker/flatpickr.js"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script src="~/lib/taginput/jquery.tagify.min.js"></script>
     <script src="~/js/solicitarvehiculo.js"></script>

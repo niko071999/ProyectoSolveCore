@@ -8,8 +8,8 @@ using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 using ProyectoSolveCore.Models.ViewModelsFilter;
-using System.Collections;
 using System.Globalization;
+using System.Linq;
 using System.Security.Claims;
 
 namespace ProyectoSolveCore.Controllers
@@ -139,6 +139,28 @@ namespace ProyectoSolveCore.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction("MisSolicitudes", "Solicitud");
+            }
+        }
+        public async Task<IActionResult> MisAprobaciones()
+        {
+            try
+            {
+                int idUser = int.Parse(User.FindFirst("Id").Value);
+                var aprobaciones = await _context.Aprobaciones.Include(a => a.IdJefeNavigation)
+                    .Where(a => a.IdJefe == idUser)
+                    .OrderByDescending(a => a.Fecha)
+                    .ToListAsync();
+
+                if (!aprobaciones.Any())
+                {
+                    return View(new List<vmSolicitud>());
+                }
+
+                return View(aprobaciones);
+            }
+            catch (Exception ex)
+            {
+                return View(new List<Aprobacione>());
             }
         }
         [TypeFilter(typeof(VerificarSolicitudes))]
@@ -892,36 +914,6 @@ namespace ProyectoSolveCore.Controllers
                     string.Equals($"{s.IdVehiculoNavigation.Patente} - {s.IdVehiculoNavigation.Marca} {s.IdVehiculoNavigation.Modelo}",
                         fs.Vehiculo)).ToList();
             }
-            //if (fs.FechaDesde != DateTime.MinValue)
-            //{
-            //    switch (fs.Opcion)
-            //    {
-            //        case 1:
-            //            solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde).ToList();
-            //            break;
-            //        case 2:
-            //            solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde).ToList();
-            //            break;
-            //        case 3:
-            //            solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde).ToList();
-            //            break;
-            //    }
-            //}
-            //if (fs.FechaHasta != DateTime.MinValue)
-            //{
-            //    switch (fs.Opcion)
-            //    {
-            //        case 1:
-            //            solicitudes = solicitudes.Where(s => s.FechaSolicitado >= fs.FechaDesde && s.FechaSolicitado <= fs.FechaHasta).ToList();
-            //            break;
-            //        case 2:
-            //            solicitudes = solicitudes.Where(s => s.FechaSalida >= fs.FechaDesde && s.FechaSalida <= fs.FechaHasta).ToList();
-            //            break;
-            //        case 3:
-            //            solicitudes = solicitudes.Where(s => s.FechaLlegada >= fs.FechaDesde && s.FechaLlegada <= fs.FechaHasta).ToList();
-            //            break;
-            //    }
-            //}
             return solicitudes;
         }
         private static List<SelectListItem> ObtenerOpcionesFiltrosFecha()
@@ -964,28 +956,5 @@ namespace ProyectoSolveCore.Controllers
             var claims = identity.Claims;
             return claims.Where(c => c.Type == ClaimTypes.Role).Any(r => r.Value == "Mantenedor de bitácora");
         }
-        //Metodo que verifica si la aprobacion tiene 2 aprobaciones por parte de los jefes
-        //private string VerificarAprobacion(int id)
-        //{
-        //    try
-        //    {
-        //        var aprobaciones = _context.Aprobaciones.Where(a => a.IdSolicitud == id).ToList();
-        //        if (aprobaciones.Any())
-        //        {
-        //            var numAprobacionRechazo = aprobaciones.Where(a => !a.Estado).ToList().Count;
-        //            if (numAprobacionRechazo > 0)
-        //            {
-        //                return numAprobacionRechazo > 1 ? "Rechazado" : "Pendiente";
-        //            }
-        //            var numAprobacionPositiva = aprobaciones.Where(a => a.Estado).ToList().Count;
-        //            return numAprobacionPositiva > 1 ? "Aprobado" : "Pendiente";
-        //        }
-        //        return "Pendiente";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return "Error";
-        //    }
-        //}
     }
 }

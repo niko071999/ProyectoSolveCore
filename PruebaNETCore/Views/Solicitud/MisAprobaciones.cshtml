@@ -1,0 +1,91 @@
+﻿@model List<Aprobacione>
+@{
+    ViewBag.Title = "Mis Solicitudes";
+}
+<partial name="_NavMenu" />
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Mis Aprobaciones</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item">
+                    <a asp-controller="Home" asp-action="Agenda">Agenda general</a>
+                </li>
+                <li class="breadcrumb-item active">Mis Aprobaciones</li>
+            </ol>
+            <div class="card p-2">
+                <div class="card-body">
+                    <partial name="_CardError" />
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        @*@if (!ViewBag.notfilter)
+                        {
+                            <div class="btn-group dropend">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="inside" aria-expanded="false">
+                                    Filtros
+                                </button>
+                                <div class="dropdown-menu p-4 fw-bold" style="width: 550px; max-height: 700px">
+                                </div>
+                            </div>
+                        }*@
+                    </div>
+                    @if (Model != null)
+                    {
+                        <table id="tablaAprobaciones" class="display table table-hover w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" width="20%">Fecha</th>
+                                    <th scope="col" width="60%">Motivo</th>
+                                    <th scope="col" width="5%">Estado</th>
+                                    <th scope="col" width="15">Solicitud</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var aprobacion in Model)
+                                {
+                                    <tr>
+                                        <td>@aprobacion.Fecha</td>
+                                        <td>@(string.IsNullOrEmpty(aprobacion.Motivo) ? "Solicitud Aprobada" : aprobacion.Motivo)</td>
+                                        <td>
+                                            @if (aprobacion.Estado)
+                                            {
+                                                <a role="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Aprobada">
+                                                    <i class="fa-solid fa-thumbs-up fa-xl text-success"></i>
+                                                </a>
+                                            }else{
+                                                <a role="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Rechazada">
+                                                    <i class="fa-solid fa-thumbs-down fa-xl text-danger"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    data-bs-title="Ficha de la solicitud" data-id="@aprobacion.IdSolicitud">
+                                                    <i class="fa-sharp fa-circle-info fa-xl"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<!-- Modal core base-->
+<div class="modal fade" id="coreModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="true">
+</div>
+@section CSS{
+    <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
+}
+@section Scripts{
+    <script src="~/lib/datatables/jquery.datatables.min.js"></script>
+    <script src="~/lib/datatables/moment.min.js"></script>
+    <script src="~/lib/datatables/datetime-moment.js"></script>
+    <script src="~/js/misaprobaciones.js"></script>
+}

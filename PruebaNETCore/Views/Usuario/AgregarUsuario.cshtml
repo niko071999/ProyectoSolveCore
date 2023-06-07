@@ -124,7 +124,7 @@
                                         @*Mant. Vehiculos*@
                                         <div class="list-group-item col col-lg-6">
                                             <input class="form-check-input" type="checkbox" id="Vehiculos" @(Model.RolMantenedorVehiculos?"checked":"")>
-                                            <label class="form-check-label" for="Vehiculo">
+                                            <label class="form-check-label" for="Vehiculos">
                                                 <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                                    data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos no pesados"
                                                    data-bs-content="Tiene las facultades de mantener a los vehiculos no pesados del sistema.">
@@ -156,7 +156,7 @@
                                         </div>
                                         @*Solicitador*@
                                         <div class="list-group-item col col-lg-6">
-                                            <input class="form-check-input" type="checkbox" id="Solicitador" @(Model.RolSolicitador?"checked":"")>
+                                            <input class="form-check-input" type="checkbox" id="Solicitador" @(Model.RolSolicitador?"checked":"") disabled>
                                             <label class="form-check-label" for="Solicitador">
                                                 <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                                    data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Solicitador"

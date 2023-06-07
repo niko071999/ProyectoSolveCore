@@ -20,7 +20,7 @@ namespace ProyectoSolveCore.Controllers
                 string mensaje = "Hubo un error al enviar los datos";
                 return PartialView("_PartialModalError", mensaje);
             }
-            int solicitudId = await _context.Solicitudes.Select(s => s.Id).FirstOrDefaultAsync(s => s == id);
+            int solicitudId = await _context.Solicitudes.Select(s => s.Id).Where(s => s == id).FirstOrDefaultAsync();
             return PartialView("_SeleccionarFirmador", solicitudId);
 
         }

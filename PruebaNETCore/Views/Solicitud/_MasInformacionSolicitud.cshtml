@@ -4,25 +4,31 @@
     var s = Model.solicitud;
     string estado = string.Empty;
     string border = string.Empty;
-    bool isNull = s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id) == null;
+    bool isnullmotivo = false;
+    if (s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id) != null)
+    {
+        isnullmotivo = string.IsNullOrEmpty(s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id).Motivo);
+    }
+
     CultureInfo idioma = new CultureInfo("es-CL");
 
     switch (s.Estado)
     {
         case 0:
             estado = "Pendiente";
+            border = "pendiente text-secondary";
             break;
         case 1:
             estado = "Aprobada";
-            border = "border-success text-success";
+            border = "aprobada text-success";
             break;
         case 2:
             estado = "Rechazada";
-            border = "border-danger text-danger";
+            border = "rechazada text-danger";
             break;
         case 3:
             estado = "Finalizada";
-            border = "border-primary text-primary";
+            border = "finalizada text-primary";
             break;
     }
 }
@@ -60,7 +66,7 @@
                 </div>
                 <div class="col col-12 @(s.Estado == 0 || s.Estado == 1 || s.Estado == 3 ? "visually-hidden" : string.Empty)">
                     <label for="inputMotivoAprob" class="form-label">Motivo del rechazo de la solicitud</label>
-                    <textarea type="text" cols="2" class="form-control" id="inputMotivoAprob" disabled>@(isNull ? "Sin motivo" : s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id).Motivo)</textarea>
+                    <textarea type="text" cols="2" class="form-control" id="inputMotivoAprob" disabled>@(isnullmotivo ? "Sin motivo" : s.Aprobaciones.FirstOrDefault(a => a.IdSolicitud == s.Id).Motivo)</textarea>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputConductor" class="form-label">Conductor</label>

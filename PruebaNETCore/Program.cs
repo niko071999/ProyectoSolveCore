@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
-using System.Globalization;
 using System.Net;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +36,6 @@ app.UseStatusCodePages(context => {
     }
     return Task.CompletedTask;
 });
-
 // Configure the HTTP request pipeline.
 //if (!app.Environment.IsDevelopment())
 //{

@@ -1,4 +1,5 @@
-﻿@model List<Bitacora>
+﻿@using System.Globalization
+@model List<Bitacora>
 @{
     ViewBag.Title = "Visualizar bitácora";
 }
@@ -50,8 +51,8 @@
                                         </td>
                                         <td>@b.IdSolicitudNavigation.Destino</td>
                                         <td>@b.IdSolicitudNavigation.Motivo</td>
-                                        <td>@b.IdKilometrajeNavigation.KilometrajeInicial</td>
-                                        <td>@b.IdKilometrajeNavigation.KilometrajeFinal</td>
+                                        <td>@b.IdKilometrajeNavigation.KilometrajeInicial.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))</td>
+                                        <td>@b.IdKilometrajeNavigation.KilometrajeFinal.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))</td>
                                         <td>@b.Observacion</td>
                                         <td class="text-center">
                                             <button type="button" data-bs-toggle="tooltip" data-bs-placement="top"

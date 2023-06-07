@@ -6,6 +6,10 @@ using ProyectoSolveCore.Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.Mail;
+using System.Net.Security;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ProyectoSolveCore.Controllers
 {
@@ -31,6 +35,29 @@ namespace ProyectoSolveCore.Controllers
             }
             return RedirectToAction("Agenda","Home");
         }
+
+        private static void EnviarCorreo()
+        {
+            //MailMessage correo = new("nikocasanova10@gmail.com","nicolas.casanova06@inacapmail.cl")
+            //{
+            //    Subject = "Correo de prueba",
+            //    Body = "Este es un correo de prueba enviado desde C# ASP.NET CORE",
+            //    IsBodyHtml = true,
+            //};
+            //correo.To.Add("nicolas.casanova06@inacapmail.cl"); //Correo destino?
+
+            //SmtpClient smtp = new()
+            //{
+            //    Host = "smtp.gmail.com", //Host del servidor de correo,
+            //    Port = 587, //Puerto de salida,
+            //    UseDefaultCredentials = false,
+            //    DeliveryMethod = SmtpDeliveryMethod.Network,
+            //    EnableSsl = true,
+            //    Credentials = new NetworkCredential("nikocasanova10@gmail.com", "**********")//Cuenta de correo
+            //};
+            //smtp.Send(correo);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(vmLoginUser user)
         {
@@ -44,7 +71,7 @@ namespace ProyectoSolveCore.Controllers
             try 
             {
                 var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.Usuariosroles)
-                            .FirstOrDefaultAsync(u => u.Rut.Equals(user.Rut) && !u.Eliminado);
+                            .Where(u => u.Rut.Equals(user.Rut) && !u.Eliminado).FirstOrDefaultAsync();
 
                 if (usuario == null)
                 {

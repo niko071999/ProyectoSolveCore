@@ -203,7 +203,7 @@ namespace ProyectoSolveCore.Controllers
                     RolSolicitador = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 5),
                     RolMantenedorVehiculosMaq = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 7),
                     RolMantenedorBitacora = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 8),
-                }).FirstOrDefaultAsync(u => u.ID == id);
+                }).Where(u => u.ID == id).FirstOrDefaultAsync();
                 if (perfil == null)
                 {
                     return View(new Usuario());
@@ -370,7 +370,7 @@ namespace ProyectoSolveCore.Controllers
                         type = "error"
                     });
                 }
-                var usuario = await _context.Usuarios.FindAsync(id);
+                var usuario = await _context.Usuarios.Include(u => u.Conductores).Where(u => u.Id == id).FirstOrDefaultAsync();
                 if (usuario == null)
                 {
                     return Json(new
@@ -379,6 +379,7 @@ namespace ProyectoSolveCore.Controllers
                         type = "error"
                     });
                 }
+                usuario.Conductores.FirstOrDefault().Eliminado = true;
                 usuario.Eliminado = true;
                 int n = await _context.SaveChangesAsync();
                 if (n == 0)
@@ -457,10 +458,10 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(idvehiculo);
             }
-            var conductor = await _context.Conductores.FirstOrDefaultAsync(v => v.Id == id);
+            var conductor = await _context.Conductores.Where(v => v.Id == id).FirstOrDefaultAsync();
             if (conductor != null)
             {
-                var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.IdConductor.HasValue && v.IdConductor == id);
+                var vehiculo = await _context.Vehiculos.Where(v => v.IdConductor.HasValue && v.IdConductor == id).FirstOrDefaultAsync();
                 if (vehiculo != null)
                 {
                     idvehiculo = vehiculo.Id;
@@ -473,7 +474,7 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
-                var u = await _context.Usuarios.FirstOrDefaultAsync(u => !u.Eliminado && u.Rut == uc.rut);
+                var u = await _context.Usuarios.Where(u => !u.Eliminado && u.Rut == uc.rut).FirstOrDefaultAsync();
                 if (u != null)
                 {
                     if (uc.rut != uc.rutold)
@@ -508,9 +509,9 @@ namespace ProyectoSolveCore.Controllers
                 int contains = 0;//Cuenta si hubieron roles que se ingresaron a la base de datos para verificar
                 foreach (var ur in UsuarioRole)
                 {
-                    var usuarioRol = await _context.Usuariosroles.FirstOrDefaultAsync(x =>
+                    var usuarioRol = await _context.Usuariosroles.Where(x =>
                         x.Idrol == UsuarioRole[contains].IdRol
-                        && x.Idusuario == UsuarioRole[contains].IdUsuario);
+                        && x.Idusuario == UsuarioRole[contains].IdUsuario).FirstOrDefaultAsync();
 
                     if (usuarioRol != null)
                     {
@@ -535,13 +536,13 @@ namespace ProyectoSolveCore.Controllers
                 }
 
                 // VERIFICA SI EXISTEN DATOS DEL CONDUCTOR, SI ESTÁN NULOS GUARDA EN BASE DE DATOS LOS DATOS DE USUARIO
-                var rolConductor = await _context.Usuariosroles.FirstOrDefaultAsync(ur =>
+                var rolConductor = await _context.Usuariosroles.Where(ur =>
                     ur.Idrol == 6
-                    && ur.Idusuario == uc.ID);
+                    && ur.Idusuario == uc.ID).FirstOrDefaultAsync();
                 if (uc.FechaEmitida == null || uc.FecheVencimiento == null || uc.NumeroPoliza == null)
                 {
                     //Quitar el id del conductor del vehiculo asignado
-                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.ID);
+                    var vehiculo = await _context.Vehiculos.Where(v => v.Id == uc.ID).FirstOrDefaultAsync();
                     if (vehiculo.IdConductor.HasValue)
                     {
                         vehiculo.IdConductor = null;
@@ -607,7 +608,7 @@ namespace ProyectoSolveCore.Controllers
 
                 if (uc.id_vehiculo.HasValue)
                 {
-                    var vehiculo = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == uc.id_vehiculo);
+                    var vehiculo = await _context.Vehiculos.Where(v => v.Id == uc.id_vehiculo).FirstOrDefaultAsync();
                     if (uc.id_conductor != vehiculo.IdConductor)
                     {
                         vehiculo.IdConductor = conductor.Id;

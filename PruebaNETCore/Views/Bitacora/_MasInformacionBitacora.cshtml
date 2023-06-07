@@ -67,12 +67,12 @@
                 <div class="col col-md-6">
                     <label for="inputKmInicial" class="form-label">Inicial</label>
                     <input type="text" class="form-control" id="inputKmInicial"
-                            value="@Model.KmInicial" disabled>
+                            value="@Model.KmInicial.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))" disabled>
                 </div>
                 <div class="col col-md-6">
                     <label for="inputKmFinal" class="form-label">Final</label>
                     <input type="text" class="form-control" id="inputKmFinal"
-                            value="@Model.KmFinal" disabled>
+                           value="@Model.KmFinal.ToString("N0", CultureInfo.GetCultureInfo("es-CL"))" disabled>
                 </div>
             </div>
         </div>

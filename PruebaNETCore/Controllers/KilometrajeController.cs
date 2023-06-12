@@ -69,7 +69,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.IdVehiculo = new SelectList(vehiculos, "Value", "Text", k.IdVehiculo, "Group");
                 return View(k);
             }
-            k.FechaCreacion = GenerateFecha(DateTime.Now);
+            k.FechaCreacion = DateTime.Now;
             await _context.Kilometrajes.AddAsync(k);
             int n = await _context.SaveChangesAsync();
             if (n == 0)

@@ -118,10 +118,10 @@
                                 @*Mant. Vehiculos*@
                                 <div class="list-group-item col col-lg-6">
                                     <input class="form-check-input" type="checkbox" id="Vehiculos" @(Model.RolMantenedorVehiculos?"checked":"")>
-                                    <label class="form-check-label" for="Vehiculo">
+                                    <label class="form-check-label" for="Vehículo">
                                         <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                            data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos no pesados"
-                                           data-bs-content="Tiene las facultades de mantener a los vehiculos no pesados del sistema.">
+                                           data-bs-content="Tiene las facultades de mantener a los vehículos no pesados del sistema.">
                                             Mantenedor vehículos no pesados
                                         </a>
                                     </label>
@@ -132,7 +132,7 @@
                                     <label class="form-check-label" for="Maquinaria">
                                         <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                            data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de vehículos pesados"
-                                           data-bs-content="Tiene las facultades de mantener a los vehiculos pesados del sistema.">
+                                           data-bs-content="Tiene las facultades de mantener a los vehículos pesados del sistema.">
                                             Mantenedor de vehículos pesados
                                         </a>
                                     </label>
@@ -143,7 +143,7 @@
                                     <label class="form-check-label" for="Bitacora_c">
                                         <a tabindex="0" class="btn text-decoration-none fw-bold p-0" role="button"
                                            data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-title="Rol: Mantenedor de la bitácora"
-                                           data-bs-content="Tiene las facultades de mantener a la bitacora de los vehículos.">
+                                           data-bs-content="Tiene las facultades de mantener a la bitácora de los vehículos.">
                                             Mantenedor de bitácora
                                         </a>
                                     </label>
@@ -172,12 +172,12 @@
                             </div>
                             <div class="row g-2" id="conductor" style="display: none;">
                                 <div class="col-sm-12">
-                                    <label for="inputNumPoliza" class="form-label">Numero de poliza</label>
+                                    <label for="inputNumPoliza" class="form-label">Numero de póliza</label>
                                     <input type="text" class="form-control" id="inputNumPoliza" name="NumeroPoliza"
                                            value="@Model.NumeroPoliza">
                                 </div>
                                 <div class="col-sm-12">
-                                    <label class="form-label">Periodo de la poliza</label>
+                                    <label class="form-label">Periodo de la póliza</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="inputGroup-sizing-default">Desde</span>
                                         <input type="date" class="form-control" id="inputFechaInicio" value="@(String.Format("{0:yyyy-MM-dd}" , Model.FechaEmitida))"
@@ -190,12 +190,9 @@
                                 <div class="col-sm-12">
                                     <label for="inputVehiculo" class="form-label">Asignar vehículo</label>
                                     <select id="inputVehiculo" class="form-select" asp-for="id_vehiculo" asp-items="ViewBag.id_vehiculo">
-                                        <option value="">Seleccione un vehiculo</option>
+                                        <option value="">Seleccione un vehículo</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-sm-12 mt-2">
-                                <button id="btn_form" type="button" class="btn btn-primary">Agregar usuario</button>
                             </div>
                         </div>
                     </div>

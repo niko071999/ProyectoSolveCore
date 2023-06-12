@@ -10,8 +10,8 @@
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Confirmación de solicitud</h5>
+        <div class="modal-header bg-success">
+            <h5 class="modal-title text-white" id="exampleModalLabel">Confirmación de solicitud</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="form_AprobarSolicitud">
@@ -38,7 +38,7 @@
                            value="@Vehiculo" disabled>
                 </div>
                 <div class="col col-md-6">
-                    <label for="IdConductor" class="form-label">@(!Model.IdConductor.HasValue ? Html.Raw("Asignar Conductor") : Html.Raw("Conductor Asigado"))</label>
+                    <label for="IdConductor" class="form-label">@(!Model.IdConductor.HasValue ? Html.Raw("Asignar Conductor") : Html.Raw("Conductor Asignado"))</label>
                     @if (Model.IdConductor.HasValue)
                     {
                         <select class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor" asp-selected="@Model.IdConductor">

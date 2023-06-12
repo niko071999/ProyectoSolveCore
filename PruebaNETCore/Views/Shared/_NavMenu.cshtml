@@ -40,8 +40,8 @@
                     </a>
                     <div class="collapse" id="Bitacora" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" asp-controller="Bitacora" asp-action="VisualizarBitacora">Visualizar bitacora</a>
-                            <a class="nav-link" asp-controller="Solicitud" asp-action="HubSolicitudes">Agregar entrada a la bitacora</a>
+                            <a class="nav-link" asp-controller="Bitacora" asp-action="VisualizarBitacora">Visualizar bitácora</a>
+                            <a class="nav-link" asp-controller="Solicitud" asp-action="HubSolicitudes">Agregar entrada a la bitácora</a>
                         </nav>
                     </div>
                 }
@@ -112,7 +112,7 @@
                 {
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#Vehiculo" aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-car-side"></i></div>
-                        Vehiculos
+                        Vehículos
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
                     <div class="collapse" id="Vehiculo" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" style="">
@@ -136,7 +136,7 @@
                             @if (User.IsInRole("Administrador") || User.IsInRole("Mantenedor de vehículos no pesados")
                                 || User.IsInRole("Mantenedor de vehículos pesados"))
                             {
-                                <a class="nav-link" asp-controller="Kilometraje" asp-action="AgregarKilometrajeVehiculo" asp-route-id="0">Agregar kilometraje a vehiculo</a>
+                                <a class="nav-link" asp-controller="Kilometraje" asp-action="AgregarKilometrajeVehiculo" asp-route-id="0">Agregar kilometraje a vehículo</a>
                             }
                         </nav>
                     </div>
@@ -174,7 +174,7 @@
                     <i class="fa-solid fa-id-badge"></i>
                     Ir a mi perfil
                 </a>
-                <a role="button" class="btn btn-outline-danger" asp-controller="Sesion" asp-action="Logout">
+                <a role="button" class="btn btn-secondary" asp-controller="Sesion" asp-action="Logout">
                     <i class="fa fa-right-from-bracket"></i>
                     Cerrar sesión
                 </a>

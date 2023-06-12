@@ -22,8 +22,8 @@ namespace ProyectoSolveCore.Controllers
         {
             try
             {
-                var usuarios = _context.Usuarios.Where(u => !u.Eliminado 
-                    && u.Id != 1 
+                var usuarios = _context.Usuarios.Where(u => !u.Eliminado
+                    && u.Id != 1
                     && u.Id != 2
                     && u.Id != int.Parse(User.FindFirst("Id").Value))
                 .Select(u => new vmUsuario()
@@ -39,7 +39,9 @@ namespace ProyectoSolveCore.Controllers
                         rol = r.Rol,
                         IconRol = ObtenerIconRol(r.Id)
                     }).ToList(),
-                    Permisos = u.Usuariosroles.Select(ur => ur.IdrolNavigation).SelectMany(r => r.RolesPermisos).Select(rp => rp.IdPermisoNavigation).Select(p => new VmPermiso()
+                    Permisos = u.Usuariosroles.Select(ur => ur.IdrolNavigation).SelectMany(r => r.RolesPermisos)
+                    .Select(rp => rp.IdPermisoNavigation)
+                    .Select(p => new VmPermiso()
                     {
                         Permiso = p.Permiso1,
                         IconPermiso = ObtenerIconPermiso(p.Id)
@@ -186,7 +188,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     ID = u.Id,
                     rut = u.Rut,
-                    rutold = u.Rut,//Sirve para verificar si cambio rut
+                    rutold = u.Rut,//Sirve para verificar si cambio RUT
                     nombre = u.Nombre,
                     apellido = u.Apellido,
                     direccion_img = u.DireccionImg,
@@ -276,7 +278,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error al recibir los datos",
+                    mensaje = "Ocurrió un error al recibir los datos",
                     type = "error"
                 });
             }
@@ -294,7 +296,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error innesperado, avise al administrador o intentelo más tarde",
+                    mensaje = "Ocurrió un error inesperado, avise al administrador o inténtelo más tarde",
                     type = "error"
                 });
             }
@@ -304,7 +306,7 @@ namespace ProyectoSolveCore.Controllers
         {
             if (perfil == null)
             {
-                TempData["Mensaje"] = "Ocurrio un error al recibir los datos";
+                TempData["Mensaje"] = "Ocurrió un error al recibir los datos";
                 return RedirectToAction("Perfil");
             }
             try
@@ -320,7 +322,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Mensaje"] = "Ocurrio un error innesperado, avise al administrador o intentelo más tarde";
+                TempData["Mensaje"] = "Ocurrió un error inesperado, avise al administrador o inténtelo más tarde";
                 return RedirectToAction("Perfil");
             }
         }
@@ -331,20 +333,20 @@ namespace ProyectoSolveCore.Controllers
             string mensaje;
             if (id == 0)
             {
-                mensaje = "Hubo un error al recibir los datos, intentelo nuevamente";
+                mensaje = "Hubo un error al recibir los datos, inténtelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
             }
             try
             {
                 if (id == 0)
                 {
-                    mensaje = "Hubo un error al recibir los datos, intentelo nuevamente";
+                    mensaje = "Hubo un error al recibir los datos, inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
                 var usuario = await _context.Usuarios.FindAsync(id);
                 if (usuario == null)
                 {
-                    mensaje = "Hubo un error al recibir los datos, intentelo nuevamente";
+                    mensaje = "Hubo un error al recibir los datos, inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
 
@@ -352,7 +354,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                string m = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente";
+                string m = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente";
                 return PartialView("_PartialModalError", m);
             }
         }
@@ -366,7 +368,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al recibir los datos",
+                        mensaje = "Ocurrió un error al recibir los datos",
                         type = "error"
                     });
                 }
@@ -375,7 +377,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al obtener los datos",
+                        mensaje = "Ocurrió un error al obtener los datos",
                         type = "error"
                     });
                 }
@@ -386,7 +388,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al guardar los datos",
+                        mensaje = "Ocurrió un error al guardar los datos",
                         type = "error"
                     });
                 }
@@ -400,7 +402,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente",
+                    mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente",
                     type = "danger"
                 });
             }
@@ -413,7 +415,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "void",
-                    mensaje = "El nombre departamento está vacio"
+                    mensaje = "El nombre departamento está vació"
                 });
             }
             var departamentos = await _context.Departamentos.ToListAsync();
@@ -424,7 +426,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "error",
-                    mensaje = "Ocurrio un error al verificar los departamentos, ya existe un registro con este nombre"
+                    mensaje = "Ocurrió un error al verificar los departamentos, ya existe un registro con este nombre"
                 });
             }
 
@@ -440,7 +442,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "error",
-                    mensaje = "Ocurrio un error al guardar los cambios en la base de datos"
+                    mensaje = "Ocurrió un error al guardar los cambios en la base de datos"
                 });
             }
 
@@ -448,7 +450,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 data = d,
                 type = "success",
-                mensaje = "Se a agregado el departamento existosamente"
+                mensaje = "Se a agregado el departamento exitosamente"
             });
         }
         public async Task<JsonResult> GetVehiculoConductor(int id = 0)
@@ -479,10 +481,10 @@ namespace ProyectoSolveCore.Controllers
                 {
                     if (uc.rut != uc.rutold)
                     {
-                        //Verifico si hay mas de 1 elemento con el rut del usuario
+                        //Verifico si hay mas de 1 elemento con el RUT del usuario
                         return new JsonMensaje()
                         {
-                            Mensaje = "El rut pertenece a otro usuario registrado",
+                            Mensaje = "El RUT pertenece a otro usuario registrado",
                             Type = "error"
                         };
                     }
@@ -627,7 +629,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return new JsonMensaje()
                 {
-                    Mensaje = "Ocurrio un error innesperado, avise al administrador del sistema o intente mas tarde",
+                    Mensaje = "Ocurrió un error inesperado, avise al administrador del sistema o intente mas tarde",
                     Type = "error"
                 };
             }
@@ -705,8 +707,9 @@ namespace ProyectoSolveCore.Controllers
             };
 
             if (iconos.ContainsKey(id_permiso))
+            {
                 return iconos[id_permiso];
-
+            }
             return "";
         }
     }

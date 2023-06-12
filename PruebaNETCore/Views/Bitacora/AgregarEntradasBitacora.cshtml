@@ -4,7 +4,7 @@
 @inject IMemoryCache Cache
 
 @{
-    ViewBag.Title = "Agregar entrada a la bitacora";
+    ViewBag.Title = "Agregar entrada a la bitácora";
     if (!Cache.TryGetValue("NumeroSolicitudes", out int count))
     {
         count = 1;
@@ -14,11 +14,11 @@
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
-            <h1 class="mt-4">Agregar entrada a la bitacora</h1>
+            <h1 class="mt-4">Agregar entrada a la bitácora</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
-                <li class="breadcrumb-item"><a asp-action="VisualizarBitacora">Visualizar bitacora</a></li>
-                <li class="breadcrumb-item active">Agregar entrada a la bitacora</li>
+                <li class="breadcrumb-item"><a asp-action="VisualizarBitacora">Visualizar bitácora</a></li>
+                <li class="breadcrumb-item active">Agregar entrada a la bitácora</li>
             </ol>
             <form id="form_AgregarBitacora" asp-action="AgregarEntradasBitacora" method="post">
                 <div class="card">
@@ -30,7 +30,7 @@
                         }
                         <div class="col col-lg-6">
                             <div class="row g-2">
-                                <h4>Informacion solicitud</h4>
+                                <h4>Información solicitud</h4>
                                 <input type="hidden" asp-for="Id" />
                                 <input type="hidden" asp-for="IdConductor" />
                                 <input type="hidden" asp-for="IdSolicitud" />
@@ -57,7 +57,7 @@
                                            value="@Model.NombreCompletoConductor" disabled>
                                 </div>
                                 <div class="col col-md-6">
-                                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                                    <label for="inputVehiculo" class="form-label">Vehículo</label>
                                     <input type="text" class="form-control" id="inputVehiculo"
                                            value="@Model.Vehiculo" disabled>
                                 </div>
@@ -72,7 +72,7 @@
                                            value="@Model.Motivo" disabled>
                                 </div>
                                 <hr />
-                                <h4 class="mt-2">Informacion de la bitácora</h4>
+                                <h4 class="mt-2">Información de la bitácora</h4>
                                 <div class="col-md-6">
                                     <label for="inputKmI" class="form-label">Kilometraje inicial</label>
                                     <input id="inputKmI" type="number" class="form-control" name="KmInicialEntero"
@@ -107,7 +107,7 @@
                                         }else{
                                             <button id="btn_addBitacora" type="button" class="btn btn-primary ms-1">Agregar solo esta entrada</button>
                                         }
-                                        <a role="button" class="ms-1 btn btn-secondary" asp-action="VisualizarBitacora">Volver a la bitacora</a>
+                                        <a role="button" class="ms-1 btn btn-secondary" asp-action="VisualizarBitacora">Volver a la bitácora</a>
                                     </div>
                                 </div>
                             </div>

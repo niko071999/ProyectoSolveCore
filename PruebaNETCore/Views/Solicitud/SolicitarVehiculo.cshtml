@@ -11,7 +11,7 @@
             <h1 class="mt-4">Solicitar vehiculo</h1>
             <ol class="breadcrumb mb-4">
                 <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Agenda">Agenda general</a></li>
-                <li class="breadcrumb-item active">Solicitar vehiculo</li>
+                <li class="breadcrumb-item active">Solicitar vehículo</li>
             </ol>
             <form id="form_solicitar" asp-action="SolicitarVehiculo" method="post">
                 <div class="card">
@@ -24,7 +24,7 @@
                         }
                         <div class="col col-lg-6">
                             <div class="row g-2">
-                                <h4>Informacion del cometido</h4>
+                                <h4>Información del cometido</h4>
                                 <div class="col-md-6">
                                     <label for="inputNombre" class="form-label">Nombre del solicitante</label>
                                     <select id="inputNombre" class="form-select js-example-basic-single" asp-for="IdSolicitante"
@@ -72,11 +72,11 @@
                             </div>
                         </div>
                         <div class="col col-lg-6">
-                            <h4>Informacion del vehículo seleccionado</h4>
+                            <h4>Información del vehículo seleccionado</h4>
                             <div class="row mt-3">
                                 <input data-val="true" data-val-required="El campo ID es obligatorio." id="idVehiculo" name="IdVehiculo" type="hidden">
                                 <div class="col col-md-12">
-                                    <label for="inputVehiculos" class="form-label">Vehiculos disponibles</label>
+                                    <label for="inputVehiculos" class="form-label">Vehículos disponibles</label>
                                     <select id="inputVehiculos" class="form-select">
                                     </select>
                                 </div>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="mt-3">
                                 <button id="btn_getVehiculo" type="button"
-                                        class="btn btn-success">
+                                        class="btn btn-secondary">
                                     Actualizar lista vehículos disponibles
                                 </button>
                                 <button id="btn_solicitar" type="button" class="btn btn-primary float-end">Solicitar Vehículo</button>

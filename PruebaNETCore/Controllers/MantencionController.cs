@@ -126,7 +126,7 @@ namespace ProyectoSolveCore.Controllers
                 using var transaction = await _context.Database.BeginTransactionAsync();
                 Fichamantencion ficha = new()
                 {
-                    FechaMantencion = DateTime.Now,
+                    FechaMantencion = fm.FechaMantencion,
                     Kilometraje = fm.Kilometraje,
                     Descripcion = fm.Descripcion,
                     IdConductor = fm.IdConductor,
@@ -149,12 +149,6 @@ namespace ProyectoSolveCore.Controllers
             {
                 return RedirectToAction("VisualizarMantenciones");
             }
-        }
-
-        private DateTime GenerarFecha(DateTime now)
-        {
-            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
-            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
     }
 }

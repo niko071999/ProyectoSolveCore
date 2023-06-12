@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,6 @@ using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
 using ProyectoSolveCore.Models.ViewModelsFilter;
 using System.Globalization;
-using System.Linq;
 using System.Security.Claims;
 
 namespace ProyectoSolveCore.Controllers
@@ -285,7 +285,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, contacte con administrador del sitio o intente mas tarde",
+                    mensaje = "Ocurrió un error inesperado, contacte con administrador del sitio o intente mas tarde",
                     type = "danger"
                 });
             }
@@ -297,7 +297,7 @@ namespace ProyectoSolveCore.Controllers
                 string mensaje = string.Empty;
                 if (!id.HasValue)
                 {
-                    mensaje = "Hubo un error al recibir los datos, recargue la página o intentelo nuevamente";
+                    mensaje = "Hubo un error al recibir los datos, recargue la página o inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
 
@@ -308,7 +308,7 @@ namespace ProyectoSolveCore.Controllers
 
                 if (solicitud == null)
                 {
-                    mensaje = "Hubo un error al cargar los datos, recargue la página o intentelo nuevamente";
+                    mensaje = "Hubo un error al cargar los datos, recargue la página o inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
                 vmMasInformacionSolicitud infosolicitud = new()
@@ -320,11 +320,11 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                string mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente";
+                string mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
             }
         }
-        [Authorize(Roles = "Adminstrador, Solicitador")]
+        [Authorize(Roles = "Administrador, Solicitador")]
         public async Task<IActionResult> SolicitarVehiculo()
         {
             try
@@ -365,7 +365,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        Mensaje = "Ocurrio un error al recibir los datos",
+                        Mensaje = "Ocurrió un error al recibir los datos",
                         Departamento = string.Empty,
                     });
                 }
@@ -375,14 +375,14 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al obtener los datos",
+                        mensaje = "Ocurrió un error al obtener los datos",
                         Departamento = string.Empty
                     });
                 }
                 string departamento = usuario.IdDepartamentoNavigation.Departamento1;
                 return Json(new
                 {
-                    Mensaje = "Departamento obtenido exitosamento",
+                    Mensaje = "Departamento obtenido exitosamente",
                     Departamento = departamento
                 });
             }
@@ -390,12 +390,12 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    Mensaje = "Ocurrio un error innesperado. Avise al administrador del sistema o intentelo nuevamente",
+                    Mensaje = "Ocurrió un error inesperado. Avise al administrador del sistema o inténtelo nuevamente",
                     Departamento = string.Empty
                 });
             }
         }
-        [Authorize(Roles = "Adminstrador, Solicitador")]
+        [Authorize(Roles = "Administrador, Solicitador")]
         [HttpPost]
         public async Task<IActionResult> SolicitarVehiculo(Solicitude solicitud)
         {
@@ -495,7 +495,7 @@ namespace ProyectoSolveCore.Controllers
                 return Json(new
                 {
                     data = new List<SelectListItem>(),
-                    mensaje = "Ocurrio un error inesperado, contacte con administrador del sitio o intente mas tarde: "+ex.Message,
+                    mensaje = "Ocurrió un error inesperado, contacte con administrador del sitio o intente mas tarde: "+ex.Message,
                     type = "danger"
                 });
             }
@@ -507,8 +507,6 @@ namespace ProyectoSolveCore.Controllers
             ViewBag.notfilter = false;
             try
             {
-
-
                 int id = int.Parse(User.FindFirst("Id").Value);
                 var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation).Include(s => s.IdConductorNavigation.IdUsuarioNavigation)
                         .Include(s => s.IdVehiculoNavigation.IdCategoriaNavigation).Include(s => s.Aprobaciones)
@@ -605,7 +603,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                string mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente";
+                string mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
             }
         }
@@ -629,7 +627,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Hubo un error al enviar los datos. Asegurese que haya seleccionado un conductor.",
+                        mensaje = "Hubo un error al enviar los datos. Asegúrese que haya seleccionado un conductor.",
                         type = "danger"
                     });
                 }
@@ -639,7 +637,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Hubo un error al obtener los datos, intentelo nuevamente",
+                        mensaje = "Hubo un error al obtener los datos, inténtelo nuevamente",
                         type = "danger"
                     });
                 }
@@ -664,7 +662,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Hubo un error al guardar los datos, intentelo nuevamente",
+                        mensaje = "Hubo un error al guardar los datos, inténtelo nuevamente",
                         type = "danger"
                     });
                 }
@@ -679,7 +677,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente",
+                    mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente",
                     type = "danger"
                 });
             }
@@ -693,7 +691,7 @@ namespace ProyectoSolveCore.Controllers
                 string mensaje = string.Empty;
                 if (id == 0)
                 {
-                    mensaje = "Hubo un error al recibir los datos, recargue la página o intenlo nuevamente";
+                    mensaje = "Hubo un error al recibir los datos, recargue la página o inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
                 var solicitud = await _context.Solicitudes.Include(s => s.IdVehiculoNavigation)
@@ -705,7 +703,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                string mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente";
+                string mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
             }
         }
@@ -732,7 +730,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Hubo un error al obtener los datos, intentelo nuevamente",
+                        mensaje = "Hubo un error al obtener los datos, inténtelo nuevamente",
                         type = "danger"
                     });
                 }
@@ -762,7 +760,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente",
+                    mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente",
                     type = "danger"
                 });
             }
@@ -921,13 +919,13 @@ namespace ProyectoSolveCore.Controllers
             List<SelectListItem> sli = new List<SelectListItem>()
             {
                 new SelectListItem(){ Value = "1", Text = "Filtrar solicitudes creadas hoy" },
-                new SelectListItem(){ Value = "2", Text = "Filtrar solicitudes creadas hace 24 horas" },
+                new SelectListItem(){ Value = "2", Text = "Filtrar solicitudes creadas en las últimas 24 horas" },
                 new SelectListItem(){ Value = "3", Text = "Filtrar solicitudes creadas esta semana" },
-                new SelectListItem(){ Value = "4", Text = "Filtrar solicitudes creadas hace 7 dias" },
+                new SelectListItem(){ Value = "4", Text = "Filtrar solicitudes creadas en los últimos 7 días" },
                 new SelectListItem(){ Value = "5", Text = "Filtrar solicitudes creadas este mes" },
-                new SelectListItem(){ Value = "6", Text = "Filtrar solicitudes creadas hace un mes"},
+                new SelectListItem(){ Value = "6", Text = "Filtrar solicitudes creadas en el último mes"},
                 new SelectListItem(){ Value = "7", Text = "Filtrar solicitudes creadas este año" },
-                new SelectListItem(){ Value = "8", Text = "Filtrar solicitudes creadas hace 1 año" }
+                new SelectListItem(){ Value = "8", Text = "Filtrar solicitudes creadas en los últimos 12 meses" }
             };
             return sli;
         }

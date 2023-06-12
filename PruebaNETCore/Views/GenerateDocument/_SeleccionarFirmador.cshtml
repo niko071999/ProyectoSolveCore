@@ -58,18 +58,5 @@
             Nombre: nombre
         }
         window.open('/GenerateDocument/PermisoCirculacion?nombre=' + objeto.Nombre + '&idconductor=' + objeto.IdConductor + '&id=' + objeto.IdSolicitud, '_blank');
-
-        //$.ajax({
-        //    url: '/GenerateDocument/MostrarPermisoCirculacionModal',
-        //    type: 'POST',
-        //    contentType: "application/json",
-        //    data: JSON.stringify(objeto),
-        //    success: function (result) {
-        //        abrirModal(result);
-        //    },
-        //    error: function (xhr, error) {
-        //        console.log(error);
-        //    }
-        //});
     });
 </script>

@@ -1,6 +1,16 @@
 ﻿$(document).ready(function () {
+    const inputFecha = document.getElementById('inputFecha');
     $('.form-select').select2({
         language: "es"
+    });
+    flatpickr(inputFecha, {
+        dateFormat: "Y-m-d",
+        altFormat: "d-m-Y", // Formato para enviar al controlador
+        altInput: true, // Habilita un input auxiliar para el formato de envío
+        altInputClass: "flatpickr-alt-input form-control", // Clase CSS para el input auxiliar
+        defaultDate: moment().tz("America/Santiago").toDate(),
+        locale: "es",
+        firstDayOfWeek: 1
     });
 });
 
@@ -15,8 +25,9 @@ $('#inputVehiculo').on('select2:select', function (e) {
         url: '/Vehiculo/GetConductorVehiculo?id=' + idvehiculo,
         type: 'GET',
         success: function (result) {
-            console.log(result);
-            $('#inputConductor').val(result).trigger("change");
+            if (confirm("¿Cambiar conductor?")) {
+                $('#inputConductor').val(result).trigger("change");
+            }
         },
         error: function (xhr, error) {
             if (xhr.status === 400) {
@@ -33,7 +44,9 @@ $('#inputConductor').on('select2:select', function (e) {
         url: '/Usuario/GetVehiculoConductor?id=' + idconductor,
         type: 'GET',
         success: function (result) {
-            $('#inputVehiculo').val(result).trigger("change");
+            if (confirm("¿Cambiar vehículo?")) {
+                $('#inputVehiculo').val(result).trigger("change");
+            }
         },
         error: function (xhr, error) {
             if (xhr.status === 400) {

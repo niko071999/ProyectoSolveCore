@@ -22,16 +22,16 @@
                         <form asp-action="VisualizarHistorialKm" method="post">
                             <label for="SelectVehiculo" class="form-label">Seleccione un vehículo</label>
                             <select id="SelectVehiculo" name="IdVehiculo" asp-items="ViewBag.IdVehiculo" class="form-select"></select>
-                            <button type="submit" class="btn btn-primary mt-2">Cargar kilometraje</button>
+                            <button type="submit" class="btn btn-primary mt-2">Ver kilometraje</button>
                         </form>
 
                         <table id="tablaBitacora" class="display table table-hover w-100 mt-2">
                             <thead class="table-light">
                                 <tr>
-                                    <th scope="col">Fecha creacion</th>@*0*@
+                                    <th scope="col">Fecha creación</th>@*0*@
                                     <th scope="col">Kilometraje inicial</th>@*0*@
                                     <th scope="col">Kilometraje final</th>@*0*@
-                                    <th scope="col">Vehiculo</th>@*0*@
+                                    <th scope="col">Vehículo</th>@*0*@
                                     @*<th scope="col"></th>10*@
                                 </tr>
                             </thead>
@@ -61,10 +61,10 @@
                         <table class="table table-hover w-100">
                             <thead class="table-light">
                                 <tr>
-                                    <th scope="col">Fecha creacion</th>@*0*@
+                                    <th scope="col">Fecha creación</th>@*0*@
                                     <th scope="col">Kilometraje inicial</th>@*0*@
                                     <th scope="col">Kilometraje final</th>@*0*@
-                                    <th scope="col">Vehiculo</th>@*0*@
+                                    <th scope="col">Vehículo</th>@*0*@
                                     @*<th scope="col"></th>@*10*@
                                 </tr>
                             </thead>

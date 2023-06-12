@@ -51,7 +51,6 @@
                             {
                                 <a role="button" class="btn btn-light p-0" data-bs-placement="top"
                                     data-bs-toggle="tooltip" data-bs-title="Filtrar todos con advertencia">
-                                    >
                                     @if ((int)ViewBag.Advertencias == Model.Count)
                                     {
                                         <span class="badge bg-warning p-2">Advertencias: Todo</span>
@@ -62,7 +61,6 @@
                                     }
                                 </a>
                             }
-
                             @if ((int)ViewBag.Deshabilitados > 0)
                             {
                                 <a role="button" class="btn btn-light p-0" data-bs-placement="top"
@@ -88,7 +86,7 @@
                                     <th scope="col" style="width:10%">Marca</th>
                                     <th scope="col" style="width:25%">Modelo</th>
                                     <th scope="col" style="width:20%">Conductor</th>
-                                    <th scope="col" style="width:5%">Habilitado</th>
+                                    <th scope="col" style="width:5%">Estado</th>
                                     <th scope="col">Km. recorridos</th>
                                     <th scope="col"></th>
                                 </tr>

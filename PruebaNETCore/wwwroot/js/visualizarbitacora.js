@@ -23,7 +23,7 @@
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]'),
     tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 const btn_info = document.querySelectorAll('.btn-info'),
-    btn_solicitud = document.querySelectorAll('.btn-warning');
+    btn_solicitud = document.querySelectorAll('.btn-s');
 
 btn_info.forEach(function (boton) {
     boton.addEventListener('click', () => {
@@ -55,6 +55,7 @@ const MostrarFichaBitacora = (boton) => {
 }
 const MostrarFichaSolicitud = (boton) => {
     const id = boton.dataset.id;
+    console.log(id);
     $.ajax({
         url: '/Solicitud/MasInformacionSolicitud?id=' + id + '&aprobacion=false',
         type: 'GET',

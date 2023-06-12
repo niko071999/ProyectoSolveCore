@@ -19,7 +19,7 @@ namespace ProyectoSolveCore.Controllers
             _context = context;
             _cache = cache;
         }
-        //[Authorize(Roles = "Adminstrador, Jefe, Conductor, Mantenedor de bitácora")]
+        //[Authorize(Roles = "Administrador, Jefe, Conductor, Mantenedor de bitácora")]
         [Autorizar(19)]
         public async Task<IActionResult> VisualizarBitacora()
         {
@@ -64,7 +64,7 @@ namespace ProyectoSolveCore.Controllers
         }
         [Autorizar(1)]
         [HttpPost]
-        public async Task<IActionResult> AgregarEntradasBitacora(vmBitacora bitacora) //Esta accion permite la insercion de varias entradas a la bitacora.
+        public async Task<IActionResult> AgregarEntradasBitacora(vmBitacora bitacora) //Esta acción permite la inserción de varias entradas a la bitacora.
         {
             if (bitacora == null)
             {
@@ -199,7 +199,7 @@ namespace ProyectoSolveCore.Controllers
         {
             if (id == 0)
             {
-                string mensaje = "Ocurrio un error al recibir los datos, intentelo nuevamente o avise al administrador del sistema.";
+                string mensaje = "Ocurrió un error al recibir los datos, inténtelo nuevamente o avise al administrador del sistema.";
                 return PartialView("_PartialModalError", mensaje);
             }
             var bitacora = await _context.Bitacoras.Select(b => new vmBitacoraInfo()
@@ -219,7 +219,7 @@ namespace ProyectoSolveCore.Controllers
             }).Where(b => b.Id == id).FirstOrDefaultAsync();
             if (bitacora == null)
             {
-                string mensaje = "Ocurrio un error al obtener los datos, intentelo nuevamente o avise al administrador del sistema.";
+                string mensaje = "Ocurrió un error al obtener los datos, inténtelo nuevamente o avise al administrador del sistema.";
                 return PartialView("_PartialModalError", mensaje);
 
             }

@@ -18,21 +18,21 @@
                     <div class="card-body row fw-bold">
                         <div class="col col-lg-6">
                             <div class="row g-2">
-                                <h4>Informacion solicitud</h4>
+                                <h4>Información solicitud</h4>
                                 <input type="hidden" asp-for="Id" />
                                 <div class="col col-lg-6 col-sm-12">
-                                    <label for="inputFecha" class="form-label">Fecha</label>
-                                    <input type="text" class="form-control" id="inputFecha"
-                                           value="@DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss", new CultureInfo("es-CL"))" disabled>
+                                    <label for="inputFecha" class="form-label">Fecha de mantención</label>
+                                    <input type="date" class="form-control" asp-for="FechaMantencion" id="inputFecha"
+                                           value="@DateTime.Now.ToString("yyyy-MM-dd")">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="inputConductor" class="form-label">Conductor</label>
                                     <select id="inputConductor" class="form-select" asp-for="IdConductor" asp-items="ViewBag.IdConductor" placeholder>
-                                        <option value="0">Sin Asingar</option>
+                                        <option value="0">Sin Asignar</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="inputVehiculo" class="form-label">Vehiculo</label>
+                                    <label for="inputVehiculo" class="form-label">Vehículo</label>
                                     <select id="inputVehiculo" class="form-select" asp-for="IdVehiculo" asp-items="ViewBag.IdVehiculo">
                                         <option value="0">Sin Asingar</option>
                                     </select>
@@ -42,7 +42,7 @@
                                     <input type="number" name="Kilometraje" class="form-control" id="inputKM" value="@Model.Kilometraje">
                                 </div>
                                 <div class="col col-md-12">
-                                    <label for="inputDescripcion" class="form-label">Descripcion de la mantención</label>
+                                    <label for="inputDescripcion" class="form-label">Descripción de la mantención</label>
                                     <textarea type="text" cols="2" name="Descripcion" class="form-control" id="inputDescripcion">@Model.Descripcion</textarea>
                                 </div>
                                 <div class="col-md-12 mt-3">
@@ -60,9 +60,14 @@
     </main>
 </div>
 @section CSS{
+    <link href="~/lib/flatpicker/flatpickr.min.css" rel="stylesheet" />
     <link href="~/lib/select-searcheable/select2.min.css" rel="stylesheet" />
 }
 @section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="~/lib/datatables/moment-timezone-with-data.min.js"></script>
     <script src="~/lib/select-searcheable/select2.min.js"></script>
+    <script src="~/lib/flatpicker/flatpickr.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script src="~/js/agregarmantencion.js"></script>
 }

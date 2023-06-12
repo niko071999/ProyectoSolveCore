@@ -52,7 +52,7 @@ namespace ProyectoSolveCore.Controllers
 
                 int habilitados = viewVehiculos.Where(v => v.Estado == 1).Count();
                 int deshabilitados = viewVehiculos.Where(v => v.Estado == 0).Count();
-                int advertencias = (habilitados + deshabilitados) - viewVehiculos.Count;
+                int advertencias = viewVehiculos.Count - (habilitados + deshabilitados);
 
                 ViewBag.Patente = new SelectList(GetPatentes(viewVehiculos), "Value", "Text");
                 ViewBag.Marca = new SelectList(GetMarcas(viewVehiculos), "Value", "Text");
@@ -200,7 +200,13 @@ namespace ProyectoSolveCore.Controllers
 
                         if (kmRecorrido == 0)
                         {
-                            v.MensajeEstado = "El vehiculo se encuentra en 0 Kilometros";
+                            if (vehiculoFichaMant != null)
+                            {
+                                v.MensajeEstado = "El vehículo esta habilitado y en perfecto estado";
+                                newList.Add(v);
+                                continue;
+                            }
+                            v.MensajeEstado = "El vehículo se encuentra en 0 Kilómetros";
                             newList.Add(v);
                             continue;
                         }
@@ -208,7 +214,7 @@ namespace ProyectoSolveCore.Controllers
                         double porc = ((double)kmRecorrido / periodo) * 100;
                         if (periodo <= kmRecorrido)
                         {
-                            v.MensajeEstado = "El vehiculo necesita obligatoriamente mantencion";
+                            v.MensajeEstado = "El vehículo necesita obligadamente mantención";
                             v.Estado = 0; //Estado: Desahabilitado
                             var vehiculo = await _context.Vehiculos.FindAsync(v.Id);
                             if (vehiculo != null && vehiculo.Estado)
@@ -224,17 +230,17 @@ namespace ProyectoSolveCore.Controllers
                         {
                             var diferencia = periodo - kmRecorrido;
                             v.Estado = 2;//Estado: Advertencia
-                            v.MensajeEstado = $"Al vehículo le faltan {diferencia} km para hacerle mantencion";
+                            v.MensajeEstado = $"Al vehículo le faltan {diferencia} km para hacerle mantención";
                             newList.Add(v);
                             continue;
                         }
 
-                        v.MensajeEstado = "El vehículo esta en perfecto estado";
+                        v.MensajeEstado = "El vehículo esta habilitado y en perfecto estado";
                         newList.Add(v);
                     }
                     else
                     {
-                        v.MensajeEstado = "El vehiculo necesita obligatoriamente mantencion";
+                        v.MensajeEstado = "El vehículo esta deshabilitado y necesita obligadamente mantención";
                         newList.Add(v);
                     }
                 }
@@ -358,7 +364,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                string mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente";
+                string mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
             }
         }
@@ -377,7 +383,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al recibir los datos",
+                        mensaje = "Ocurrió un error al recibir los datos",
                         type = "error"
                     });
                 }
@@ -390,7 +396,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al guardar los datos",
+                        mensaje = "Ocurrió un error al guardar los datos",
                         type = "error"
                     });
                 }
@@ -404,7 +410,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente",
+                    mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente",
                     type = "danger"
                 });
             }
@@ -416,13 +422,13 @@ namespace ProyectoSolveCore.Controllers
                 string mensaje;
                 if (id == 0)
                 {
-                    mensaje = "Hubo un error al recibir los datos, intentelo nuevamente";
+                    mensaje = "Hubo un error al recibir los datos, inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
                 var vehiculo = await _context.Vehiculos.FindAsync(id);
                 if (vehiculo == null)
                 {
-                    mensaje = "Hubo un error al recibir obtener los datos, intentelo nuevamente";
+                    mensaje = "Hubo un error al recibir obtener los datos, inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
 
@@ -430,7 +436,7 @@ namespace ProyectoSolveCore.Controllers
             }
             catch (Exception)
             {
-                string mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente";
+                string mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente";
                 return PartialView("_PartialModalError", mensaje);
             }
         }
@@ -444,7 +450,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al recibir los datos",
+                        mensaje = "Ocurrió un error al recibir los datos",
                         type = "error"
                     });
                 }
@@ -453,7 +459,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al obtener los datos",
+                        mensaje = "Ocurrió un error al obtener los datos",
                         type = "error"
                     });
                 }
@@ -464,7 +470,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return Json(new
                     {
-                        mensaje = "Ocurrio un error al guardar los datos",
+                        mensaje = "Ocurrió un error al guardar los datos",
                         type = "error"
                     });
                 }
@@ -478,7 +484,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 return Json(new
                 {
-                    mensaje = "Ocurrio un error inesperado, consulte con administrador del sistema o intentelo nuevamente",
+                    mensaje = "Ocurrió un error inesperado, consulte con administrador del sistema o inténtelo nuevamente",
                     type = "danger"
                 });
             }
@@ -501,7 +507,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "void",
-                    mensaje = "Ocurrio un error al recibir los datos"
+                    mensaje = "Ocurrió un error al recibir los datos"
                 });
             }
             if (await _context.Periodosmantenimientos.AnyAsync(x => x.PeriodoKilometraje == periodo))
@@ -510,7 +516,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "error",
-                    mensaje = "Ocurrio un error al verificar los periodos, ya existe un registro con este valor"
+                    mensaje = "Ocurrió un error al verificar los periodos, ya existe un registro con este valor"
                 });
             }
 
@@ -526,7 +532,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "error",
-                    mensaje = "Ocurrio un error al guardar los cambios en la base de datos"
+                    mensaje = "Ocurrió un error al guardar los cambios en la base de datos"
                 });
             }
 
@@ -538,7 +544,7 @@ namespace ProyectoSolveCore.Controllers
                     Periodo = "Cada " + p.PeriodoKilometraje.ToString("N0") + " Km"
                 },
                 type = "success",
-                mensaje = "Se a agregado el periodo existosamente"
+                mensaje = "Se a agregado el periodo exitosamente"
             });
         }
         public async Task<JsonResult> SelectAgregarCategoria(string categoria)
@@ -549,7 +555,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "void",
-                    mensaje = "Ocurrio un error al recibir los datos"
+                    mensaje = "Ocurrió un error al recibir los datos"
                 });
             }
             var categorias = await _context.Categorias.ToListAsync();
@@ -559,7 +565,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "error",
-                    mensaje = "Ocurrio un error al verificar las categorias, ya existe un registro con este valor"
+                    mensaje = "Ocurrió un error al verificar las categorías, ya existe un registro con este valor"
                 });
             }
 
@@ -575,7 +581,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     data = "",
                     type = "error",
-                    mensaje = "Ocurrio un error al guardar los cambios en la base de datos"
+                    mensaje = "Ocurrió un error al guardar los cambios en la base de datos"
                 });
             }
 
@@ -583,7 +589,7 @@ namespace ProyectoSolveCore.Controllers
             {
                 data = c,
                 type = "success",
-                mensaje = "Se a agregado la categoría existosamente"
+                mensaje = "Se a agregado la categoría exitosamente"
             });
         }
         private async Task<List<SelectListItem>> GetPeriodosMantencion()

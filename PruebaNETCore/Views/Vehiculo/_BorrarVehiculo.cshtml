@@ -2,12 +2,12 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header bg-danger">
-            <h5 class="modal-title text-white" id="exampleModalLabel">Borrar vehiculo</h5>
+            <h5 class="modal-title text-white" id="exampleModalLabel">Borrar vehículo</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="form_BorrarVehiculo">
             <div class="modal-body row g-2 fw-bold">
-                <h4 class="mb-2">Estas a punto de eliminar el siguiente vehiculo</h4>
+                <h4 class="mb-2">Estas a punto de eliminar el siguiente vehículo</h4>
                 <input type="hidden" asp-for="Id" name="id_vehiculo" />
                 <div class="col col-md-4">
                     <label for="inputPatente" class="form-label">Patente</label>
@@ -27,7 +27,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button id="btn_delete" type="button" class="btn btn-danger">Eliminar vehiculo</button>
+                <button id="btn_delete" type="button" class="btn btn-danger">Eliminar vehículo</button>
             </div>
         </form>
     </div>
@@ -38,7 +38,7 @@
 
     btn_delete.addEventListener('click', () => {
         $.ajax({
-            url: '/Vehiculo/BorrarVehiculo',
+            url: '/Vehículo/BorrarVehiculo',
             type: 'POST',
             data: {
                 id_vehiculo: form.id_vehiculo.value

@@ -1,5 +1,8 @@
 ﻿namespace ProyectoSolveCore.Models.ViewModels
 {
+    /// <summary>
+    /// Clase para mostrar las mantenciones en una tabla
+    /// </summary>
     public class vmFichaMantencion
     {
         public int Id { get; set; }

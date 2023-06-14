@@ -3,10 +3,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
-using System.Collections;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con la generacion del documento Permiso de Circulación.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver y crear el documento de Permiso de Circulación.
+    /// </remarks>
     public class GenerateDocumentController : Controller
     {
         private readonly ModelData _context;

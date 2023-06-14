@@ -1,5 +1,8 @@
 ﻿namespace ProyectoSolveCore.Models.ViewModels
 {
+    /// <summary>
+    /// Clase para mostrar informacion adicional de la bitácora
+    /// </summary>
     public class vmBitacoraInfo
     {
         public long Id { get; set; }

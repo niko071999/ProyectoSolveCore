@@ -4,10 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
-using System.Globalization;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con los registros de la mantención 
+    /// de los vehículos.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear, modificar y eliminar 
+    /// registros de la mantención de los vehículos.
+    /// </remarks>
     public class MantencionController : Controller
     {
         private readonly ModelData _context;

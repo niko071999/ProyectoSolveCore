@@ -7,10 +7,16 @@ using ProyectoSolveCore.Models.ViewModels;
 using ProyectoSolveCore.Models.ViewModelsFilter;
 using System.Collections;
 using System.Globalization;
-using System.Linq;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con los vehículos del sistema.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear, modificar y eliminar 
+    /// los vehículos del sistema.
+    /// </remarks>
     [Authorize]
     public class VehiculoController : Controller
     {
@@ -215,7 +221,7 @@ namespace ProyectoSolveCore.Controllers
                         if (periodo <= kmRecorrido)
                         {
                             v.MensajeEstado = "El vehículo necesita obligadamente mantención";
-                            v.Estado = 0; //Estado: Desahabilitado
+                            v.Estado = 0; //Estado: Deshabilitado
                             var vehiculo = await _context.Vehiculos.FindAsync(v.Id);
                             if (vehiculo != null && vehiculo.Estado)
                             {

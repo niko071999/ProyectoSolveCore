@@ -5,6 +5,9 @@ using System.Web;
 
 namespace ProyectoSolveCore.Models.ViewModels
 {
+    /// <summary>
+    /// Clase que muestra los datos de los vehículos en una tabla
+    /// </summary>
     public class vmVehiculo
     {
         public int Id { get; set; }

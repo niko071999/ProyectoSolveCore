@@ -5,6 +5,7 @@
 
 @{
     ViewBag.Title = "Agregar entrada a la bitácora";
+    //SE OBTIENE EL VALOR GUARDADO EN EL CACHE
     if (!Cache.TryGetValue("NumeroSolicitudes", out int count))
     {
         count = 1;

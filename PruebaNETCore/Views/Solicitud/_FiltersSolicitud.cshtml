@@ -2,27 +2,12 @@
 
 <form id="FormFilter" asp-action="@Model.accion" method="post">
     <div class="row fw-bold">
-        @*<label class="form-label">Tipos</label>
+        <label class="form-label">Tipos</label>
         <div class="col col-12">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio1"
-                       value="1" @(ViewBag.Opcion == 1 ? "checked":"")>
-                <label class="form-check-label" for="inlineRadio1">Solicitado</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio2"
-                       value="2" @(ViewBag.Opcion == 2 ? "checked":"")>
-                <label class="form-check-label" for="inlineRadio2">Salida</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="Opcion" id="inlineRadio3"
-                       value="3" @(ViewBag.Opcion == 3 ? "checked":"")>
-                <label class="form-check-label" for="inlineRadio3">Llegada</label>
-            </div>
+            <select id="inputFecha" class="form-select" name="OpcionFecha" asp-items="ViewBag.Fechas">
+                <option value="-1">Ningun filtro de fecha</option>
+            </select>
         </div>
-        <div class="col col-12">
-            
-        </div>*@
         <div class="col col-12">
             <label for="inputSolicitado" class="form-label">Solicitado por</label>
             <select id="inputSolicitado" class="form-select" name="IdSolicitado" asp-items="ViewBag.IdSolicitado">

@@ -1,5 +1,8 @@
 ﻿namespace ProyectoSolveCore.Models.ViewModels
 {
+    /// <summary>
+    /// Clase que muestra los datos de la solicitud en una tabla
+    /// </summary>
     [Serializable]
     public class vmSolicitud
     {

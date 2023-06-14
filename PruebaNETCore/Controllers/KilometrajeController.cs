@@ -1,15 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using System.Globalization;
-using System.Linq;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con los kilometrajes.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear, modificar y eliminar 
+    /// registros de kilometrajes de los vehículos.
+    /// </remarks>
     [Authorize]
     public class KilometrajeController : Controller
     {
@@ -20,7 +25,6 @@ namespace ProyectoSolveCore.Controllers
             _context = context;
         }
 
-        // GET: KilometrajeController
         [Autorizar(20)]
         public async Task<IActionResult> VisualizarHistorialKm()
         {

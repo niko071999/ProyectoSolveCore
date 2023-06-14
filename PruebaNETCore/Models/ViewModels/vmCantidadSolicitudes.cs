@@ -1,5 +1,8 @@
 ﻿namespace ProyectoSolveCore.Models.ViewModels
 {
+    /// <summary>
+    /// Clase que se ocupa para mostrar el reporte de cantidad de solicitudes
+    /// </summary>
     public class vmCantidadSolicitudes
     {
         public DateTime Mes { get; set; }

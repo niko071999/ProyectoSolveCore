@@ -8,6 +8,12 @@ using System.Globalization;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con los reportes.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver y crear los reportes.
+    /// </remarks>
     public class ReporteController : Controller
     {
         private readonly ModelData _context;

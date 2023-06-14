@@ -5,12 +5,18 @@ using System.Globalization;
 
 namespace ProyectoSolveCore.Filters
 {
+    /// <summary>
+    /// Filtro que verifica los estados de las solicitudes creadas.
+    /// </summary>
     public class VerificarSolicitudes : IActionFilter
     {
-        private readonly ModelData db = new ModelData();
+        private readonly ModelData db = new();
+        /// <summary>
+        /// Método que se ejecuta después de que se completa la acción.
+        /// </summary>
+        /// <param name="context">El contexto del filtro de acción que contiene la información de la acción y el resultado.</param>
         public async void OnActionExecuted(ActionExecutedContext context)
         {
-            
             var hoy = DateTime.Now;
             var s = await db.Solicitudes.Where(s => s.Estado == 0 && s.FechaSalida < hoy).ToListAsync();
             if (s.Any())
@@ -28,16 +34,12 @@ namespace ProyectoSolveCore.Filters
                 await db.SaveChangesAsync();
             }
         }
-
-        private DateTime GenerarFecha(DateTime now)
-        {
-            var hoystr = now.ToString("dd-MM-yyyy HH:mm:ss");
-            return DateTime.ParseExact(hoystr, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-        }
-
+        /// <summary>
+        /// Método que se ejecuta antes de que se inicie la acción.
+        /// </summary>
+        /// <param name="context">El contexto del filtro de acción que contiene la información de la acción.</param>
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            Console.WriteLine("Se ejecuto el codigo");
         }
     }
 }

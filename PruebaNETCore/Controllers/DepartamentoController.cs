@@ -6,10 +6,16 @@ using ProyectoSolveCore.Models;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con el Departamento.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver y conseguir registros de la bitácora.
+    /// </remarks>
     [Authorize]
     public class DepartamentoController : Controller
     {
-        ModelData _context;
+        private readonly ModelData _context;
         public DepartamentoController(ModelData context)
         {
             _context = context;

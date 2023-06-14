@@ -5,10 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoSolveCore.Filters;
 using ProyectoSolveCore.Models;
 using ProyectoSolveCore.Models.ViewModels;
-using System.Collections;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con los usuarios.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear, modificar y eliminar 
+    /// los usuarios del sistema.
+    /// </remarks>
     [Authorize]
     public class UsuarioController : Controller
     {

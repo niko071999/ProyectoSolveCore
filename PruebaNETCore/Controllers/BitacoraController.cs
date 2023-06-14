@@ -9,6 +9,12 @@ using System.Globalization;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con la bitácora.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear, modificar y eliminar registros de la bitácora.
+    /// </remarks>
     [Authorize]
     public class BitacoraController : Controller
     {
@@ -19,7 +25,6 @@ namespace ProyectoSolveCore.Controllers
             _context = context;
             _cache = cache;
         }
-        //[Authorize(Roles = "Administrador, Jefe, Conductor, Mantenedor de bitácora")]
         [Autorizar(19)]
         public async Task<IActionResult> VisualizarBitacora()
         {

@@ -5,7 +5,7 @@
     DateTime fsalida = Model.FechaSalida;
     DateTime fllegada = Model.FechaLlegada;
     CultureInfo idioma = new CultureInfo("es-CL");
-
+    //FORMATEO DE FECHAS
     string fsalidaformat = fsalida.Date.ToString("dddd d 'de' MMMM yyyy", idioma);
     fsalidaformat = char.ToUpper(fsalidaformat[0]) + fsalidaformat.Substring(1);
     string fllegadaformat = fllegada.Date.ToString("dddd d 'de' MMMM yyyy", idioma);
@@ -36,6 +36,7 @@
 <body>
     <nobr>
         <nowrap>
+            @*Cabecera del documento*@
             <div class="pos" id="_0:0" style="top:0">
                 <img name="_1100:850" src="~/assets/page_001.jpg" height="1100" width="850" border="0" usemap="#Map">
             </div>
@@ -64,6 +65,7 @@
                     PELARCO
                 </span>
             </div>
+            @*Texto informativo: Ley 18695*@
             <div class="pos" id="_78:312" style="top:312px;left:78px">
                 <span id="_17.8" style=" font-family:Arial; font-size:17.8px; color:#000000">
                     De conformidad a las facultades que me confiere la ley N&#176; 18.695 de 1988, sobre el uso
@@ -79,6 +81,8 @@
                     otorgo el presente permiso de circulaci&#243;n.
                 </span>
             </div>
+            @*Tabla: Se muestra los datos correspondiente a la solicitud*@
+            @*Servicio*@
             <div class="pos" id="_86:430" style="top:430px;left:78px">
                 <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
                     SERVICIO
@@ -89,6 +93,7 @@
                     @Model.servicio.ToUpper()
                 </span>
             </div>
+            @*Vehículo*@
             <div class="pos" id="_86:478" style="top:478px;left:78px">
                 <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
                     VEHÍCULO
@@ -99,6 +104,7 @@
                     @Model.vehiculo.ToUpper()
                 </span>
             </div>
+            @*Conductor*@
             <div class="pos" id="_86:525" style="top:525px;left:78px">
                 <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
                     CONDUCTOR
@@ -109,6 +115,7 @@
                     @Model.nombreConductor.ToUpper()
                 </span>
             </div>
+            @*Acompañantes*@
             <div class="pos" id="_86:573" style="top:573px;left:78px">
                 <span id="_17.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
                     ACOMPAÑANTE/S
@@ -119,6 +126,7 @@
                     @Html.Raw(Model.pasajeros.ToUpper())
                 </span>
             </div>
+            @*Cometido*@
             <div class="pos" id="_86:620" style="top:668px;left:78px">
                 <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
                     COMETIDO
@@ -129,6 +137,7 @@
                     @Model.motivo.ToUpper()
                 </span>
             </div>
+            @*Localidad*@
             <div class="pos" id="_86:668" style="top:715px;left:78px">
                 <span id="_19.1" style=" font-family:Arial; font-size:19.1px; color:#000000">
                     LOCALIDAD
@@ -139,6 +148,7 @@
                     @Model.destino.ToUpper()
                 </span>
             </div>
+            @*Día autorizado*@
             <div class="pos" id="_86:715" style="top:762px;left:78px">
                 <span id="_16.9" style=" font-family:Arial; font-size:19px; color:#000000">
                     DIA AUTORIZADO
@@ -150,6 +160,7 @@
                         : $"Desde el dia {fsalidaformat} {horasalida} <br /> Hasta el dia {fllegadaformat} {horallegada}")
                 </span>
             </div>
+            @*Texto informativo a pie de tabla*@
             <div class="pos" id="_78:762" style="top:820px;left:78px">
                 <span id="_13.3" style="font-weight:bold; font-family:Arial; font-size:13.3px; color:#000000">
                     NOTA: LA PRESENTE AUTORIZACI&#211;N ES V&#193;LIDA PARA LOS DIAS Y EL VEH&#205;CULO SE&#209;ALADO EN LA PRESENTE
@@ -160,6 +171,7 @@
                     AUTORIZACIÓN
                 </span>
             </div>
+            @*Firma del alcalde*@
             <div class="pos" id="_553:926" style="top:1025px;left:553px">
                 <span id="_13.3" style=" font-family:Arial; font-size:14px; color:#000000">
                     @Model.NombreFirma
@@ -170,6 +182,7 @@
                     ALCALDE(S)
                 </span>
             </div>
+            @*Texto sin descripción*@
             <div class="pos" id="_193:1014" style="top:1090px;left:193px">
                 <span id="_15.0" style=" font-family:Arial; font-size:15.0px; color:#000000">
                     SVP/jnc

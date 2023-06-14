@@ -8,6 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con la sesión de los usuarios.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear y modificar 
+    /// las sesiones de los usuarios en el sistema.
+    /// </remarks>
     public class SesionController : Controller
     {
         private readonly ModelData _context;

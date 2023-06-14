@@ -5,6 +5,9 @@ using System.Web;
 
 namespace ProyectoSolveCore.Models.ViewModels
 {
+    /// <summary>
+    /// Clase que muestra los datos de los usuarios en una tabla
+    /// </summary>
     public class vmUsuario
     {
         public int Id { get; set; }

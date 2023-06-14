@@ -1,5 +1,4 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +13,12 @@ using System.Security.Claims;
 
 namespace ProyectoSolveCore.Controllers
 {
+    /// <summary>
+    /// Controlador que maneja las operaciones relacionadas con las solicitudes de vehículos.
+    /// </summary>
+    /// <remarks>
+    /// Este controlador proporciona acciones para ver, crear y modificar las solicitudes de los vehículos.
+    /// </remarks>
     [Authorize]
     public class SolicitudController : Controller
     {
@@ -51,6 +56,7 @@ namespace ProyectoSolveCore.Controllers
                 ViewBag.Destino = new SelectList(ObtenerDestinos(solicitudes), "Value", "Text");
                 ViewBag.Vehiculo = new SelectList(ObtenerVehiculo(solicitudes), "Value", "Text", null, "Group");
                 ViewBag.IdSolicitado = new SelectList(ObtenerUsuarios(solicitudes), "Value", "Text");
+                ViewBag.Fechas = new SelectList(ObtenerOpcionesFiltrosFecha(), "Value", "Text");
                 //ViewBag.OpcionFiltroFecha = new SelectList(ObtenerOpcionesFiltrosFecha(), "Value", "Text");
                 //ViewBag.TipoFecha = 1; //Se selecciona por defecto al fecha solicitado
 
@@ -890,12 +896,16 @@ namespace ProyectoSolveCore.Controllers
                         .ToListAsync();
 
             if (fs == null
-                || (fs.Estado == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo) && string.IsNullOrEmpty(fs.Motivo)))
+                || (fs.Estado == -1 && fs.OpcionFecha == -1 && string.IsNullOrEmpty(fs.Destino) && string.IsNullOrEmpty(fs.Vehiculo) && string.IsNullOrEmpty(fs.Motivo)))
             {//&& fs.FechaDesde == DateTime.MinValue
                 return solicitudes;
             }
             if (fs.Estado > -1)
             {
+                solicitudes = solicitudes.Where(s => s.Estado == fs.Estado).ToList();
+            }
+            if (fs.Estado > -1)
+            {//FILTRAR POR LA FECHA
                 solicitudes = solicitudes.Where(s => s.Estado == fs.Estado).ToList();
             }
             if (!string.IsNullOrEmpty(fs.Motivo))

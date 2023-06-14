@@ -1,53 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using ProyectoSolveCore.Models;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ProyectoSolveCore.Models;
 
+/// <summary>
+/// Representa el contexto de base de datos para el modelo de datos.
+/// </summary>
 public partial class ModelData : DbContext
 {
     public ModelData()
     {
     }
-
+    /// <summary>
+    /// Constructor de la clase ModelData que acepta opciones de DbContext.
+    /// </summary>
     public ModelData(DbContextOptions<ModelData> options)
         : base(options)
     {
     }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de aprobaciones.
+    /// </summary>
     public virtual DbSet<Aprobacione> Aprobaciones { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de bitacoras.
+    /// </summary>
     public virtual DbSet<Bitacora> Bitacoras { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de categorias.
+    /// </summary>
     public virtual DbSet<Categoria> Categorias { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de conductores.
+    /// </summary>
     public virtual DbSet<Conductore> Conductores { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de departamentos.
+    /// </summary>
     public virtual DbSet<Departamento> Departamentos { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de fichamantenciones.
+    /// </summary>
     public virtual DbSet<Fichamantencion> Fichamantencions { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de kilometrajes.
+    /// </summary>
     public virtual DbSet<Kilometraje> Kilometrajes { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de periodosmantenimientos.
+    /// </summary>
     public virtual DbSet<Periodosmantenimiento> Periodosmantenimientos { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de permisos.
+    /// </summary>
     public virtual DbSet<Permiso> Permisos { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de roles.
+    /// </summary>
     public virtual DbSet<Role> Roles { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de rolespermisos.
+    /// </summary>
     public virtual DbSet<RolesPermiso> RolesPermisos { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de solicitudes.
+    /// </summary>
     public virtual DbSet<Solicitude> Solicitudes { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de usuarios.
+    /// </summary>
     public virtual DbSet<Usuario> Usuarios { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de usuariosroles.
+    /// </summary>
     public virtual DbSet<Usuariosrole> Usuariosroles { get; set; }
-
+    /// <summary>
+    /// Obtiene o establece el conjunto de entidades para la tabla de vehiculos.
+    /// </summary>
     public virtual DbSet<Vehiculo> Vehiculos { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySql("server=localhost;port=3306;database=proyectosolve;uid=UserSystem;password=52368993Nc", ServerVersion.Parse("10.4.28-mariadb"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -632,6 +662,5 @@ public partial class ModelData : DbContext
 
         OnModelCreatingPartial(modelBuilder);
     }
-
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

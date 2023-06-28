@@ -44,6 +44,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     TempData["MensajeLogout"] = ViewBag.MensajeLogout;
                 }
+                return View(new vmLoginUser());
             }
             else
             {

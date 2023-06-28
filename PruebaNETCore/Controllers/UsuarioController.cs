@@ -18,12 +18,20 @@ namespace ProyectoSolveCore.Controllers
     [Authorize]
     public class UsuarioController : Controller
     {
+        /// <summary>
+        /// Contexto de la base de datos
+        /// </summary>
         private readonly ModelData _context;
+        //Constructor
         public UsuarioController(ModelData context)
         {
             _context = context;
         }
-        [Autorizar(10)]
+        /// <summary>
+        /// Método para visualizar todos los usuarios creados.
+        /// </summary>
+        /// <returns>Vista que muestra la lista de usuarios creados.</returns>
+        [Autorizar(permisoId:10)]
         public IActionResult VisualizarUsuarios()
         {
             try
@@ -62,33 +70,45 @@ namespace ProyectoSolveCore.Controllers
                 return View(new vmUsuario());
             }
         }
-        [Autorizar(12)]
+        /// <summary>
+        /// Método que muestra formulario para ingresar un nuevo usuario.
+        /// </summary>
+        /// <returns>Vista que muestra formulario para crear nuevo usuario.</returns>
+        [Autorizar(permisoId:12)]
         public async Task<IActionResult> AgregarUsuario()
         {
             ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", null, "Group"); 
             return View(new vmUsuarioConductorRoles());
         }
-        [Autorizar(12)]
+        /// <summary>
+        /// Agrega un nuevo usuario.
+        /// </summary>
+        /// <param name="uc">Contiene los datos del usuario, roles y/o conductor.</param>
+        /// <returns>Vista que representa el resultado de la acción.</returns>
+        [Autorizar(permisoId: 12)]
         [HttpPost]
         public async Task<IActionResult> AgregarUsuario(vmUsuarioConductorRoles uc)
         {
+            //Se verifica que el objeto no venga vació
             if (uc == null)
             {
                 return View(new vmUsuarioConductorRoles());
             }
+            //Consulta si existe el RUT en el sistema ya ingresado
             var userAny = await _context.Usuarios.Where(u => !u.Eliminado).AnyAsync(u => u.Rut == uc.rut);
-            if (userAny)//ERROR: Verifica si existe otro usuario con el mismo rut
+            if (userAny)//ERROR: Verifica si existe otro usuario con el mismo RUT
             {
                 ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                 return View(uc);
             }
             if (uc.login && string.IsNullOrEmpty(uc.clave.Trim()))
-            {
+            {//Error: Si el usuario tiene permisos de acceder al sistema, pero la contraseña esta vacía
                 ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", uc.id_vehiculo, "Group");
                 return View(uc);
             }
             try
             {
+                //Comienza la transacción a la base de datos
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
                 var usuario = new Usuario()
@@ -140,7 +160,7 @@ namespace ProyectoSolveCore.Controllers
                 });
                 await _context.SaveChangesAsync();
 
-                var conductor = new Conductore()
+                var conductor = new Conductor()
                 {
                     Estado = true,
                     FechaEmision = (DateTime)uc.FechaEmitida,
@@ -175,6 +195,7 @@ namespace ProyectoSolveCore.Controllers
                         return View(uc);
                     }
                 }
+                //Se termina la transacción y se realiza commit
                 await transaction.CommitAsync();
                 return RedirectToAction("VisualizarUsuarios");
             }
@@ -184,6 +205,10 @@ namespace ProyectoSolveCore.Controllers
                 return View(uc);
             }
         }
+        /// <summary>
+        /// Método que muestra formulario para modificar el perfil de un usuario.
+        /// </summary>
+        /// <returns>Vista que muestra formulario para modificar el perfil de un usuario.</returns>
         [AllowAnonymous]
         public async Task<IActionResult> Perfil()
         {
@@ -194,7 +219,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     ID = u.Id,
                     rut = u.Rut,
-                    rutold = u.Rut,//Sirve para verificar si cambio RUT
+                    rutold = u.Rut,//Sirve para saber si cambio el RUT
                     nombre = u.Nombre,
                     apellido = u.Apellido,
                     direccion_img = u.DireccionImg,
@@ -216,6 +241,7 @@ namespace ProyectoSolveCore.Controllers
                 {
                     return View(new Usuario());
                 }
+                //Se configura los SelectList para mostrarlo en el elemento SELECT HTML
                 var departamentos = await _context.Departamentos.ToListAsync();
                 ViewBag.id_departamento = new SelectList(departamentos, "Id", "Departamento1", perfil.id_departamento);
                 ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", null, "Group");
@@ -226,20 +252,59 @@ namespace ProyectoSolveCore.Controllers
                 return View(new Usuario());
             }
         }
+        /// <summary>
+        /// Acción para editar el perfil del usuario.
+        /// </summary>
+        /// <param name="perfil">Contiene los datos del perfil a editar.</param>
+        /// <returns>Vista que representa el resultado de la acción.</returns>
+        [HttpPost]
+        public async Task<IActionResult> EditarPerfil(vmUsuarioConductorRoles perfil)
+        {
+            //Se verifica si el objeto viene vació
+            if (perfil == null)
+            {
+                TempData["Mensaje"] = "Ocurrió un error al recibir los datos";
+                return RedirectToAction("Perfil");
+            }
+            try
+            {
+                //Obtengo el resultado del método y se lo paso al objeto de la clase JsonMensaje
+                JsonMensaje jm = await ModificarUsuario(perfil);
+                if (jm.Type.Equals("success"))
+                {
+                    TempData["MensajeSuccess"] = jm.Mensaje;
+                    return RedirectToAction("Perfil");
+                }
+                TempData["Mensaje"] = jm.Mensaje;
+                return View(perfil);
+            }
+            catch (Exception ex)
+            {
+                TempData["Mensaje"] = "Ocurrió un error inesperado, avise al administrador o inténtelo más tarde";
+                return RedirectToAction("Perfil");
+            }
+        }
+        /// <summary>
+        /// Acción para mostrar el formulario para editar un usuario.
+        /// </summary>
+        /// <param name="id">ID del usuario a editar.</param>
+        /// <returns>Vista que muestra el formulario para editar un usuario.</returns>
+        [Autorizar(permisoId: 17)]
         public async Task<PartialViewResult> EditarUsuario(int id = 0)
         {
             try
             {
                 if (id == 0)
-                {
+                {//Si el ID es vació, devolver una ventana emergente con un mensaje de error.
                     string mensaje = "Hubo un error al recibir los datos";
                     return PartialView("_PartialModalError", mensaje);
                 }
+                //Se obtiene el usuario con el ID recibido
                 var usuario = await _context.Usuarios
                     .Where(u => !u.Eliminado && u.Id == id).Select(u => new vmUsuarioConductorRoles()
                 {
                     ID = u.Id,
-                    rutold = u.Rut,
+                    rutold = u.Rut,//Sirve para verificar si el usuario modifico el RUT
                     rut = u.Rut,
                     nombre = u.Nombre,
                     apellido = u.Apellido,
@@ -261,9 +326,10 @@ namespace ProyectoSolveCore.Controllers
                     RolMantenedorBitacora = u.Usuariosroles.Any(ur => ur.Idusuario == u.Id && ur.Idrol == 8)
                 }).FirstOrDefaultAsync();
                 if (usuario == null)
-                {
+                {//Si el usuario no existe, mostrar una ventana emergente con un mensaje de error
                     return PartialView("_PartialModalError", usuario);
                 }
+                //Configurar los SelectList para mostrarlo en el elemento SELECT HTML
                 var departamentos = await _context.Departamentos.ToListAsync();
                 ViewBag.id_departamento = new SelectList(departamentos, "Id", "Departamento1", usuario.id_departamento);
                 ViewBag.id_vehiculo = new SelectList(await GetVehiculosWithCategoria(), "Value", "Text", usuario.id_vehiculo.HasValue
@@ -276,7 +342,12 @@ namespace ProyectoSolveCore.Controllers
                 return PartialView("_PartialModalError",mensaje);
             }
         }
-        [Autorizar(17)]
+        /// <summary>
+        /// Método que edita un usuario.
+        /// </summary>
+        /// <param name="uc">Contiene los datos del usuario a editar.</param>
+        /// <returns>Un json que contiene el resultado de la acción.</returns>
+        [Autorizar(permisoId: 17)]
         [HttpPost]
         public async Task<JsonResult> EditarUsuario(vmUsuarioConductorRoles uc)
         {
@@ -290,8 +361,8 @@ namespace ProyectoSolveCore.Controllers
             }
             try
             {
+                //Obtengo el resultado del método y se lo paso al objeto de la clase JsonMensaje
                 JsonMensaje jm = await ModificarUsuario(uc);
-
                 return Json(new
                 {
                     mensaje = jm.Mensaje,
@@ -307,33 +378,12 @@ namespace ProyectoSolveCore.Controllers
                 });
             }
         }
-        [HttpPost]
-        public async Task<IActionResult> EditarPerfil(vmUsuarioConductorRoles perfil)
-        {
-            if (perfil == null)
-            {
-                TempData["Mensaje"] = "Ocurrió un error al recibir los datos";
-                return RedirectToAction("Perfil");
-            }
-            try
-            {
-                JsonMensaje jm = await ModificarUsuario(perfil);
-                if (jm.Type.Equals("success"))
-                {
-                    TempData["MensajeSuccess"] = jm.Mensaje;
-                    return RedirectToAction("Perfil");
-                }
-                TempData["Mensaje"] = jm.Mensaje;
-                return View("Perfil", perfil);
-            }
-            catch (Exception ex)
-            {
-                TempData["Mensaje"] = "Ocurrió un error inesperado, avise al administrador o inténtelo más tarde";
-                return RedirectToAction("Perfil");
-            }
-        }
-
-        [Autorizar(18)]
+        /// <summary>
+        /// Acción para mostrar el formulario para eliminar un usuario.
+        /// </summary>
+        /// <param name="id">ID del usuario a eliminar.</param>
+        /// <returns>Vista que muestra el formulario para eliminar un usuario.</returns>
+        [Autorizar(permisoId: 18)]
         public async Task<PartialViewResult> EliminarUsuario(int id = 0)
         {
             string mensaje;
@@ -349,6 +399,7 @@ namespace ProyectoSolveCore.Controllers
                     mensaje = "Hubo un error al recibir los datos, inténtelo nuevamente";
                     return PartialView("_PartialModalError", mensaje);
                 }
+                //Se busca el usuario con el id recibido del usuario para pasarlo a la vista
                 var usuario = await _context.Usuarios.FindAsync(id);
                 if (usuario == null)
                 {
@@ -364,7 +415,12 @@ namespace ProyectoSolveCore.Controllers
                 return PartialView("_PartialModalError", m);
             }
         }
-        [Autorizar(18)]
+        /// <summary>
+        /// Acción para eliminar un usuario del sistema.
+        /// </summary>
+        /// <param name="id">ID del usuario a eliminar.</param>
+        /// <returns>Un json que contiene el resultado de la acción.</returns>
+        [Autorizar(permisoId: 18)]
         [HttpPost]
         public async Task<JsonResult> BorrarUsuario(int id = 0)
         {
@@ -413,6 +469,12 @@ namespace ProyectoSolveCore.Controllers
                 });
             }
         }
+        /// <summary>
+        /// Método que se utiliza para agregar un nuevo departamento 
+        /// desde los formularios de agregar o editar usuario.
+        /// </summary>
+        /// <param name="departamento">Nombre del departamento.</param>
+        /// <returns>Un json que contiene un mensaje y el departamento creado.</returns>
         public async Task<JsonResult> SelectAgregarDepartamento(string departamento)
         {
             if (string.IsNullOrEmpty(departamento.Trim()))
@@ -424,10 +486,10 @@ namespace ProyectoSolveCore.Controllers
                     mensaje = "El nombre departamento está vació"
                 });
             }
+            //Se recupera los departamentos y se verifica si ya existe en el sistema
             var departamentos = await _context.Departamentos.ToListAsync();
-
             if (departamentos.Any(x => x.Departamento1.Equals(departamento, StringComparison.OrdinalIgnoreCase)))
-            {
+            {//Si existe, enviar un error
                 return Json(new
                 {
                     data = "",
@@ -459,6 +521,11 @@ namespace ProyectoSolveCore.Controllers
                 mensaje = "Se a agregado el departamento exitosamente"
             });
         }
+        /// <summary>
+        /// Método que se utiliza para conseguir el vehículo asignado al conductor
+        /// </summary>
+        /// <param name="id">ID del conductor.</param>
+        /// <returns>Un json que contiene el id del vehículo.</returns>
         public async Task<JsonResult> GetVehiculoConductor(int id = 0)
         {
             int idvehiculo = 0;
@@ -478,6 +545,11 @@ namespace ProyectoSolveCore.Controllers
             }
             return Json(idvehiculo);
         }
+        /// <summary>
+        /// Método privado para modificar un usuario en la base de datos.
+        /// </summary>
+        /// <param name="uc">Contiene los datos del usuario a modificar.</param>
+        /// <returns>Un json que indica el resultado de la modificación.</returns>
         private async Task<JsonMensaje> ModificarUsuario(vmUsuarioConductorRoles uc)
         {
             try
@@ -495,6 +567,8 @@ namespace ProyectoSolveCore.Controllers
                         };
                     }
                 }
+
+                //Comienzo de la transacción a la base de datos
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
                 var usuario = await _context.Usuarios.FindAsync(uc.ID);
@@ -549,7 +623,7 @@ namespace ProyectoSolveCore.Controllers
                     && ur.Idusuario == uc.ID).FirstOrDefaultAsync();
                 if (uc.FechaEmitida == null || uc.FecheVencimiento == null || uc.NumeroPoliza == null)
                 {
-                    //Quitar el id del conductor del vehiculo asignado
+                    //Quitar el id del conductor del vehículo asignado
                     var vehiculo = await _context.Vehiculos.Where(v => v.Id == uc.ID).FirstOrDefaultAsync();
                     if (vehiculo.IdConductor.HasValue)
                     {
@@ -603,7 +677,7 @@ namespace ProyectoSolveCore.Controllers
                 }
                 else
                 {
-                    conductor = new Conductore()
+                    conductor = new Conductor()
                     {
                         Estado = true,
                         FechaEmision = (DateTime)uc.FechaEmitida,
@@ -640,8 +714,14 @@ namespace ProyectoSolveCore.Controllers
                 };
             }
         }
+        /// <summary>
+        /// Método para obtener una lista de roles del usuario.
+        /// </summary>
+        /// <param name="uc">Contiene los datos del usuario.</param>
+        /// <returns>Lista de roles con los roles seleccionados del usuario.</returns>
         private static List<vmRolCheck> ObtenerRoles(vmUsuarioConductorRoles uc)
         {
+            //lur = Lista Usuario Roles
             List<vmRolCheck> lur = new();
             Dictionary<int, bool> roles = new()
             {
@@ -663,6 +743,10 @@ namespace ProyectoSolveCore.Controllers
             }
             return lur;
         }
+        /// <summary>
+        /// Método para obtener una lista de vehículos con categoría.
+        /// </summary>
+        /// <returns>Lista de vehículos con sus categorías.</returns>
         public async Task<List<SelectListWithGroups>> GetVehiculosWithCategoria()
         {
             return await _context.Vehiculos.Include(v => v.IdCategoriaNavigation)
@@ -674,6 +758,10 @@ namespace ProyectoSolveCore.Controllers
                         Group = v.IdCategoriaNavigation.Categoria1
                     }).ToListAsync();
         }
+        /// <summary>
+        /// Método para obtener una lista de iconos de roles del usuario.
+        /// </summary>
+        /// <returns>Lista de iconos de roles del usuario.</returns>
         private static string ObtenerIconRol(int id_rol)
         {
             Dictionary<int, string> roles = new()
@@ -692,7 +780,10 @@ namespace ProyectoSolveCore.Controllers
 
             return "";
         }
-
+        /// <summary>
+        /// Método para obtener una lista de iconos de permisos del usuario.
+        /// </summary>
+        /// <returns>Lista de iconos de permisos del usuario.</returns>
         private static string ObtenerIconPermiso(int id_permiso)
         {
             Dictionary<int, string> iconos = new()

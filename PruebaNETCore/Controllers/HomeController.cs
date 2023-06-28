@@ -5,11 +5,8 @@ using ProyectoSolveCore.Filters;
 namespace PruebaNETCore.Controllers
 {
     /// <summary>
-    /// Controlador que maneja las operaciones relacionadas con la agenda.
+    /// Controlador que maneja las operaciones relacionadas con el inicio del sistema y la agenda.
     /// </summary>
-    /// <remarks>
-    /// Este controlador proporciona acciones para ver la agenda.
-    /// </remarks>
     [Authorize]
     public class HomeController : Controller
     {
@@ -18,7 +15,7 @@ namespace PruebaNETCore.Controllers
         /// </summary>
         /// <returns>El resultado de la vista.</returns>
         /// <remarks>
-        /// Antes de realizar la accion, se dispara un metodo llamado VerificarSolicitudes 
+        /// Antes de realizar la acción, se dispara un método llamado VerificarSolicitudes 
         /// El cual verifica todas las solicitudes y sus estados.
         /// </remarks>
         [TypeFilter(typeof(VerificarSolicitudes))]

@@ -40,7 +40,7 @@
         /// </summary>
         public bool RolSolicitador { get; set; }
         /// <summary>
-        /// Indica si tiene rol mantenedor de vehiculos maquinarias
+        /// Indica si tiene rol mantenedor de vehículos maquinarias
         /// </summary>
         public bool RolMantenedorVehiculosMaq { get; set; }
         /// <summary>

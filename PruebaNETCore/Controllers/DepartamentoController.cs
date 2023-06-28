@@ -15,16 +15,20 @@ namespace ProyectoSolveCore.Controllers
     [Authorize]
     public class DepartamentoController : Controller
     {
+        /// <summary>
+        /// contexto de la base de datos
+        /// </summary>
         private readonly ModelData _context;
+        //Constructor
         public DepartamentoController(ModelData context)
         {
             _context = context;
         }
-        public IActionResult VisualizarDepartamentos()
-        {
-            return View();
-        }
-
+        public IActionResult VisualizarDepartamentos() => View();
+        /// <summary>
+        /// Método que obtiene los departamentos para cargarlo en la etiqueta Select HTML 
+        /// </summary>
+        /// <returns>Un json con todos los departamentos para cargarlos en un Select HTML</returns>
         public async Task<IActionResult> GetDepartamentos()
         {
             var jsonSettings = new JsonSerializerSettings

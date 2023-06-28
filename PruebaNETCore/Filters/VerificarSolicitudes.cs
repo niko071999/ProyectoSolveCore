@@ -22,7 +22,7 @@ namespace ProyectoSolveCore.Filters
             if (s.Any())
             {
                 s.ForEach(s => s.Estado = 2);
-                var aprobaciones = s.Select(s => new Aprobacione()
+                var aprobaciones = s.Select(s => new Aprobacion()
                 {
                     Estado = false,
                     Fecha = hoy,

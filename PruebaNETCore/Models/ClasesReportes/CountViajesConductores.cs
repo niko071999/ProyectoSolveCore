@@ -1,7 +1,7 @@
 ﻿namespace ProyectoSolveCore.Models.ClasesReportes
 {
     /// <summary>
-    /// Representa la cantidad de viajes y de kilometros recorridos por los conductores
+    /// Representa la cantidad de viajes y de kilómetros recorridos por los conductores
     /// </summary>
     public class CountViajesConductores : CountViajesFuncionarios
     {

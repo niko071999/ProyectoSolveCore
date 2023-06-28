@@ -11,7 +11,7 @@ namespace ProyectoSolveCore.Filters
         /// <summary>
         /// Crea una nueva instancia de la clase AutorizarAttribute con el ID de permiso especificado.
         /// </summary>
-        /// <param name="permisoId">El ID del permiso o accion requerido para acceder a la vista</param>
+        /// <param name="permisoId">El ID del permiso o acción requerido para acceder a la vista</param>
         public AutorizarAttribute(int permisoId) : base(typeof(AutorizarFilter))
         {
             Arguments = new object[] { new PermisoRequerimiento(permisoId) };

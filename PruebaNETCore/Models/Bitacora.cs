@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProyectoSolveCore.Models;
+﻿namespace ProyectoSolveCore.Models;
 public partial class Bitacora
 {
     /// <summary>
-    /// Identificador unico
+    /// Identificador único
     /// </summary>
     public long Id { get; set; }
     /// <summary>
@@ -22,37 +19,37 @@ public partial class Bitacora
     public int? LitrosCombustible { get; set; }
     public string Observacion { get; set; }
     /// <summary>
-    /// Identificador unico del vehículo
+    /// Identificador único del vehículo
     /// </summary>
     public int IdVehiculo { get; set; }
     /// <summary>
-    /// Identificador unico del conductor
+    /// Identificador único del conductor
     /// </summary>
     public int IdConductor { get; set; }
     /// <summary>
-    /// Identificado unico de la solicitud
+    /// Identificado único de la solicitud
     /// </summary>
     public int IdSolicitud { get; set; }
     /// <summary>
-    /// Identificador unico del kilometraje
+    /// Identificador único del kilometraje
     /// </summary>
     public int IdKilometraje { get; set; }
     public string Trial820 { get; set; }
 
     /// <summary>
-    /// Relacion uno es a uno con el conductor
+    /// Relación uno es a uno con el conductor
     /// </summary>
-    public virtual Conductore IdConductorNavigation { get; set; }
+    public virtual Conductor IdConductorNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a uno con el kilometraje
+    /// Relación uno es a uno con el kilometraje
     /// </summary>
     public virtual Kilometraje IdKilometrajeNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a uno con la solicitud
+    /// Relación uno es a uno con la solicitud
     /// </summary>
-    public virtual Solicitude IdSolicitudNavigation { get; set; }
+    public virtual Solicitud IdSolicitudNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a uno con el vehículo
+    /// Relación uno es a uno con el vehículo
     /// </summary>
     public virtual Vehiculo IdVehiculoNavigation { get; set; }
 }

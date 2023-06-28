@@ -1,7 +1,14 @@
-﻿@if (TempData.ContainsKey("Mensaje"))
+﻿@if (TempData.ContainsKey("MensajeLogout"))
+{
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+        <div>
+            @TempData["MensajeLogout"]
+        </div>
+    </div>
+}
+@if (TempData.ContainsKey("Mensaje"))
 {
     <div class="alert alert-danger d-flex align-items-center" role="alert">
-        <i class="bi flex-shrink-0 fa-solid fa-triangle-exclamation"></i>
         <div>
             @TempData["Mensaje"]
         </div>

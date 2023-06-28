@@ -1,11 +1,11 @@
 ﻿namespace ProyectoSolveCore.Models;
 /// <summary>
-/// Representa las mantenciones realizadas a los vehículos
+/// Representa la entidad de mantención realizada al vehículo
 /// </summary>
 public partial class Fichamantencion
 {
     /// <summary>
-    /// Identificador unico
+    /// Identificador único
     /// </summary>
     public int Id { get; set; }
     /// <summary>
@@ -17,20 +17,20 @@ public partial class Fichamantencion
     /// </summary>
     public int Kilometraje { get; set; }
     /// <summary>
-    /// Descripcion de la mantención realizada al vehículo
+    /// Descripción de la mantención realizada al vehículo
     /// </summary>
     public string Descripcion { get; set; }
     /// <summary>
-    /// Identificador unico del conductor
+    /// Identificador único del conductor
     /// </summary>
     public int IdConductor { get; set; }
     /// <summary>
-    /// Identificador unico del vehículo
+    /// Identificador único del vehículo
     /// </summary>
     public int IdVehiculo { get; set; }
     public string Trial823 { get; set; }
-    /// Relacion uno es a uno con el conductor
-    public virtual Conductore IdConductorNavigation { get; set; }
-    /// Relacion uno es a uno con el vehículo
+    /// Relación uno es a uno con el conductor
+    public virtual Conductor IdConductorNavigation { get; set; }
+    /// Relación uno es a uno con el vehículo
     public virtual Vehiculo IdVehiculoNavigation { get; set; }
 }

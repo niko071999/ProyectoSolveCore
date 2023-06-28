@@ -17,24 +17,39 @@ namespace ProyectoSolveCore.Controllers
     /// </remarks>
     public class SesionController : Controller
     {
+        /// <summary>
+        /// Contexto de la base de datos
+        /// </summary>
         private readonly ModelData _context;
+        /// <summary>
+        /// Registro de eventos y mensajes de registro.
+        /// </summary>
         private readonly ILogger<SesionController> _ilogger;
-
+        //Constructor
         public SesionController(ModelData context, ILogger<SesionController> ilogger)
         {
             _context = context;
             _ilogger = ilogger;
         }
+        /// <summary>
+        /// Muestra el formulario de acceso al sistema
+        /// </summary>
+        /// <returns>Vista con el formulario para ingresar al sistema</returns>
         public IActionResult Login()
         {
+            //Verificar si el usuario esta autenticado
             if (!User.Identity.IsAuthenticated)
-            {
+            {//Si no esta, enviar un mensaje de cierra de sesión 
                 if (ViewBag.MensajeLogout != null)
                 {
-                    TempData["Mensaje"] = ViewBag.MensajeLogout;
+                    TempData["MensajeLogout"] = ViewBag.MensajeLogout;
+                }
             }
+            else
+            {
                 return View(new vmLoginUser());
             }
+            //Redireccionar a la vista Agenda si el usuario esta autenticado
             return RedirectToAction("Agenda","Home");
         }
 
@@ -59,7 +74,11 @@ namespace ProyectoSolveCore.Controllers
             //};
             //smtp.Send(correo);
         }
-
+        /// <summary>
+        /// Se realiza la petición de autenticación
+        /// </summary>
+        /// <param name="user">Los datos de acceso del usuario</param>
+        /// <returns>La vista correspondiente según el resultado de la autenticación del usuario</returns>
         [HttpPost]
         public async Task<IActionResult> Login(vmLoginUser user)
         {
@@ -69,32 +88,39 @@ namespace ProyectoSolveCore.Controllers
                 TempData["Mensaje"] = mensaje;
                 return View(new vmLoginUser());
             }
-
             try 
             {
                 var usuario = await _context.Usuarios.Include(u => u.IdDepartamentoNavigation).Include(u => u.Usuariosroles)
                             .Where(u => u.Rut.Equals(user.Rut) && !u.Eliminado).FirstOrDefaultAsync();
-
+                //Se verifica si el usuario no existe
                 if (usuario == null)
                 {
                     TempData["Mensaje"] = mensaje;
                     return View(user);
                 }
+                //Se verifica si el usuario no tiene permisos de acceso al sistema
                 if (!usuario.Login)
                 {
                     TempData["Mensaje"] = "El usuario no tiene permisos para acceder al sistema. Contacte con el administrador del sistema o inténtelo nuevamente.";
                     return View(user);
                 }
+                //Se verifican las claves
                 if (!Encrypt.VerifyPassword(user.Clave, usuario.Clave))
                 {
                     TempData["Mensaje"] = mensaje;
                     return View(user);
                 }
                 //Usuario verificado correctamente
+
                 var roles = await _context.Usuariosroles.Where(ur => ur.Idusuario == usuario.Id)
                     .Select(ur => ur.IdrolNavigation).Select(r => r.Rol).ToListAsync();
                 bool autenticado = await AutenticarUsuario(usuario, roles);
-
+                if (!autenticado)
+                {
+                    TempData["Mensaje"] = "Hubo un error al intentar autenticar el usuario en el sistema. Contacte con el administrador del sistema o inténtelo nuevamente.";
+                    return View(user);
+                }
+                //Si el usuario es autenticado exitosamente, se redirecciona a la vista de la agenda general.
                 return RedirectToAction("Agenda", "Home");
             }
             catch (Exception ex)
@@ -107,12 +133,23 @@ namespace ProyectoSolveCore.Controllers
                 return View(user);
             }
         }
-
+        /// <summary>
+        /// Cierra la sesión del usuario
+        /// </summary>
+        /// <returns>Redirecciona al usuario a la vista de inicio de sesión</returns>
         public async Task<IActionResult> Logout()
         {
+            //Cierre de sesión del usuario utilizando el esquema de autenticación de cookies por defecto.
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction(nameof(Login));
+            ViewBag.MensajeLogout = "Se a cerrado sesión correctamente";
+            return RedirectToAction("Login");
         }
+        /// <summary>
+        /// Autentica un usuario y establece las reclamaciones (claims) de identidad para el usuario autenticado.
+        /// </summary>
+        /// <param name="usuario">Usuario a autenticar.</param>
+        /// <param name="roles">Lista de roles asociados al usuario.</param>
+        /// <returns>True si la autenticación es exitosa; de lo contrario sera False.</returns>
         private async Task<bool> AutenticarUsuario(Usuario usuario, List<string> roles)
         {
             try

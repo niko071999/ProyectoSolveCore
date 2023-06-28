@@ -16,63 +16,105 @@ namespace ProyectoSolveCore.Controllers
     /// </remarks>
     public class ReporteController : Controller
     {
+        /// <summary>
+        /// contexto de la base de datos
+        /// </summary>
         private readonly ModelData _context;
+        //Constructor
         public ReporteController(ModelData context)
         {
             _context = context;
         }
-        [Autorizar(4)]
+        /// <summary>
+        /// Método que muestra el reporte de la cantidad de viajes de funcionarios
+        /// </summary>
+        /// <returns>Una vista con el reporte de la cantidad de viajes de funcionarios</returns>
+        [Autorizar(permisoId: 4)]
         public async Task<IActionResult> CantidadViajesFuncionario()
         {
-            var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation.IdDepartamentoNavigation)
-                .Where(s => s.IdSolicitante > 2 && s.Estado == 1 || s.Estado == 3)
-                .ToListAsync();
-            Dictionary<string, CountViajesFuncionarios> cvf = new();
-            foreach (var s in solicitudes)
+            try
             {
-                string nombre = $"{s.IdSolicitanteNavigation.Nombre} {s.IdSolicitanteNavigation.Apellido}";
-                if (!cvf.ContainsKey(nombre))
+                var solicitudes = await _context.Solicitudes.Include(s => s.IdSolicitanteNavigation.IdDepartamentoNavigation)
+                        .Where(s => s.IdSolicitante > 2 && s.Estado == 1 || s.Estado == 3)
+                        .ToListAsync();
+                //Diccionario para realizar el reporte
+                //cvf = Cantidad Viajes Funcionarios
+                Dictionary<string, CountViajesFuncionarios> cvf = new();
+                foreach (var solicitud in solicitudes)
                 {
-                    cvf.Add(nombre, new CountViajesFuncionarios
-                    {
-                        Nombre = nombre,
-                        Departamento = s.IdSolicitanteNavigation.IdDepartamentoNavigation.Departamento1,
-                        NumeroViaje = solicitudes.Where(x => x.IdSolicitante == s.IdSolicitante).ToList().Count
-                    });
+                    string nombre = $"{solicitud.IdSolicitanteNavigation.Nombre} {solicitud.IdSolicitanteNavigation.Apellido}";
+                    //Verifico si el diccionario contiene el nombre del funcionario
+                    if (!cvf.ContainsKey(nombre))
+                    {//Si no lo contiene, lo agrego y sumo todos los viajes
+                        cvf.Add(nombre, new CountViajesFuncionarios
+                        {
+                            Nombre = nombre,
+                            Departamento = solicitud.IdSolicitanteNavigation.IdDepartamentoNavigation.Departamento1,
+                            NumeroViaje = solicitudes.Where(x => x.IdSolicitante == solicitud.IdSolicitante)
+                                            .ToList()
+                                            .Count
+                        });
+                    }
                 }
+                //Lo retorno a la vista, ordenado de forma ascendente los nombres de los funcionarios
+                return View(cvf.Values.OrderBy(x => x.Nombre).ToList());
             }
-            return View(cvf.Values.OrderBy(x => x.Nombre).ToList());
+            catch (Exception)
+            {
+                return View(new List<Dictionary<string, CountViajesFuncionarios>>());
+            }
         }
-        [Autorizar(4)]
+        /// <summary>
+        /// Método que muestra el reporte de la cantidad de viajes y kilómetros de los conductores
+        /// </summary>
+        /// <returns>Una vista con el reporte de la cantidad de viajes y kilómetros de los conductores</returns>
+        [Autorizar(permisoId: 4)]
         public async Task<IActionResult> CantidadViajesConductores()
         {
-            var solicitudes = await _context.Solicitudes.Include(s => s.IdConductorNavigation.IdUsuarioNavigation.IdDepartamentoNavigation)
-                .Where(s => s.IdSolicitante > 2 && s.Estado == 1 || s.Estado == 3)
-                .ToListAsync();
-            var kilometrajes = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.IdConductorNavigation)
-                .ToListAsync();
-
-            Dictionary<string, CountViajesConductores> cvc = new();
-            foreach (var s in solicitudes)
+            try
             {
-                string nombre = $"{s.IdConductorNavigation.IdUsuarioNavigation.Nombre} {s.IdConductorNavigation.IdUsuarioNavigation.Apellido}";
-                if (!cvc.ContainsKey(nombre))
+                var solicitudes = await _context.Solicitudes.Include(s => s.IdConductorNavigation.IdUsuarioNavigation.IdDepartamentoNavigation)
+                        .Where(s => s.IdSolicitante > 2 && s.Estado == 1 || s.Estado == 3)
+                        .ToListAsync();
+                var kilometrajes = await _context.Kilometrajes.Include(k => k.IdVehiculoNavigation.IdConductorNavigation)
+                    .ToListAsync();
+                //Diccionario para realizar el reporte
+                //cvc = Cantidad Viajes Conductores
+                Dictionary<string, CountViajesConductores> cvc = new();
+                foreach (var solicitud in solicitudes)
                 {
-                    var kmsUser = kilometrajes.Where(k => k.IdVehiculoNavigation.IdConductor.HasValue
-                            && k.IdVehiculoNavigation.IdConductor == s.IdConductor).ToList();
-                    var km = kmsUser.FirstOrDefault();
-                    cvc.Add(nombre, new CountViajesConductores
-                    {
-                        Nombre = nombre,
-                        Departamento = s.IdConductorNavigation.IdUsuarioNavigation.IdDepartamentoNavigation.Departamento1,
-                        NumeroViaje = solicitudes.Where(x => x.IdConductor == s.IdConductor).ToList().Count,
-                        KilometrajesTotales = kmsUser.Sum(k => km != null ? km.KilometrajeInicial - (k.KilometrajeFinal - k.KilometrajeInicial): 0)
-                    });
+                    string nombre = $"{solicitud.IdConductorNavigation.IdUsuarioNavigation.Nombre} {solicitud.IdConductorNavigation.IdUsuarioNavigation.Apellido}";
+                    //Verifico si el diccionario contiene el nombre del conductor
+                    if (!cvc.ContainsKey(nombre))
+                    {//Si no lo contiene se agrega al diccionario
+                        var kmsUser = kilometrajes.Where(k => k.IdVehiculoNavigation.IdConductor.HasValue
+                                && k.IdVehiculoNavigation.IdConductor == solicitud.IdConductor).ToList();
+                        var km = kmsUser.FirstOrDefault();
+                        cvc.Add(nombre, new CountViajesConductores
+                        {
+                            Nombre = nombre,
+                            Departamento = solicitud.IdConductorNavigation.IdUsuarioNavigation.IdDepartamentoNavigation.Departamento1,
+                            NumeroViaje = solicitudes.Where(x => x.IdConductor == solicitud.IdConductor).ToList().Count,
+                            // Calcula la suma de los kilómetros totales del conductor. Si el valor km es nulo, se considera 0 km para ese elemento.
+                            KilometrajesTotales = kmsUser.Sum(k => km != null ?
+                                km.KilometrajeInicial - (k.KilometrajeFinal - k.KilometrajeInicial)
+                                : 0)
+                        });
+                    }
                 }
+                //Lo retorno a la vista, ordenado de forma ascendente los nombres de los conductores
+                return View(cvc.Values.OrderBy(x => x.Nombre).ToList());
             }
-            return View(cvc.Values.OrderBy(x => x.Nombre).ToList());
+            catch (Exception)
+            {
+                return View(new List<Dictionary<string, CountViajesConductores>>());
+            }
         }
-        [Autorizar(4)]
+        /// <summary>
+        /// Método que muestra el reporte de la cantidad de solicitudes en base a sus estados
+        /// </summary>
+        /// <returns>Una vista con el reporte de la cantidad de solicitudes en base a sus estados</returns>
+        [Autorizar(permisoId: 4)]
         public IActionResult CantidadSolicitudesMensuales()
         {
             try

@@ -9,14 +9,14 @@
         public string Marca { get; set; }
         public string Modelo { get; set; }
         /// <summary>
-        /// Opcion seleccionada del estado del vehículo
+        /// Opción seleccionada del estado del vehículo
         /// </summary>
         /// <remarks>
-        /// 1 = Habilitado, 2 = Precaucion, 3 = Deshabilitado
+        /// 1 = Habilitado, 2 = Precaución, 3 = Deshabilitado
         /// </remarks>
         public int OpcionEstado { get; set; }
         /// <summary>
-        /// Identificador unico de la categoria
+        /// Identificador único de la categoría
         /// </summary>
         public int IdCategoria { get; set; }
     }

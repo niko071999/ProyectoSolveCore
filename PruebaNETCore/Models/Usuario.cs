@@ -2,18 +2,18 @@
 public partial class Usuario
 {
     /// <summary>
-    /// Identificador unico
+    /// Identificador único
     /// </summary>
     public int Id { get; set; }
     /// <summary>
-    /// Numero de identificacion del usuario
+    /// Numero de identificación del usuario
     /// </summary>
     public string Rut { get; set; }
     public string Nombre { get; set; }
     public string Apellido { get; set; }
     public string Clave { get; set; }
     /// <summary>
-    /// Indica si el usuario esta habilitado para ingresar al sistema
+    /// Indica si el usuario está habilitado para ingresar al sistema
     /// </summary>
     public bool Login { get; set; }
     /// <summary>
@@ -21,32 +21,32 @@ public partial class Usuario
     /// </summary>
     public bool Eliminado { get; set; }
     /// <summary>
-    /// Identificador unico del departamento
+    /// Identificador único del departamento
     /// </summary>
     public int IdDepartamento { get; set; }
     /// <summary>
-    /// Direccion de la imagen
+    /// Dirección de la imagen
     /// </summary>
     public string DireccionImg { get; set; }
     public string Trial826 { get; set; }
     /// <summary>
-    /// Relacion uno es a mucho de la aprobación
+    /// Relación uno es a mucho de la aprobación
     /// </summary>
-    public virtual ICollection<Aprobacione> Aprobaciones { get; set; } = new List<Aprobacione>();
+    public virtual ICollection<Aprobacion> Aprobaciones { get; set; } = new List<Aprobacion>();
     /// <summary>
-    /// Relacion uno es a mucho del conductor
+    /// Relación uno es a mucho del conductor
     /// </summary>
-    public virtual ICollection<Conductore> Conductores { get; set; } = new List<Conductore>();
+    public virtual ICollection<Conductor> Conductores { get; set; } = new List<Conductor>();
     /// <summary>
-    /// Relacion uno es a uno del departamento
+    /// Relación uno es a uno del departamento
     /// </summary>
     public virtual Departamento IdDepartamentoNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a mucho de la solicitud
+    /// Relación uno es a mucho de la solicitud
     /// </summary>
-    public virtual ICollection<Solicitude> Solicitudes { get; set; } = new List<Solicitude>();
+    public virtual ICollection<Solicitud> Solicitudes { get; set; } = new List<Solicitud>();
     /// <summary>
-    /// Relacion uno es a mucho de la clase "Usuariosrole"
+    /// Relación uno es a mucho de la clase "Usuariosrole"
     /// </summary>
     public virtual ICollection<Usuariosrole> Usuariosroles { get; set; } = new List<Usuariosrole>();
 }

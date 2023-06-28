@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProyectoSolveCore.Models;
-
+﻿namespace ProyectoSolveCore.Models;
 public partial class Vehiculo
 {
     /// <summary>
-    /// Identificador unico
+    /// Identificador único
     /// </summary>
     public int Id { get; set; }    
     public string Patente { get; set; }
@@ -25,48 +21,48 @@ public partial class Vehiculo
     /// </summary>
     public bool Eliminado { get; set; }
     /// <summary>
-    /// Direccion de la imagen del vehículo
+    /// Dirección de la imagen del vehículo
     /// </summary>
     public string DireccionImg { get; set; }
     /// <summary>
-    /// Identificador unico del periodo del kilometraje
+    /// Identificador único del periodo del kilometraje
     /// </summary>
     public int IdPeriodoKilometraje { get; set; }
     /// <summary>
-    /// Identificador unico de la categoría
+    /// Identificador único de la categoría
     /// </summary>
     public int? IdCategoria { get; set; }
     /// <summary>
-    /// Identificador unico del conductor
+    /// Identificador único del conductor
     /// </summary>
     public int? IdConductor { get; set; }
     public string Trial829 { get; set; }
     /// <summary>
-    /// Relacion uno es a mucho de la bitácora
+    /// Relación uno es a mucho de la bitácora
     /// </summary>
     public virtual ICollection<Bitacora> Bitacoras { get; set; } = new List<Bitacora>();
     /// <summary>
-    /// Relacion uno es a mucho de la mantención
+    /// Relación uno es a mucho de la mantención
     /// </summary>
     public virtual ICollection<Fichamantencion> Fichamantencions { get; set; } = new List<Fichamantencion>();
     /// <summary>
-    /// Relacion uno es a uno de la categoria
+    /// Relación uno es a uno de la categoría
     /// </summary>
     public virtual Categoria IdCategoriaNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a uno del conductor
+    /// Relación uno es a uno del conductor
     /// </summary>
-    public virtual Conductore IdConductorNavigation { get; set; }
+    public virtual Conductor IdConductorNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a uno del periodo de kilometraje
+    /// Relación uno es a uno del periodo de kilometraje
     /// </summary>
     public virtual Periodosmantenimiento IdPeriodoKilometrajeNavigation { get; set; }
     /// <summary>
-    /// Relacion uno es a mucho del kilometraje
+    /// Relación uno es a mucho del kilometraje
     /// </summary>
     public virtual ICollection<Kilometraje> Kilometrajes { get; set; } = new List<Kilometraje>();
     /// <summary>
-    /// Relacion uno es a mucho de la solicitud
+    /// Relación uno es a mucho de la solicitud
     /// </summary>
-    public virtual ICollection<Solicitude> Solicitudes { get; set; } = new List<Solicitude>();
+    public virtual ICollection<Solicitud> Solicitudes { get; set; } = new List<Solicitud>();
 }

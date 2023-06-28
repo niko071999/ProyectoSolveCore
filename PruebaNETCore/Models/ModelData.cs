@@ -20,7 +20,7 @@ public partial class ModelData : DbContext
     /// <summary>
     /// Obtiene o establece el conjunto de entidades para la tabla de aprobaciones.
     /// </summary>
-    public virtual DbSet<Aprobacione> Aprobaciones { get; set; }
+    public virtual DbSet<Aprobacion> Aprobaciones { get; set; }
     /// <summary>
     /// Obtiene o establece el conjunto de entidades para la tabla de bitacoras.
     /// </summary>
@@ -32,7 +32,7 @@ public partial class ModelData : DbContext
     /// <summary>
     /// Obtiene o establece el conjunto de entidades para la tabla de conductores.
     /// </summary>
-    public virtual DbSet<Conductore> Conductores { get; set; }
+    public virtual DbSet<Conductor> Conductores { get; set; }
     /// <summary>
     /// Obtiene o establece el conjunto de entidades para la tabla de departamentos.
     /// </summary>
@@ -64,7 +64,7 @@ public partial class ModelData : DbContext
     /// <summary>
     /// Obtiene o establece el conjunto de entidades para la tabla de solicitudes.
     /// </summary>
-    public virtual DbSet<Solicitude> Solicitudes { get; set; }
+    public virtual DbSet<Solicitud> Solicitudes { get; set; }
     /// <summary>
     /// Obtiene o establece el conjunto de entidades para la tabla de usuarios.
     /// </summary>
@@ -74,19 +74,21 @@ public partial class ModelData : DbContext
     /// </summary>
     public virtual DbSet<Usuariosrole> Usuariosroles { get; set; }
     /// <summary>
-    /// Obtiene o establece el conjunto de entidades para la tabla de vehiculos.
+    /// Obtiene o establece el conjunto de entidades para la tabla de vehículos.
     /// </summary>
     public virtual DbSet<Vehiculo> Vehiculos { get; set; }
+    //Configura el entorno de la base de datos. Le asignamos la cadena de conexión
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySql("server=localhost;port=3306;database=proyectosolve;uid=UserSystem;password=52368993Nc", ServerVersion.Parse("10.4.28-mariadb"));
-
+        => optionsBuilder.UseMySql("server=localhost;port=3306;database=proyectosolve;uid=UserSystem;password=52368993Nc", 
+            ServerVersion.Parse("10.4.28-mariadb"));
+    //Configura el modelo en base a las tablas de la base de datos 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .UseCollation("utf8mb4_general_ci")
             .HasCharSet("utf8mb4");
 
-        modelBuilder.Entity<Aprobacione>(entity =>
+        modelBuilder.Entity<Aprobacion>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -216,7 +218,7 @@ public partial class ModelData : DbContext
                 .HasColumnName("trial820");
         });
 
-        modelBuilder.Entity<Conductore>(entity =>
+        modelBuilder.Entity<Conductor>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
@@ -441,7 +443,7 @@ public partial class ModelData : DbContext
                 .HasConstraintName("fk_roles_permisos_roles");
         });
 
-        modelBuilder.Entity<Solicitude>(entity =>
+        modelBuilder.Entity<Solicitud>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 

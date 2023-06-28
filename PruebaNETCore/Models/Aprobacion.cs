@@ -25,7 +25,6 @@ public partial class Aprobacion
     /// Identificador único de la solicitud
     /// </summary>
     public int IdSolicitud { get; set; }
-    public string Trial816 { get; set; }
     /// <summary>
     /// Relación uno es a uno con el usuario
     /// </summary>

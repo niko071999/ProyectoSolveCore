@@ -92,7 +92,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("aprobaciones", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("aprobaciones");
 
             entity.HasIndex(e => e.IdSolicitud, "fk_aprobaciones_solicitudes");
 
@@ -115,10 +115,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.Motivo)
                 .HasMaxLength(50)
                 .HasColumnName("motivo");
-            entity.Property(e => e.Trial816)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial816");
 
             entity.HasOne(d => d.IdJefeNavigation).WithMany(p => p.Aprobaciones)
                 .HasForeignKey(d => d.IdJefe)
@@ -135,7 +131,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("bitacora", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("bitacora");
 
             entity.HasIndex(e => e.IdConductor, "fk_bitacora_conductores");
 
@@ -173,10 +169,6 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(250)
                 .HasColumnName("observacion");
-            entity.Property(e => e.Trial820)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial820");
 
             entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.Bitacoras)
                 .HasForeignKey(d => d.IdConductor)
@@ -203,7 +195,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("categorias", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("categorias");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -212,17 +204,13 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("categoria");
-            entity.Property(e => e.Trial820)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial820");
         });
 
         modelBuilder.Entity<Conductor>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("conductores", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("conductores");
 
             entity.HasIndex(e => e.IdUsuario, "fk_conductores_usuarios");
 
@@ -243,10 +231,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.NumeroPoliza)
                 .HasColumnType("int(11)")
                 .HasColumnName("numero_poliza");
-            entity.Property(e => e.Trial820)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial820");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Conductores)
                 .HasForeignKey(d => d.IdUsuario)
@@ -258,7 +242,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("departamentos", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("departamentos");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -267,17 +251,13 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("departamento");
-            entity.Property(e => e.Trial820)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial820");
         });
 
         modelBuilder.Entity<Fichamantencion>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("fichamantencion", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("fichamantencion");
 
             entity.HasIndex(e => e.IdConductor, "fk_fichamantencion_conductores");
 
@@ -302,10 +282,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.Kilometraje)
                 .HasColumnType("int(11)")
                 .HasColumnName("kilometraje");
-            entity.Property(e => e.Trial823)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial823");
 
             entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.Fichamantencions)
                 .HasForeignKey(d => d.IdConductor)
@@ -322,7 +298,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("kilometrajes", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("kilometrajes");
 
             entity.HasIndex(e => e.IdVehiculo, "fk_kilometrajes_vehiculos");
 
@@ -341,10 +317,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.KilometrajeInicial)
                 .HasColumnType("int(11)")
                 .HasColumnName("kilometraje_inicial");
-            entity.Property(e => e.Trial823)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial823");
 
             entity.HasOne(d => d.IdVehiculoNavigation).WithMany(p => p.Kilometrajes)
                 .HasForeignKey(d => d.IdVehiculo)
@@ -356,7 +328,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("periodosmantenimiento", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("periodosmantenimiento");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -364,17 +336,13 @@ public partial class ModelData : DbContext
             entity.Property(e => e.PeriodoKilometraje)
                 .HasColumnType("int(11)")
                 .HasColumnName("periodo_kilometraje");
-            entity.Property(e => e.Trial823)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial823");
         });
 
         modelBuilder.Entity<Permiso>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("permisos", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("permisos");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -383,17 +351,13 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("permiso");
-            entity.Property(e => e.Trial823)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial823");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("roles", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("roles");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -402,17 +366,13 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("rol");
-            entity.Property(e => e.Trial823)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial823");
         });
 
         modelBuilder.Entity<RolesPermiso>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("roles_permisos", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("roles_permisos");
 
             entity.HasIndex(e => e.IdRol, "fk_roles_permisos_roles");
 
@@ -427,10 +387,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.IdRol)
                 .HasColumnType("int(11)")
                 .HasColumnName("id_rol");
-            entity.Property(e => e.Trial826)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial826");
 
             entity.HasOne(d => d.IdPermisoNavigation).WithMany(p => p.RolesPermisos)
                 .HasForeignKey(d => d.IdPermiso)
@@ -447,7 +403,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("solicitudes", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("solicitudes");
 
             entity.HasIndex(e => e.IdConductor, "fk_solicitudes_conductores");
 
@@ -493,10 +449,6 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("pasajeros");
-            entity.Property(e => e.Trial826)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial826");
 
             entity.HasOne(d => d.IdConductorNavigation).WithMany(p => p.Solicitudes)
                 .HasForeignKey(d => d.IdConductor)
@@ -517,7 +469,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("usuarios", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("usuarios");
 
             entity.HasIndex(e => e.IdDepartamento, "fk_usuarios_departamentos");
 
@@ -550,10 +502,6 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("rut");
-            entity.Property(e => e.Trial826)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial826");
 
             entity.HasOne(d => d.IdDepartamentoNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdDepartamento)
@@ -565,7 +513,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("usuariosroles", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("usuariosroles");
 
             entity.HasIndex(e => e.Idrol, "fk_usuariosroles_roles");
 
@@ -580,10 +528,6 @@ public partial class ModelData : DbContext
             entity.Property(e => e.Idusuario)
                 .HasColumnType("int(11)")
                 .HasColumnName("idusuario");
-            entity.Property(e => e.Trial829)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial829");
 
             entity.HasOne(d => d.IdrolNavigation).WithMany(p => p.Usuariosroles)
                 .HasForeignKey(d => d.Idrol)
@@ -600,7 +544,7 @@ public partial class ModelData : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("vehiculos", tb => tb.HasComment("TRIAL"));
+            entity.ToTable("vehiculos");
 
             entity.HasIndex(e => e.IdCategoria, "fk_vehiculos_categorias");
 
@@ -639,10 +583,6 @@ public partial class ModelData : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("patente");
-            entity.Property(e => e.Trial829)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("trial829");
             entity.Property(e => e.Year)
                 .IsRequired()
                 .HasMaxLength(10)

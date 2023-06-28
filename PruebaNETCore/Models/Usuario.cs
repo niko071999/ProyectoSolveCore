@@ -9,8 +9,17 @@ public partial class Usuario
     /// Numero de identificación del usuario
     /// </summary>
     public string Rut { get; set; }
+    /// <summary>
+    /// Nombre de la persona/usuario
+    /// </summary>
     public string Nombre { get; set; }
+    /// <summary>
+    /// Apellido de la persona/usuario
+    /// </summary>
     public string Apellido { get; set; }
+    /// <summary>
+    /// Clave de acceso del usuario
+    /// </summary>
     public string Clave { get; set; }
     /// <summary>
     /// Indica si el usuario está habilitado para ingresar al sistema
@@ -28,7 +37,6 @@ public partial class Usuario
     /// Dirección de la imagen
     /// </summary>
     public string DireccionImg { get; set; }
-    public string Trial826 { get; set; }
     /// <summary>
     /// Relación uno es a mucho de la aprobación
     /// </summary>

@@ -5,8 +5,17 @@ public partial class Vehiculo
     /// Identificador único
     /// </summary>
     public int Id { get; set; }    
+    /// <summary>
+    /// Patente del vehículo
+    /// </summary>
     public string Patente { get; set; }
+    /// <summary>
+    /// Marca del vehículo
+    /// </summary>
     public string Marca { get; set; }
+    /// <summary>
+    /// Modelo del vehículo
+    /// </summary>
     public string Modelo { get; set; }
     /// <summary>
     /// Año del vehículo
@@ -36,7 +45,6 @@ public partial class Vehiculo
     /// Identificador único del conductor
     /// </summary>
     public int? IdConductor { get; set; }
-    public string Trial829 { get; set; }
     /// <summary>
     /// Relación uno es a mucho de la bitácora
     /// </summary>

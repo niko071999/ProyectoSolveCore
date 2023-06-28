@@ -46,7 +46,6 @@ public partial class Solicitud
     /// Identificador único del conductor
     /// </summary>
     public int? IdConductor { get; set; }
-    public string Trial826 { get; set; }
     /// <summary>
     /// Relación uno es a mucho de la aprobación
     /// </summary>

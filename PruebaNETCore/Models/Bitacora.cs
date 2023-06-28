@@ -34,7 +34,6 @@ public partial class Bitacora
     /// Identificador único del kilometraje
     /// </summary>
     public int IdKilometraje { get; set; }
-    public string Trial820 { get; set; }
 
     /// <summary>
     /// Relación uno es a uno con el conductor

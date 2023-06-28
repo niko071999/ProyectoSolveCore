@@ -29,7 +29,6 @@ public partial class Conductor
     /// Identificador único del usuario
     /// </summary>
     public int IdUsuario { get; set; }
-    public string Trial820 { get; set; }
     /// <summary>
     /// Relación uno es a muchos con la bitácora
     /// </summary>

@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Solicitudes pendientes";
 }
-<partial name="_NavMenu" />
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
@@ -79,8 +78,6 @@
 </div>
 @section CSS {
     <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
-    @*<link href="~/Content/css/Datatables/select.dataTables.min.css" rel="stylesheet" />
-    <link href="~/Content/css/Datatables/buttons.dataTables.min.css" rel="stylesheet" />*@
     }
     @section Scripts {
     <script src="~/lib/datatables/jquery.datatables.min.js"></script>
@@ -90,8 +87,6 @@
     <script src="~/lib/datatables/moment-timezone-with-data.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
-    @*<script src="~/Content/js/Datatable/dataTables.select.min.js"></script>
-    <script src="~/Content/js/Datatable/dataTables.buttons.min.js"></script>*@
     <script src="~/js/solicitudespendientes.js"></script>
     <script src="~/js/filtersolicitudes.js"></script>
 }

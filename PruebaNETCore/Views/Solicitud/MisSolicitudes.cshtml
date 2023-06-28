@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Mis Solicitudes";
 }
-<partial name="_NavMenu" />
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
@@ -101,7 +100,6 @@
                                         <td class="text-end">
                                             @if (solicitud.Estado == 1)
                                             {
-                                                @*&& solicitud.FechaSalida >= DateTime.Now*@
                                                 <a asp-controller="Bitacora" asp-action="AgregarEntradasBitacora" asp-route-id="@solicitud.id"
                                                     role="button" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top"
                                                     data-bs-title="Agregar entrada a la bitácora"><i class="fas fa-book-open fa-lg"></i></a>
@@ -134,15 +132,11 @@
 </div>
 @section CSS {
     <link href="~/lib/datatables/jquery.datatables.min.css" rel="stylesheet" />
-    @*<link href="~/Content/css/Datatables/select.dataTables.min.css" rel="stylesheet" />
-    <link href="~/Content/css/Datatables/buttons.dataTables.min.css" rel="stylesheet" />*@
 }
 @section Scripts {
     <script src="~/lib/datatables/jquery.datatables.min.js"></script>
     <script src="~/lib/datatables/moment.min.js"></script>
     <script src="~/lib/datatables/datetime-moment.js"></script>
-    @*<script src="~/Content/js/Datatable/dataTables.select.min.js"></script>*@
-    @*<script src="~/Content/js/Datatable/dataTables.buttons.min.js"></script>*@
     <script src="~/js/missolicitudes.js"></script>
     <script src="~/js/filtersolicitudes.js"></script>
 }

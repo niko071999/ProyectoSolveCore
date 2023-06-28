@@ -1,10 +1,8 @@
 ﻿@model Solicitud
 @{
     Departamento departamento = ViewBag.Departamento;
-    ViewBag.Title = "Solicitar Vehiculo";
+    ViewBag.Title = "Solicitar Vehículo";
 }
-
-<partial name="_NavMenu" />
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
@@ -104,11 +102,9 @@
     <link href="~/lib/select-searcheable/select2.min.css" rel="stylesheet" />
 }
 @section Scripts {
-    @*<script src="~/lib/datatables/moment.min.js"></script>*@
     <script src="~/lib/select-searcheable/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="~/lib/datatables/moment-timezone-with-data.min.js"></script>
-    @*<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>*@
     <script src="~/lib/flatpicker/flatpickr.js"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script src="~/lib/taginput/jquery.tagify.min.js"></script>
